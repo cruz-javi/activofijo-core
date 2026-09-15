@@ -1,0 +1,49 @@
+{
+  "name": "activofijo-core",
+  "version": "0.1.0",
+  "description": "Core Backend and Event Store for UAGRM Activo Fijo",
+  "type": "module",
+  "packageManager": "pnpm@10.5.2",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/src/main.js",
+    "dev": "tsx watch src/main.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "vitest run --config vitest.config.e2e.ts",
+    "prisma:generate": "prisma generate --config prisma.config.ts && prisma generate --config prisma.legacy.config.ts",
+    "prisma:migrate:dev": "prisma migrate dev --config prisma.config.ts",
+    "prisma:migrate:deploy": "prisma migrate deploy --config prisma.config.ts",
+    "prisma:seed": "tsx prisma/core/seed.ts",
+    "verify:roles": "node scripts/verify-db-roles.mjs"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.10",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.0.10",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.10",
+    "@nestjs/swagger": "^11.0.6",
+    "@nestjs/throttler": "^6.4.0",
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "argon2": "^0.41.1",
+    "dotenv": "^16.4.7",
+    "helmet": "^8.0.0",
+    "pg": "^8.13.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.5",
+    "@types/pg": "^8.11.11",
+    "@types/supertest": "^6.0.2",
+    "prisma": "7.10.0",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.7"
+  }
+}

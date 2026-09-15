@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: activofijo-postgres
+    restart: unless-stopped
+    profiles: ["local-db", "default"]
+    environment:
+      POSTGRES_DB: activofijo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_master_secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d activofijo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - activofijo-net
+
+  core:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: activofijo-core
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATA_SOURCE_MODE: ${DATA_SOURCE_MODE:-fresh}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://app_rw:app_rw_secret@postgres:5432/activofijo?schema=core}
+      DIRECT_DATABASE_URL: ${DIRECT_DATABASE_URL:-postgresql://migrator:migrator_secret@postgres:5432/activofijo?schema=core}
+      LEGACY_DATABASE_URL: ${LEGACY_DATABASE_URL:-postgresql://legacy_ro:legacy_ro_secret@postgres:5432/activofijo?schema=legacy_demo}
+      JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_access_key_min_32_chars!}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      REFRESH_TOKEN_EXPIRES_DAYS: ${REFRESH_TOKEN_EXPIRES_DAYS:-7}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3001}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false
+    networks:
+      - activofijo-net
+
+networks:
+  activofijo-net:
+    name: activofijo-net
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: activofijo_postgres_data

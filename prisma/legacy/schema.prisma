@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../../src/infrastructure/persistence/legacy/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ResponsablesPatrimonio {
+  idResponsable  Int    @id @default(autoincrement()) @map("id_responsable")
+  ci             String @unique
+  nombreCompleto String @map("nombre_completo")
+  departamento   String
+  cargo          String
+
+  bienes BienesPatrimoniales[]
+
+  @@map("responsables_patrimonio")
+}
+
+model BienesPatrimoniales {
+  idBien             Int      @id @default(autoincrement()) @map("id_bien")
+  codigoAntiguo      String   @unique @map("codigo_antiguo")
+  descripcionBien    String   @map("descripcion_bien")
+  categoria          String
+  ubicacionEdificio  String   @map("ubicacion_edificio")
+  ubicacionAula      String   @map("ubicacion_aula")
+  responsableId      Int?     @map("responsable_id")
+  responsableNombre  String   @map("responsable_nombre")
+  valorCompra        Decimal  @default(0.00) @map("valor_compra") @db.Decimal(12, 2)
+  estadoConservacion String   @default("BUENO") @map("estado_conservacion")
+  fechaIncorporacion DateTime @default(now()) @map("fecha_incorporacion") @db.Date
+
+  responsable ResponsablesPatrimonio? @relation(fields: [responsableId], references: [idResponsable], onDelete: SetNull)
+
+  @@map("bienes_patrimoniales")
+}
