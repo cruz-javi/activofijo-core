@@ -22,7 +22,7 @@ async function runBootstrap() {
     await client.connect();
     console.log('[INFO] Connected to PostgreSQL target');
 
-    const sqlPath = path.resolve('docker/postgres/init/01-bootstrap.sql');
+    const sqlPath = path.resolve('scripts/01-bootstrap.sql');
     const sql = fs.readFileSync(sqlPath, 'utf-8');
 
     console.log('[INFO] Executing 01-bootstrap.sql');
