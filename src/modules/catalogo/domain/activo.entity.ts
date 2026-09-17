@@ -38,9 +38,15 @@ export class Activo {
     if (this.props.estado === 'BAJA') {
       throw new Error('Cannot modify an asset that has been decommissioned');
     }
+    // Only apply keys that were actually provided: a plain object spread would
+    // otherwise overwrite existing values with `undefined` for every optional
+    // field the caller omitted (e.g. a partial update that only sends `ubicacion`).
+    const definedFields = Object.fromEntries(
+      Object.entries(fields).filter(([, value]) => value !== undefined),
+    );
     this.props = {
       ...this.props,
-      ...fields,
+      ...definedFields,
       version: this.props.version + 1,
     };
   }

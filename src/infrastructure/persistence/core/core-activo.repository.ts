@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { ActivoRepository } from '../../../modules/catalogo/domain/activo.repository.js';
+import { Injectable, Inject } from '@nestjs/common';
+import { ActivoRepository, ActivoFilters } from '../../../modules/catalogo/domain/activo.repository.js';
 import { Activo } from '../../../modules/catalogo/domain/activo.entity.js';
 import { PrismaCoreService } from './prisma-core.service.js';
 import { EventStoreService } from '../../event-store/event-store.service.js';
@@ -7,8 +7,8 @@ import { EventStoreService } from '../../event-store/event-store.service.js';
 @Injectable()
 export class CoreActivoRepository implements ActivoRepository {
   constructor(
-    private readonly prisma: PrismaCoreService,
-    private readonly eventStore: EventStoreService,
+    @Inject(PrismaCoreService) private readonly prisma: PrismaCoreService,
+    @Inject(EventStoreService) private readonly eventStore: EventStoreService,
   ) {}
 
   async findById(id: string): Promise<Activo | null> {
@@ -43,8 +43,9 @@ export class CoreActivoRepository implements ActivoRepository {
     });
   }
 
-  async findAll(limit = 50, offset = 0): Promise<Activo[]> {
+  async findAll(limit = 50, offset = 0, filters?: ActivoFilters): Promise<Activo[]> {
     const rows = await this.prisma.activoProyeccion.findMany({
+      where: this.buildWhere(filters),
       take: limit,
       skip: offset,
       orderBy: { updatedAt: 'desc' },
@@ -102,7 +103,22 @@ export class CoreActivoRepository implements ActivoRepository {
     });
   }
 
-  async count(): Promise<number> {
-    return this.prisma.activoProyeccion.count();
+  async count(filters?: ActivoFilters): Promise<number> {
+    return this.prisma.activoProyeccion.count({ where: this.buildWhere(filters) });
+  }
+
+  private buildWhere(filters?: ActivoFilters) {
+    if (!filters) return {};
+    const where: Record<string, unknown> = {};
+    if (filters.search) {
+      where.codigo = { contains: filters.search, mode: 'insensitive' };
+    }
+    if (filters.ubicacion) {
+      where.ubicacion = { contains: filters.ubicacion, mode: 'insensitive' };
+    }
+    if (filters.estado) {
+      where.estado = filters.estado;
+    }
+    return where;
   }
 }

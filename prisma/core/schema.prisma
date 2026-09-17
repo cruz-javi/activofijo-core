@@ -39,19 +39,54 @@ model ActivoProyeccion {
   @@map("activo_proyeccion")
 }
 
+enum Rol {
+  ADMIN
+  OFICINA
+  CAMPO
+}
+
 model Usuario {
   id           String   @id @default(uuid()) @db.Uuid
   email        String   @unique
   passwordHash String   @map("password_hash")
   nombre       String
-  rol          String   @default("INSPECTOR")
+  rol          Rol      @default(CAMPO)
   activo       Boolean  @default(true)
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  tokens RefreshToken[]
+  tokens          RefreshToken[]
+  auditoriaAccesos AuditoriaAcceso[]
 
   @@map("usuario")
+}
+
+model AuditoriaAcceso {
+  id        String   @id @default(uuid()) @db.Uuid
+  usuarioId String?  @map("usuario_id") @db.Uuid
+  email     String
+  accion    String
+  exito     Boolean
+  detalle   String?
+  fecha     DateTime @default(now())
+
+  usuario Usuario? @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@map("auditoria_acceso")
+}
+
+model SincronizacionLog {
+  id                  String   @id @default(uuid()) @db.Uuid
+  estado              String
+  registrosImportados Int      @default(0) @map("registros_importados")
+  registrosOmitidos   Int      @default(0) @map("registros_omitidos")
+  registrosConError   Int      @default(0) @map("registros_con_error")
+  detalle             Json?
+  ejecutadoPor        String   @map("ejecutado_por") @db.Uuid
+  fecha               DateTime @default(now())
+
+  @@map("sincronizacion_log")
 }
 
 model RefreshToken {

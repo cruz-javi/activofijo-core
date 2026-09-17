@@ -1,4 +1,27 @@
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: activofijo-db
+    restart: unless-stopped
+    profiles:
+      - local-db
+    environment:
+      POSTGRES_DB: activofijo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - activofijo-db-data:/var/lib/postgresql/data
+      - ./scripts/01-bootstrap.sql:/docker-entrypoint-initdb.d/01-bootstrap.sql:ro
+    networks:
+      - activofijo-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d activofijo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   core:
     build:
       context: .
@@ -25,3 +48,6 @@ networks:
   activofijo-net:
     name: activofijo-net
     driver: bridge
+
+volumes:
+  activofijo-db-data:

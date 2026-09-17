@@ -1,5 +1,6 @@
 import {
   Controller,
+  Inject,
   Post,
   Get,
   Body,
@@ -13,7 +14,7 @@ import { Public } from '../../../infrastructure/security/public.decorator.js';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
   @Public()
   @Post('login')

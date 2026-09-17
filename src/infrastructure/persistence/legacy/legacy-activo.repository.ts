@@ -1,11 +1,11 @@
-import { Injectable, MethodNotAllowedException } from '@nestjs/common';
-import { ActivoRepository } from '../../../modules/catalogo/domain/activo.repository.js';
+import { Injectable, Inject, MethodNotAllowedException } from '@nestjs/common';
+import { ActivoRepository, ActivoFilters } from '../../../modules/catalogo/domain/activo.repository.js';
 import { Activo } from '../../../modules/catalogo/domain/activo.entity.js';
 import { PrismaLegacyService } from './prisma-legacy.service.js';
 
 @Injectable()
 export class LegacyActivoRepository implements ActivoRepository {
-  constructor(private readonly prisma: PrismaLegacyService) {}
+  constructor(@Inject(PrismaLegacyService) private readonly prisma: PrismaLegacyService) {}
 
   async findById(id: string): Promise<Activo | null> {
     const numId = parseInt(id, 10);
@@ -24,8 +24,9 @@ export class LegacyActivoRepository implements ActivoRepository {
     return row ? this.toDomain(row) : null;
   }
 
-  async findAll(limit = 50, offset = 0): Promise<Activo[]> {
+  async findAll(limit = 50, offset = 0, filters?: ActivoFilters): Promise<Activo[]> {
     const rows = await this.prisma.bienesPatrimoniales.findMany({
+      where: this.buildWhere(filters),
       take: limit,
       skip: offset,
       orderBy: { idBien: 'asc' },
@@ -39,8 +40,26 @@ export class LegacyActivoRepository implements ActivoRepository {
     );
   }
 
-  async count(): Promise<number> {
-    return this.prisma.bienesPatrimoniales.count();
+  async count(filters?: ActivoFilters): Promise<number> {
+    return this.prisma.bienesPatrimoniales.count({ where: this.buildWhere(filters) });
+  }
+
+  private buildWhere(filters?: ActivoFilters) {
+    if (!filters) return {};
+    const where: Record<string, unknown> = {};
+    if (filters.search) {
+      where.codigoAntiguo = { contains: filters.search, mode: 'insensitive' };
+    }
+    if (filters.ubicacion) {
+      where.OR = [
+        { ubicacionEdificio: { contains: filters.ubicacion, mode: 'insensitive' } },
+        { ubicacionAula: { contains: filters.ubicacion, mode: 'insensitive' } },
+      ];
+    }
+    if (filters.estado) {
+      where.estadoConservacion = filters.estado;
+    }
+    return where;
   }
 
   private toDomain(row: any): Activo {

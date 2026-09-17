@@ -7,7 +7,11 @@ CREATE SCHEMA IF NOT EXISTS legacy_demo;
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'migrator') THEN
-        CREATE ROLE migrator WITH LOGIN PASSWORD 'migrator_secret';
+        -- CREATEDB is required so Prisma Migrate can create its shadow database
+        -- when running `prisma migrate dev`.
+        CREATE ROLE migrator WITH LOGIN PASSWORD 'migrator_secret' CREATEDB;
+    ELSE
+        ALTER ROLE migrator CREATEDB;
     END IF;
 
     IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'app_rw') THEN
@@ -27,14 +31,20 @@ END $$;
 GRANT USAGE, CREATE ON SCHEMA core TO migrator;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA core TO migrator;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA core TO migrator;
-ALTER DEFAULT PRIVILEGES IN SCHEMA core GRANT ALL ON TABLES TO migrator;
-ALTER DEFAULT PRIVILEGES IN SCHEMA core GRANT ALL ON SEQUENCES TO migrator;
 
 GRANT USAGE ON SCHEMA core TO app_rw;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA core TO app_rw;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA core TO app_rw;
-ALTER DEFAULT PRIVILEGES IN SCHEMA core GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_rw;
-ALTER DEFAULT PRIVILEGES IN SCHEMA core GRANT USAGE, SELECT ON SEQUENCES TO app_rw;
+
+-- IMPORTANT: tables/sequences in `core` are created later by Prisma Migrate,
+-- which connects as `migrator` (not as the role running this bootstrap script).
+-- Default privileges only apply to objects created BY THE GRANTING ROLE unless
+-- scoped with `FOR ROLE`, so these must explicitly target `migrator` as the
+-- future creator, otherwise `app_rw` loses access to every table Prisma creates.
+ALTER DEFAULT PRIVILEGES FOR ROLE migrator IN SCHEMA core GRANT ALL ON TABLES TO migrator;
+ALTER DEFAULT PRIVILEGES FOR ROLE migrator IN SCHEMA core GRANT ALL ON SEQUENCES TO migrator;
+ALTER DEFAULT PRIVILEGES FOR ROLE migrator IN SCHEMA core GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_rw;
+ALTER DEFAULT PRIVILEGES FOR ROLE migrator IN SCHEMA core GRANT USAGE, SELECT ON SEQUENCES TO app_rw;
 
 REVOKE ALL PRIVILEGES ON SCHEMA core FROM legacy_ro;
 
@@ -43,8 +53,6 @@ GRANT SELECT ON ALL TABLES IN SCHEMA legacy_demo TO legacy_ro;
 ALTER DEFAULT PRIVILEGES IN SCHEMA legacy_demo GRANT SELECT ON TABLES TO legacy_ro;
 
 GRANT USAGE, CREATE ON SCHEMA legacy_demo TO migrator;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA legacy_demo TO migrator;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA legacy_demo TO migrator;
 
 CREATE TABLE IF NOT EXISTS legacy_demo.responsables_patrimonio (
     id_responsable SERIAL PRIMARY KEY,
@@ -69,6 +77,15 @@ CREATE TABLE IF NOT EXISTS legacy_demo.bienes_patrimoniales (
 );
 
 GRANT SELECT ON ALL TABLES IN SCHEMA legacy_demo TO legacy_ro;
+
+-- Estas tablas ya existen en este punto del script (a diferencia de `core`,
+-- que Prisma Migrate crea después), así que un GRANT directo sobre "ALL
+-- TABLES" sí les aplica correctamente aquí.
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA legacy_demo TO migrator;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA legacy_demo TO migrator;
+ALTER DEFAULT PRIVILEGES FOR ROLE migrator IN SCHEMA legacy_demo GRANT ALL ON TABLES TO migrator;
+ALTER DEFAULT PRIVILEGES FOR ROLE migrator IN SCHEMA legacy_demo GRANT ALL ON SEQUENCES TO migrator;
+ALTER DEFAULT PRIVILEGES FOR ROLE migrator IN SCHEMA legacy_demo GRANT SELECT ON TABLES TO legacy_ro;
 
 INSERT INTO legacy_demo.responsables_patrimonio (id_responsable, ci, nombre_completo, departamento, cargo)
 VALUES 

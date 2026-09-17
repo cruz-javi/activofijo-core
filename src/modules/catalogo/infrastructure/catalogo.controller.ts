@@ -1,5 +1,6 @@
 import {
   Controller,
+  Inject,
   Get,
   Post,
   Patch,
@@ -7,7 +8,6 @@ import {
   Param,
   Query,
   Body,
-  UsePipes,
 } from '@nestjs/common';
 import { CatalogoService } from '../application/catalogo.service.js';
 import {
@@ -21,14 +21,21 @@ import { Roles } from '../../../infrastructure/security/roles.decorator.js';
 
 @Controller('activos')
 export class CatalogoController {
-  constructor(private readonly catalogoService: CatalogoService) {}
+  constructor(@Inject(CatalogoService) private readonly catalogoService: CatalogoService) {}
 
   @Get()
   async findAll(
     @Query('limit') limit = '50',
     @Query('offset') offset = '0',
+    @Query('search') search?: string,
+    @Query('ubicacion') ubicacion?: string,
+    @Query('estado') estado?: string,
   ) {
-    return this.catalogoService.findAll(parseInt(limit, 10), parseInt(offset, 10));
+    return this.catalogoService.findAll(parseInt(limit, 10), parseInt(offset, 10), {
+      search,
+      ubicacion,
+      estado,
+    });
   }
 
   @Get(':id')
@@ -42,16 +49,17 @@ export class CatalogoController {
   }
 
   @Post()
-  @Roles('ADMIN', 'INSPECTOR')
-  @UsePipes(new ZodValidationPipe(CreateActivoSchema))
-  async create(@Body() body: CreateActivoDto) {
+  @Roles('ADMIN', 'OFICINA')
+  async create(@Body(new ZodValidationPipe(CreateActivoSchema)) body: CreateActivoDto) {
     return this.catalogoService.create(body);
   }
 
   @Patch(':id')
-  @Roles('ADMIN', 'INSPECTOR')
-  @UsePipes(new ZodValidationPipe(UpdateActivoSchema))
-  async update(@Param('id') id: string, @Body() body: UpdateActivoDto) {
+  @Roles('ADMIN', 'OFICINA')
+  async update(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(UpdateActivoSchema)) body: UpdateActivoDto,
+  ) {
     return this.catalogoService.update(id, body);
   }
 

@@ -86,16 +86,7 @@
     "/activos/{id}": {
       "get": {
         "operationId": "CatalogoController_findById",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""
@@ -107,16 +98,7 @@
       },
       "patch": {
         "operationId": "CatalogoController_update",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""
@@ -128,24 +110,7 @@
       },
       "delete": {
         "operationId": "CatalogoController_darDeBaja",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "expectedVersion",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""
@@ -159,16 +124,7 @@
     "/activos/{id}/historial": {
       "get": {
         "operationId": "CatalogoController_getHistory",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""
@@ -176,6 +132,74 @@
         },
         "tags": [
           "Catalogo"
+        ]
+      }
+    },
+    "/usuarios": {
+      "get": {
+        "operationId": "UsuariosController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ]
+      },
+      "post": {
+        "operationId": "UsuariosController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ]
+      }
+    },
+    "/usuarios/{id}": {
+      "patch": {
+        "operationId": "UsuariosController_update",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ]
+      }
+    },
+    "/sincronizacion/ejecutar": {
+      "post": {
+        "operationId": "SincronizacionController_ejecutar",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Sincronizacion"
+        ]
+      }
+    },
+    "/sincronizacion/historial": {
+      "get": {
+        "operationId": "SincronizacionController_historial",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Sincronizacion"
         ]
       }
     },

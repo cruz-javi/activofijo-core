@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, Logger } from '@nestjs/common';
+import { Injectable, Inject, ConflictException, Logger } from '@nestjs/common';
 import { PrismaCoreService } from '../persistence/core/prisma-core.service.js';
 import crypto from 'crypto';
 
@@ -16,7 +16,7 @@ export interface StoredDomainEvent<T = Record<string, unknown>> {
 export class EventStoreService {
   private readonly logger = new Logger(EventStoreService.name);
 
-  constructor(private readonly prisma: PrismaCoreService) {}
+  constructor(@Inject(PrismaCoreService) private readonly prisma: PrismaCoreService) {}
 
   async append(event: StoredDomainEvent): Promise<{ globalPosition: bigint; hash: Buffer }> {
     const lastEvent = await this.prisma.eventStore.findFirst({

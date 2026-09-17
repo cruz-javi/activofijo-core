@@ -6,6 +6,8 @@ import { validateEnv } from './config/env.schema.js';
 import { PersistenceModule } from './infrastructure/persistence/persistence.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CatalogoModule } from './modules/catalogo/catalogo.module.js';
+import { UsuariosModule } from './modules/usuarios/usuarios.module.js';
+import { SincronizacionModule } from './modules/sincronizacion/sincronizacion.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { JwtAuthGuard } from './infrastructure/security/jwt-auth.guard.js';
 import { RolesGuard } from './infrastructure/security/roles.guard.js';
@@ -26,6 +28,8 @@ import { GlobalHttpExceptionFilter } from './infrastructure/http/filters/http-ex
     PersistenceModule,
     AuthModule,
     CatalogoModule,
+    UsuariosModule,
+    SincronizacionModule,
     HealthModule,
   ],
   providers: [

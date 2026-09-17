@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Inject,
   UnauthorizedException,
   ConflictException,
   OnModuleInit,
@@ -16,9 +17,9 @@ export class AuthService implements OnModuleInit {
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
-    private readonly prisma: PrismaCoreService,
-    private readonly jwtService: JwtService,
-    private readonly eventStore: EventStoreService,
+    @Inject(PrismaCoreService) private readonly prisma: PrismaCoreService,
+    @Inject(JwtService) private readonly jwtService: JwtService,
+    @Inject(EventStoreService) private readonly eventStore: EventStoreService,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -48,13 +49,17 @@ export class AuthService implements OnModuleInit {
   async login(email: string, password: string, deviceId = 'web-browser') {
     const user = await this.prisma.usuario.findUnique({ where: { email } });
     if (!user || !user.activo) {
+      await this.recordAccessAttempt(email, false, user ? 'Usuario inactivo' : 'Usuario no encontrado', user?.id);
       throw new UnauthorizedException('Invalid email or password');
     }
 
     const isValid = await argon2.verify(user.passwordHash, password);
     if (!isValid) {
+      await this.recordAccessAttempt(email, false, 'Contraseña incorrecta', user.id);
       throw new UnauthorizedException('Invalid email or password');
     }
+
+    await this.recordAccessAttempt(email, true, undefined, user.id);
 
     const accessToken = await this.signAccessToken(user.id, user.email, user.rol, deviceId);
     const { rawRefreshToken, familyId } = await this.issueRefreshToken(user.id, deviceId);
@@ -199,5 +204,26 @@ export class AuthService implements OnModuleInit {
 
   private hashToken(raw: string): string {
     return crypto.createHash('sha256').update(raw).digest('hex');
+  }
+
+  private async recordAccessAttempt(
+    email: string,
+    exito: boolean,
+    detalle?: string,
+    usuarioId?: string,
+  ): Promise<void> {
+    try {
+      await this.prisma.auditoriaAcceso.create({
+        data: {
+          email,
+          accion: 'LOGIN',
+          exito,
+          detalle,
+          usuarioId,
+        },
+      });
+    } catch (error) {
+      this.logger.warn(`No se pudo registrar la auditoría de acceso: ${(error as Error).message}`);
+    }
   }
 }

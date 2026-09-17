@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Inject, Get } from '@nestjs/common';
 import { Public } from '../../infrastructure/security/public.decorator.js';
 import { PrismaCoreService } from '../../infrastructure/persistence/core/prisma-core.service.js';
 import { PrismaLegacyService } from '../../infrastructure/persistence/legacy/prisma-legacy.service.js';
@@ -6,8 +6,8 @@ import { PrismaLegacyService } from '../../infrastructure/persistence/legacy/pri
 @Controller('health')
 export class HealthController {
   constructor(
-    private readonly prismaCore: PrismaCoreService,
-    private readonly prismaLegacy: PrismaLegacyService,
+    @Inject(PrismaCoreService) private readonly prismaCore: PrismaCoreService,
+    @Inject(PrismaLegacyService) private readonly prismaLegacy: PrismaLegacyService,
   ) {}
 
   @Public()

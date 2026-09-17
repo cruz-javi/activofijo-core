@@ -4,7 +4,7 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { ACTIVO_REPOSITORY, ActivoRepository } from '../domain/activo.repository.js';
+import { ACTIVO_REPOSITORY, ActivoRepository, ActivoFilters } from '../domain/activo.repository.js';
 import { Activo } from '../domain/activo.entity.js';
 import { CreateActivoDto, UpdateActivoDto } from '../infrastructure/catalogo.dto.js';
 import { EventStoreService } from '../../../infrastructure/event-store/event-store.service.js';
@@ -14,12 +14,12 @@ import crypto from 'crypto';
 export class CatalogoService {
   constructor(
     @Inject(ACTIVO_REPOSITORY) private readonly repository: ActivoRepository,
-    private readonly eventStore: EventStoreService,
+    @Inject(EventStoreService) private readonly eventStore: EventStoreService,
   ) {}
 
-  async findAll(limit = 50, offset = 0) {
-    const items = await this.repository.findAll(limit, offset);
-    const total = await this.repository.count();
+  async findAll(limit = 50, offset = 0, filters?: ActivoFilters) {
+    const items = await this.repository.findAll(limit, offset, filters);
+    const total = await this.repository.count(filters);
     return {
       data: items.map((i) => i.toJSON()),
       total,

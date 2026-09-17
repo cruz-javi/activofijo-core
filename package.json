@@ -36,6 +36,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@nestjs/testing": "11",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.5",
     "@types/pg": "^8.11.11",
@@ -45,5 +46,14 @@
     "tsx": "^4.19.3",
     "typescript": "^5.7.3",
     "vitest": "^3.0.7"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "@scarf/scarf",
+      "argon2",
+      "esbuild",
+      "prisma"
+    ]
   }
 }
