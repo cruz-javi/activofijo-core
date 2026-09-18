@@ -135,6 +135,74 @@
         ]
       }
     },
+    "/activos/{id}/depreciacion": {
+      "get": {
+        "operationId": "CatalogoController_getDepreciacion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Catalogo"
+        ]
+      }
+    },
+    "/activos/{id}/reconstruccion": {
+      "get": {
+        "operationId": "CatalogoController_reconstruir",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Catalogo"
+        ]
+      }
+    },
+    "/reglas/configuracion": {
+      "get": {
+        "operationId": "ReglasController_getActiva",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reglas"
+        ]
+      },
+      "post": {
+        "operationId": "ReglasController_crear",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reglas"
+        ]
+      }
+    },
+    "/reglas/configuracion/historial": {
+      "get": {
+        "operationId": "ReglasController_historial",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reglas"
+        ]
+      }
+    },
     "/usuarios": {
       "get": {
         "operationId": "UsuariosController_findAll",

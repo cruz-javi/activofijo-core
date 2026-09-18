@@ -8,6 +8,7 @@ import { ACTIVO_REPOSITORY, ActivoRepository, ActivoFilters } from '../domain/ac
 import { Activo } from '../domain/activo.entity.js';
 import { CreateActivoDto, UpdateActivoDto } from '../infrastructure/catalogo.dto.js';
 import { EventStoreService } from '../../../infrastructure/event-store/event-store.service.js';
+import { ReglasService } from '../../reglas/application/reglas.service.js';
 import crypto from 'crypto';
 
 @Injectable()
@@ -15,6 +16,7 @@ export class CatalogoService {
   constructor(
     @Inject(ACTIVO_REPOSITORY) private readonly repository: ActivoRepository,
     @Inject(EventStoreService) private readonly eventStore: EventStoreService,
+    @Inject(ReglasService) private readonly reglasService: ReglasService,
   ) {}
 
   async findAll(limit = 50, offset = 0, filters?: ActivoFilters) {
@@ -94,6 +96,51 @@ export class CatalogoService {
   }
 
   async getHistory(id: string) {
-    return this.eventStore.readStream(id);
+    const eventos = await this.eventStore.readStream(id);
+    // globalPosition es BigInt y hash/prevHash son Buffer: ninguno de los
+    // dos serializa de forma legible con JSON.stringify por defecto. Esta
+    // conversión es solo para la respuesta HTTP; el event store internamente
+    // sigue trabajando con los tipos crudos (p. ej. para verificar hashes).
+    return eventos.map((e) => ({
+      ...e,
+      globalPosition: e.globalPosition.toString(),
+      hash: Buffer.from(e.hash).toString('hex'),
+      prevHash: e.prevHash ? Buffer.from(e.prevHash).toString('hex') : null,
+    }));
+  }
+
+  async getDepreciacion(id: string, fecha?: Date) {
+    const activo = await this.repository.findById(id);
+    if (!activo) throw new NotFoundException(`Activo with id ${id} not found`);
+
+    return this.reglasService.evaluarDepreciacion(
+      { grupoContable: activo.grupoContable, valor: activo.valor, fechaAlta: activo.fechaAlta },
+      fecha,
+    );
+  }
+
+  async reconstruirEstado(id: string, options: { version?: number; fecha?: Date }) {
+    const evento = await this.eventStore.reconstructAt(id, {
+      version: options.version,
+      asOfDate: options.fecha,
+    });
+
+    if (!evento) {
+      throw new NotFoundException(
+        'No existe un estado registrado para este activo en la versión o fecha indicada',
+      );
+    }
+
+    const integridadVerificada = await this.eventStore.verifyStreamIntegrity(id);
+
+    return {
+      ...(evento.payload as Record<string, unknown>),
+      _meta: {
+        eventType: evento.eventType,
+        version: evento.version,
+        recordedAt: evento.recordedAt,
+        integridadVerificada,
+      },
+    };
   }
 }

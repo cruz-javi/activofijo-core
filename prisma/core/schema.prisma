@@ -104,6 +104,19 @@ model RefreshToken {
   @@map("refresh_token")
 }
 
+model ConfiguracionReglas {
+  id          String   @id @default(uuid()) @db.Uuid
+  version     Int
+  reglas      Json
+  resolucion  String
+  descripcion String?
+  activa      Boolean  @default(true)
+  creadoPor   String   @map("creado_por") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("configuracion_reglas")
+}
+
 model ProjectionCheckpoint {
   projectionName String   @id @map("projection_name")
   lastPosition   BigInt   @map("last_position")

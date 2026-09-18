@@ -164,3 +164,93 @@ async function findId(app: INestApplication, token: string, codigo: string): Pro
   if (!item) throw new Error(`No se encontró el activo de prueba ${codigo}`);
   return item.id;
 }
+
+// HU05: reconstrucción de estados históricos (time-travel) para auditorías.
+describe('HU05 Reconstrucción de estados históricos', () => {
+  let app: INestApplication;
+  let adminToken: string;
+  const suffix = uniqueSuffix();
+  const codigo = `UAGRM-E2E-HU05-${suffix}`;
+  let activoId: string;
+  let fechaCreacion: Date;
+  let fechaEdicion: Date;
+
+  beforeAll(async () => {
+    app = await createTestApp();
+    adminToken = await loginAsAdmin(app);
+
+    const creado = await request(app.getHttpServer())
+      .post('/activos')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        codigo,
+        descripcion: 'Estado original del activo',
+        grupoContable: 'Mobiliario',
+        ubicacion: 'Ubicación original',
+        estado: 'BUENO',
+        valor: 1000,
+      });
+    activoId = creado.body.id;
+    fechaCreacion = new Date();
+
+    // Pausa breve para que la fecha de edición sea estrictamente posterior
+    // a la de creación (recordedAt tiene precisión de milisegundos).
+    await new Promise((r) => setTimeout(r, 50));
+
+    await request(app.getHttpServer())
+      .patch(`/activos/${activoId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ ubicacion: 'Ubicación editada', expectedVersion: 1 });
+    fechaEdicion = new Date();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  it('reconstruir por versión 1 devuelve el estado original, no el actual', async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/activos/${activoId}/reconstruccion?version=1`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.ubicacion).toBe('Ubicación original');
+    expect(res.body._meta.version).toBe(1);
+    expect(res.body._meta.integridadVerificada).toBe(true);
+  });
+
+  it('reconstruir a una fecha anterior a la edición devuelve el estado previo', async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/activos/${activoId}/reconstruccion?fecha=${fechaCreacion.toISOString()}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.ubicacion).toBe('Ubicación original');
+  });
+
+  it('reconstruir a una fecha posterior a la edición devuelve el estado actual', async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/activos/${activoId}/reconstruccion?fecha=${fechaEdicion.toISOString()}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.ubicacion).toBe('Ubicación editada');
+    expect(res.body._meta.version).toBe(2);
+  });
+
+  it('reconstruir sin indicar versión ni fecha es rechazado', async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/activos/${activoId}/reconstruccion`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(400);
+  });
+
+  it('reconstruir a una fecha anterior a la creación del activo no encuentra estado', async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/activos/${activoId}/reconstruccion?fecha=2000-01-01T00:00:00.000Z`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(404);
+  });
+});

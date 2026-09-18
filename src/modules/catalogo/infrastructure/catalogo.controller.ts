@@ -8,6 +8,7 @@ import {
   Param,
   Query,
   Body,
+  BadRequestException,
 } from '@nestjs/common';
 import { CatalogoService } from '../application/catalogo.service.js';
 import {
@@ -46,6 +47,36 @@ export class CatalogoController {
   @Get(':id/historial')
   async getHistory(@Param('id') id: string) {
     return this.catalogoService.getHistory(id);
+  }
+
+  @Get(':id/depreciacion')
+  async getDepreciacion(@Param('id') id: string, @Query('fecha') fecha?: string) {
+    const fechaCalculo = this.parseFecha(fecha);
+    return this.catalogoService.getDepreciacion(id, fechaCalculo);
+  }
+
+  @Get(':id/reconstruccion')
+  async reconstruir(
+    @Param('id') id: string,
+    @Query('version') version?: string,
+    @Query('fecha') fecha?: string,
+  ) {
+    if (!version && !fecha) {
+      throw new BadRequestException('Debe indicar el parámetro "version" o "fecha" para reconstruir el estado');
+    }
+    return this.catalogoService.reconstruirEstado(id, {
+      version: version ? parseInt(version, 10) : undefined,
+      fecha: this.parseFecha(fecha),
+    });
+  }
+
+  private parseFecha(fecha?: string): Date | undefined {
+    if (!fecha) return undefined;
+    const parsed = new Date(fecha);
+    if (Number.isNaN(parsed.getTime())) {
+      throw new BadRequestException(`Fecha inválida: ${fecha}`);
+    }
+    return parsed;
   }
 
   @Post()

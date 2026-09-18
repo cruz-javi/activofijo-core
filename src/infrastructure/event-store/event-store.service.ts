@@ -69,6 +69,32 @@ export class EventStoreService {
     });
   }
 
+  /**
+   * Reconstruye el estado de un stream en un punto del tiempo. Como cada
+   * evento guarda el snapshot completo (no un delta), "reconstruir" es
+   * simplemente ubicar el evento vigente en ese momento y devolver su
+   * payload — no hace falta reproducir la cadena completa.
+   */
+  async reconstructAt(
+    streamId: string,
+    options: { version?: number; asOfDate?: Date },
+  ): Promise<any | null> {
+    if (options.version !== undefined) {
+      return this.prisma.eventStore.findUnique({
+        where: { stream_id_version_idx: { streamId, version: options.version } },
+      });
+    }
+
+    if (options.asOfDate) {
+      return this.prisma.eventStore.findFirst({
+        where: { streamId, recordedAt: { lte: options.asOfDate } },
+        orderBy: { version: 'desc' },
+      });
+    }
+
+    throw new Error('Debe indicar version o asOfDate para reconstruir el estado');
+  }
+
   async verifyStreamIntegrity(streamId: string): Promise<boolean> {
     const events = await this.readStream(streamId);
     let prevHash: Buffer | null = null;
@@ -98,6 +124,13 @@ export class EventStoreService {
   private canonicalJson(obj: unknown): string {
     if (obj === null || typeof obj !== 'object') {
       return JSON.stringify(obj);
+    }
+    // Un Date recién construido (payload en memoria, al hacer append) y un
+    // Date ya serializado a ISO string (payload leído de vuelta desde el
+    // JSONB de Postgres) deben producir el mismo hash — si no, la cadena de
+    // integridad se rompe para todo evento que incluya una fecha.
+    if (obj instanceof Date) {
+      return JSON.stringify(obj.toISOString());
     }
     if (Array.isArray(obj)) {
       return '[' + obj.map((item) => this.canonicalJson(item)).join(',') + ']';
