@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../../src/infrastructure/persistence/core/generated"
+  output   = "../../src/shared/infrastructure/database/generated/core"
 }
 
 datasource db {
@@ -39,41 +39,147 @@ model ActivoProyeccion {
   @@map("activo_proyeccion")
 }
 
-enum Rol {
-  ADMIN
-  OFICINA
-  CAMPO
+enum EstadoUsuario {
+  ACTIVO
+  BLOQUEADO_INTENTOS
+  INACTIVO
+  SUSPENDIDO_AUDITORIA
 }
 
-model Usuario {
-  id           String   @id @default(uuid()) @db.Uuid
-  email        String   @unique
-  passwordHash String   @map("password_hash")
-  nombre       String
-  rol          Rol      @default(CAMPO)
-  activo       Boolean  @default(true)
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  tokens          RefreshToken[]
-  auditoriaAccesos AuditoriaAcceso[]
-
-  @@map("usuario")
+enum ResultadoAuditoria {
+  EXITOSO
+  DENEGADO_SIN_PERMISO
+  BLOQUEADO_SEGURIDAD
+  ERROR_TRANSACCIONAL
 }
 
-model AuditoriaAcceso {
-  id        String   @id @default(uuid()) @db.Uuid
-  usuarioId String?  @map("usuario_id") @db.Uuid
-  email     String
-  accion    String
-  exito     Boolean
-  detalle   String?
-  fecha     DateTime @default(now())
+model AuthUsuario {
+  id                   String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                String        @unique @db.VarChar(150)
+  passwordHash         String        @map("password_hash")
+  nombreCompleto       String        @map("nombre_completo") @db.VarChar(150)
+  cargoInstitucional   String?       @map("cargo_institucional") @db.VarChar(100)
+  estado               EstadoUsuario @default(ACTIVO)
+  intentosFallidos     Int           @default(0) @map("intentos_fallidos")
+  bloqueadoHasta       DateTime?     @map("bloqueado_hasta") @db.Timestamptz
+  codigoEmpleadoLegado Int?          @map("codigo_empleado_legado")
+  twoFactorHabilitado  Boolean       @default(false) @map("two_factor_habilitado")
+  twoFactorSecret      String?       @map("two_factor_secret")
+  activo               Boolean       @default(true)
+  creadoEn             DateTime      @default(now()) @map("creado_en") @db.Timestamptz
+  actualizadoEn        DateTime      @default(now()) @updatedAt @map("actualizado_en") @db.Timestamptz
+  eliminadoEn          DateTime?     @map("eliminado_en") @db.Timestamptz
+  eliminadoPor         String?       @map("eliminado_por") @db.Uuid
 
-  usuario Usuario? @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+  roles      AuthUsuarioRol[]
+  tokens     AuthRefreshToken[]
+  auditorias AuthAuditoriaForense[]
 
-  @@index([email])
-  @@map("auditoria_acceso")
+  @@map("auth_usuario")
+}
+
+model AuthRol {
+  id            String    @id @db.VarChar(50)
+  nombre        String    @db.VarChar(100)
+  descripcion   String?   @db.VarChar(255)
+  esSistema     Boolean   @default(false) @map("es_sistema")
+  activo        Boolean   @default(true)
+  creadoEn      DateTime  @default(now()) @map("creado_en") @db.Timestamptz
+  actualizadoEn DateTime  @default(now()) @updatedAt @map("actualizado_en") @db.Timestamptz
+  eliminadoEn   DateTime? @map("eliminado_en") @db.Timestamptz
+  eliminadoPor  String?   @map("eliminado_por") @db.Uuid
+
+  permisos AuthRolPermiso[]
+  usuarios AuthUsuarioRol[]
+
+  @@map("auth_rol")
+}
+
+model AuthPermiso {
+  id             String   @id @db.VarChar(80)
+  modulo         String   @db.VarChar(50)
+  descripcion    String   @db.VarChar(255)
+  requiereReauth Boolean  @default(false) @map("requiere_reauth")
+  activo         Boolean  @default(true)
+  creadoEn       DateTime @default(now()) @map("creado_en") @db.Timestamptz
+
+  roles AuthRolPermiso[]
+
+  @@map("auth_permiso")
+}
+
+model AuthRolPermiso {
+  rolId      String   @map("rol_id") @db.VarChar(50)
+  permisoId  String   @map("permiso_id") @db.VarChar(80)
+  asignadoEn DateTime @default(now()) @map("asignado_en") @db.Timestamptz
+
+  rol     AuthRol     @relation(fields: [rolId], references: [id], onDelete: Restrict)
+  permiso AuthPermiso @relation(fields: [permisoId], references: [id], onDelete: Restrict)
+
+  @@id([rolId, permisoId])
+  @@map("auth_rol_permiso")
+}
+
+model AuthUsuarioRol {
+  usuarioId   String   @map("usuario_id") @db.Uuid
+  rolId       String   @map("rol_id") @db.VarChar(50)
+  asignadoPor String?  @map("asignado_por") @db.Uuid
+  asignadoEn  DateTime @default(now()) @map("asignado_en") @db.Timestamptz
+
+  usuario AuthUsuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+  rol     AuthRol     @relation(fields: [rolId], references: [id], onDelete: Restrict)
+
+  @@id([usuarioId, rolId])
+  @@map("auth_usuario_rol")
+}
+
+model AuthRefreshToken {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuarioId      String   @map("usuario_id") @db.Uuid
+  tokenHash      String   @unique @map("token_hash") @db.VarChar(64)
+  familyId       String   @map("family_id") @db.Uuid
+  revocado       Boolean  @default(false)
+  reemplazadoPor String?  @map("reemplazado_por") @db.VarChar(64)
+  ipCreacion     String?  @map("ip_creacion") @db.VarChar(45)
+  userAgent      String?  @map("user_agent")
+  expiraEn       DateTime @map("expira_en") @db.Timestamptz
+  creadoEn       DateTime @default(now()) @map("creado_en") @db.Timestamptz
+
+  usuario AuthUsuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+
+  @@index([usuarioId])
+  @@index([familyId])
+  @@map("auth_refresh_token")
+}
+
+model AuthAuditoriaForense {
+  id            BigInt             @id @default(autoincrement())
+  usuarioId     String?            @map("usuario_id") @db.Uuid
+  emailUsuario  String?            @map("email_usuario") @db.VarChar(150)
+  accion        String             @db.VarChar(100)
+  modulo        String             @db.VarChar(50)
+  entidadId     String?            @map("entidad_id") @db.VarChar(100)
+  resultado     ResultadoAuditoria
+  ipOrigen      String             @map("ip_origen") @db.VarChar(45)
+  userAgent     String?            @map("user_agent")
+  motivoRechazo String?            @map("motivo_rechazo")
+  payloadHash   String?            @map("payload_hash") @db.VarChar(64)
+  creadoEn      DateTime           @default(now()) @map("creado_en") @db.Timestamptz
+
+  usuario AuthUsuario? @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+
+  @@index([usuarioId])
+  @@index([accion])
+  @@index([creadoEn])
+  @@map("auth_auditoria_forense")
+}
+
+model ProjectionCheckpoint {
+  projectionName String   @id @map("projection_name")
+  lastPosition   BigInt   @map("last_position")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("projection_checkpoint")
 }
 
 model SincronizacionLog {
@@ -89,25 +195,82 @@ model SincronizacionLog {
   @@map("sincronizacion_log")
 }
 
-model RefreshToken {
-  id        String   @id @default(uuid()) @db.Uuid
-  tokenHash String   @unique @map("token_hash")
-  familyId  String   @map("family_id") @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  deviceId  String   @map("device_id")
-  revoked   Boolean  @default(false)
-  expiresAt DateTime @map("expires_at")
-  createdAt DateTime @default(now()) @map("created_at")
+model Tramite {
+  id           String    @id @default(uuid()) @db.Uuid
+  tipo         String    @db.VarChar(50)
+  estado       String    @db.VarChar(50)
+  iniciadoPor  String    @map("iniciado_por") @db.Uuid
+  fechaInicio  DateTime  @default(now()) @map("fecha_inicio") @db.Timestamptz
+  fechaFin     DateTime? @map("fecha_fin") @db.Timestamptz
+  referenciaId String?   @map("referencia_id") @db.VarChar(100)
 
-  usuario Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pasos TramitePaso[]
 
-  @@map("refresh_token")
+  @@map("tramite")
 }
 
-model ProjectionCheckpoint {
-  projectionName String   @id @map("projection_name")
-  lastPosition   BigInt   @map("last_position")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+model TramitePaso {
+  id              String    @id @default(uuid()) @db.Uuid
+  tramiteId       String    @map("tramite_id") @db.Uuid
+  paso            String    @db.VarChar(50)
+  estado          String    @db.VarChar(50)
+  aprobadoPor     String?   @map("aprobado_por") @db.Uuid
+  fechaAprobacion DateTime? @map("fecha_aprobacion") @db.Timestamptz
+  comentarios     String?
 
-  @@map("projection_checkpoint")
+  tramite Tramite @relation(fields: [tramiteId], references: [id], onDelete: Cascade)
+
+  @@map("tramite_paso")
+}
+
+model NormativaRegla {
+  id          String   @id @default(uuid()) @db.Uuid
+  codigo      String   @unique @db.VarChar(50)
+  descripcion String
+  tipoRegla   String   @map("tipo_regla") @db.VarChar(50)
+  parametros  Json
+  activa      Boolean  @default(true)
+  creadoEn    DateTime @default(now()) @map("creado_en") @db.Timestamptz
+
+  @@map("normativa_regla")
+}
+
+model InspInspeccion {
+  id              String   @id @default(uuid()) @db.Uuid
+  oficinaId       Int      @map("oficina_id")
+  inspectorId     String   @map("inspector_id") @db.Uuid
+  fechaProgramada DateTime @map("fecha_programada") @db.Date
+  estado          String   @default("PROGRAMADA") @db.VarChar(50)
+  creadoEn        DateTime @default(now()) @map("creado_en") @db.Timestamptz
+
+  hallazgos InspHallazgo[]
+
+  @@map("insp_inspeccion")
+}
+
+model InspHallazgo {
+  id            String  @id @default(uuid()) @db.Uuid
+  inspeccionId  String  @map("inspeccion_id") @db.Uuid
+  nroActivo     Int?    @map("nro_activo")
+  codActivo     String? @map("cod_activo") @db.VarChar(50)
+  estadoFisico  String  @map("estado_fisico") @db.VarChar(50)
+  observacion   String?
+  fotografiaUrl String? @map("fotografia_url")
+  conciliado    Boolean @default(false)
+
+  inspeccion InspInspeccion @relation(fields: [inspeccionId], references: [id], onDelete: Cascade)
+
+  @@map("insp_hallazgo")
+}
+
+model EtiquetaGenerada {
+  id          String   @id @default(uuid()) @db.Uuid
+  nroActivo   Int      @map("nro_activo")
+  codActivo   String   @map("cod_activo") @db.VarChar(50)
+  formato     String   @db.VarChar(20)
+  generadoPor String   @map("generado_por") @db.Uuid
+  generadoEn  DateTime @default(now()) @map("generado_en") @db.Timestamptz
+  impreso     Boolean  @default(false)
+
+  @@map("etiqueta_generada")
 }

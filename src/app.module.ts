@@ -3,15 +3,20 @@ import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD, APP_FILTER } from '@nestjs/core';
 import { validateEnv } from './config/env.schema.js';
-import { PersistenceModule } from './infrastructure/persistence/persistence.module.js';
-import { AuthModule } from './modules/auth/auth.module.js';
-import { CatalogoModule } from './modules/catalogo/catalogo.module.js';
-import { UsuariosModule } from './modules/usuarios/usuarios.module.js';
-import { SincronizacionModule } from './modules/sincronizacion/sincronizacion.module.js';
-import { HealthModule } from './modules/health/health.module.js';
-import { JwtAuthGuard } from './infrastructure/security/jwt-auth.guard.js';
-import { RolesGuard } from './infrastructure/security/roles.guard.js';
-import { GlobalHttpExceptionFilter } from './infrastructure/http/filters/http-exception.filter.js';
+import { DatabaseModule } from './shared/infrastructure/database/database.module.js';
+import { IdentidadAccesoModule } from './contexts/identidad-acceso/identidad-acceso.module.js';
+import { TrazabilidadModule } from './contexts/trazabilidad/trazabilidad.module.js';
+import { PatrimonioModule } from './contexts/patrimonio/patrimonio.module.js';
+import { SincronizacionModule } from './contexts/sincronizacion/sincronizacion.module.js';
+import { TramitesModule } from './contexts/tramites/tramites.module.js';
+import { NormativaModule } from './contexts/normativa/normativa.module.js';
+import { InspeccionCampoModule } from './contexts/inspeccion-campo/inspeccion-campo.module.js';
+import { EtiquetadoImpresionModule } from './contexts/etiquetado-impresion/etiquetado-impresion.module.js';
+import { AsistenciaIaModule } from './contexts/asistencia-ia/asistencia-ia.module.js';
+import { HealthModule } from './shared/infrastructure/health/health.module.js';
+import { JwtAuthGuard } from './contexts/identidad-acceso/infrastructure/security/jwt-auth.guard.js';
+import { RolesGuard } from './contexts/identidad-acceso/infrastructure/security/roles.guard.js';
+import { GlobalHttpExceptionFilter } from './shared/infrastructure/http/filters/http-exception.filter.js';
 
 @Module({
   imports: [
@@ -25,11 +30,16 @@ import { GlobalHttpExceptionFilter } from './infrastructure/http/filters/http-ex
         limit: 100,
       },
     ]),
-    PersistenceModule,
-    AuthModule,
-    CatalogoModule,
-    UsuariosModule,
+    DatabaseModule,
+    TrazabilidadModule,
+    IdentidadAccesoModule,
+    PatrimonioModule,
     SincronizacionModule,
+    TramitesModule,
+    NormativaModule,
+    InspeccionCampoModule,
+    EtiquetadoImpresionModule,
+    AsistenciaIaModule,
     HealthModule,
   ],
   providers: [

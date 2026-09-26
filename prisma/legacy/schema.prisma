@@ -1,38 +1,405 @@
 generator client {
   provider = "prisma-client"
-  output   = "../../src/infrastructure/persistence/legacy/generated"
+  output   = "../../src/shared/infrastructure/database/generated/legacy"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model ResponsablesPatrimonio {
-  idResponsable  Int    @id @default(autoincrement()) @map("id_responsable")
-  ci             String @unique
-  nombreCompleto String @map("nombre_completo")
-  departamento   String
-  cargo          String
+model InGestion {
+  codGest  Int       @id @map("cod_gest")
+  gestIni  DateTime? @map("gest_ini") @db.Date
+  gestFin  DateTime? @map("gest_fin") @db.Date
+  vigente  Boolean   @default(true)
+  activo   Boolean   @default(true)
+  creadoEn DateTime  @default(now()) @map("creado_en") @db.Timestamptz
 
-  bienes BienesPatrimoniales[]
+  activos InActivo[]
 
-  @@map("responsables_patrimonio")
+  @@map("in_gestion")
 }
 
-model BienesPatrimoniales {
-  idBien             Int      @id @default(autoincrement()) @map("id_bien")
-  codigoAntiguo      String   @unique @map("codigo_antiguo")
-  descripcionBien    String   @map("descripcion_bien")
-  categoria          String
-  ubicacionEdificio  String   @map("ubicacion_edificio")
-  ubicacionAula      String   @map("ubicacion_aula")
-  responsableId      Int?     @map("responsable_id")
-  responsableNombre  String   @map("responsable_nombre")
-  valorCompra        Decimal  @default(0.00) @map("valor_compra") @db.Decimal(12, 2)
-  estadoConservacion String   @default("BUENO") @map("estado_conservacion")
-  fechaIncorporacion DateTime @default(now()) @map("fecha_incorporacion") @db.Date
+model InOficina {
+  codOfic  Int     @id @map("cod_ofic")
+  codDpto  Int?    @map("cod_dpto")
+  desDpto  String  @map("des_dpto") @db.VarChar(150)
+  nivel    Int?
+  codPadre Int?    @map("cod_padre")
+  tipoAct  String? @map("tipo_act") @db.VarChar(50)
+  activo   Boolean @default(true)
 
-  responsable ResponsablesPatrimonio? @relation(fields: [responsableId], references: [idResponsable], onDelete: SetNull)
+  padre                   InOficina?      @relation("OficinaJerarquia", fields: [codPadre], references: [codOfic], onDelete: Restrict)
+  hijas                   InOficina[]     @relation("OficinaJerarquia")
+  empleados               InEmpleado[]
+  asignaciones            InAsignado[]
+  transferenciasRemitente InTransferido[] @relation("OficinaRemitente")
+  transferenciasDestino   InTransferido[] @relation("OficinaDestino")
 
-  @@map("bienes_patrimoniales")
+  @@map("in_oficina")
+}
+
+model InGrupo {
+  codGrupo Int     @id @map("cod_grupo")
+  desGrupo String  @map("des_grupo") @db.VarChar(150)
+  nivel    Int?
+  codPadre Int?    @map("cod_padre")
+  codTipo  Int?    @map("cod_tipo")
+  activo   Boolean @default(true)
+
+  padre    InGrupo?   @relation("GrupoJerarquia", fields: [codPadre], references: [codGrupo], onDelete: Restrict)
+  hijos    InGrupo[]  @relation("GrupoJerarquia")
+  detalles InDetGrp[]
+  activos  InActivo[]
+
+  @@map("in_grupo")
+}
+
+model InDetGrp {
+  id           Int     @id @default(autoincrement())
+  codGrupo     Int     @map("cod_grupo")
+  vidaUtilAno  Int     @map("vida_util_ano")
+  vidaUtilMes  Int     @map("vida_util_mes")
+  cuentaCont   String? @map("cuenta_cont") @db.VarChar(50)
+  cuentaPresup String? @map("cuenta_presup") @db.VarChar(50)
+  activo       Boolean @default(true)
+
+  grupo InGrupo @relation(fields: [codGrupo], references: [codGrupo], onDelete: Restrict)
+
+  @@map("in_det_grp")
+}
+
+model InMarca {
+  codMarca Int     @id @map("cod_marca")
+  desMarca String  @map("des_marca") @db.VarChar(100)
+  activo   Boolean @default(true)
+
+  modelos InModelo[]
+  activos InActivo[]
+
+  @@map("in_marca")
+}
+
+model InModelo {
+  codModelo Int     @id @map("cod_modelo")
+  codMarca  Int?    @map("cod_marca")
+  desModelo String  @map("des_modelo") @db.VarChar(100)
+  activo    Boolean @default(true)
+
+  marca   InMarca?   @relation(fields: [codMarca], references: [codMarca], onDelete: Restrict)
+  activos InActivo[]
+
+  @@map("in_modelo")
+}
+
+model InUnidad {
+  codUnidad Int     @id @map("cod_unidad")
+  desUnidad String  @map("des_unidad") @db.VarChar(50)
+  abrev     String? @db.VarChar(15)
+  activo    Boolean @default(true)
+
+  activos InActivo[]
+
+  @@map("in_unidad")
+}
+
+model InCondicion {
+  codCond Int     @id @map("cod_cond")
+  desCond String  @map("des_cond") @db.VarChar(50)
+  activo  Boolean @default(true)
+
+  activos InActivo[]
+
+  @@map("in_condicion")
+}
+
+model InEstado {
+  codEstado Int     @id @map("cod_estado")
+  desEstado String  @map("des_estado") @db.VarChar(50)
+  activo    Boolean @default(true)
+
+  activos InActivo[]
+
+  @@map("in_estado")
+}
+
+model InProveedor {
+  codProve    Int     @id @map("cod_prove")
+  razonSocial String  @map("razon_social") @db.VarChar(150)
+  nit         String? @db.VarChar(30)
+  contacto    String? @db.VarChar(100)
+  telefono    String? @db.VarChar(50)
+  direccion   String?
+  activo      Boolean @default(true)
+
+  activos  InActivo[]
+  ingresos InIngreso[]
+
+  @@map("in_proveedor")
+}
+
+model InEmpleado {
+  codEmp    Int     @id @map("cod_emp")
+  ci        String  @db.VarChar(30)
+  nombres   String  @db.VarChar(100)
+  apellidos String  @db.VarChar(100)
+  cargo     String? @db.VarChar(100)
+  codOfic   Int?    @map("cod_ofic")
+  estado    String  @default("ACTIVO") @db.VarChar(20)
+  activo    Boolean @default(true)
+
+  oficina          InOficina?   @relation(fields: [codOfic], references: [codOfic], onDelete: Restrict)
+  asignaciones     InAsignado[]
+  bajasAutorizadas InBajaAct[]
+  revaluos         InRevaluo[]
+
+  @@map("in_empleado")
+}
+
+model InActivo {
+  nroActivo   Int       @id @map("nro_activo")
+  codActivo   String    @unique @map("cod_activo") @db.VarChar(50)
+  descripcion String
+  monto       Decimal   @default(0.00) @db.Decimal(14, 2)
+  fecAdqui    DateTime? @map("fec_adqui") @db.Date
+  nroSerie    String?   @map("nro_serie") @db.VarChar(100)
+  codGrupo    Int?      @map("cod_grupo")
+  codMarca    Int?      @map("cod_marca")
+  codModelo   Int?      @map("cod_modelo")
+  codUnidad   Int?      @map("cod_unidad")
+  codCond     Int?      @map("cod_cond")
+  codEstado   Int?      @map("cod_estado")
+  codGest     Int?      @map("cod_gest")
+  codProve    Int?      @map("cod_prove")
+
+  activo      Boolean   @default(true)
+  eliminadoEn DateTime? @map("eliminado_en") @db.Timestamptz
+  creadoEn    DateTime  @default(now()) @map("creado_en") @db.Timestamptz
+
+  grupo     InGrupo?     @relation(fields: [codGrupo], references: [codGrupo], onDelete: Restrict)
+  marca     InMarca?     @relation(fields: [codMarca], references: [codMarca], onDelete: Restrict)
+  modelo    InModelo?    @relation(fields: [codModelo], references: [codModelo], onDelete: Restrict)
+  unidad    InUnidad?    @relation(fields: [codUnidad], references: [codUnidad], onDelete: Restrict)
+  condicion InCondicion? @relation(fields: [codCond], references: [codCond], onDelete: Restrict)
+  estado    InEstado?    @relation(fields: [codEstado], references: [codEstado], onDelete: Restrict)
+  gestion   InGestion?   @relation(fields: [codGest], references: [codGest], onDelete: Restrict)
+  proveedor InProveedor? @relation(fields: [codProve], references: [codProve], onDelete: Restrict)
+
+  vehiculo              InVehic?
+  detallesAsignacion    InDetAsig[]
+  detallesTransferencia InDetTranf[]
+  baja                  InBajaAct?
+  detallesRevaluo       InDetReval[]
+  depreciaciones        InDepAcumulada[]
+  detallesIngreso       InDetIngreso[]
+  eventos               InEventStore[]
+
+  @@map("in_activo")
+}
+
+model InVehic {
+  nroActivo       Int     @id @map("nro_activo")
+  placa           String  @unique @db.VarChar(20)
+  chasis          String? @db.VarChar(100)
+  motor           String? @db.VarChar(100)
+  ruat            String? @db.VarChar(50)
+  poliza          String? @db.VarChar(100)
+  minuta          String? @db.VarChar(100)
+  actaCoVe        String? @map("acta_co_ve") @db.VarChar(100)
+  color           String? @db.VarChar(50)
+  anioFabricacion Int?    @map("anio_fabricacion")
+  cilindrada      String? @db.VarChar(30)
+  soatVigente     Boolean @default(true) @map("soat_vigente")
+  activo          Boolean @default(true)
+
+  activoRef InActivo @relation(fields: [nroActivo], references: [nroActivo], onDelete: Restrict)
+
+  @@map("in_vehic")
+}
+
+model InAsignado {
+  codAsig           Int       @id @map("cod_asig")
+  codOfic           Int       @map("cod_ofic")
+  codResp           Int       @map("cod_resp")
+  fechaAsig         DateTime  @map("fecha_asig") @db.Date
+  fechaFin          DateTime? @map("fecha_fin") @db.Date
+  estado            String    @default("VIGENTE") @db.VarChar(20)
+  tipoAsig          String?   @map("tipo_asig") @db.VarChar(50)
+  documentoRespaldo String?   @map("documento_respaldo") @db.VarChar(100)
+  observacion       String?
+  activo            Boolean   @default(true)
+  creadoEn          DateTime  @default(now()) @map("creado_en") @db.Timestamptz
+
+  oficina        InOficina       @relation(fields: [codOfic], references: [codOfic], onDelete: Restrict)
+  responsable    InEmpleado      @relation(fields: [codResp], references: [codEmp], onDelete: Restrict)
+  detalles       InDetAsig[]
+  transferencias InTransferido[]
+
+  @@map("in_asignado")
+}
+
+model InDetAsig {
+  id          Int     @id @default(autoincrement())
+  codAsig     Int     @map("cod_asig")
+  nroActivo   Int     @map("nro_activo")
+  cantidad    Int     @default(1)
+  observacion String?
+  activo      Boolean @default(true)
+
+  asignado  InAsignado @relation(fields: [codAsig], references: [codAsig], onDelete: Restrict)
+  activoRef InActivo   @relation(fields: [nroActivo], references: [nroActivo], onDelete: Restrict)
+
+  @@map("in_det_asig")
+}
+
+model InTransferido {
+  codTransf         Int      @id @map("cod_transf")
+  codOfiRem         Int      @map("cod_ofi_rem")
+  codOfiDest        Int      @map("cod_ofi_dest")
+  codAsigDe         Int?     @map("cod_asig_de")
+  fechaTransf       DateTime @map("fecha_transf") @db.Date
+  tipoDocId         Int?     @map("tipo_doc_id")
+  documentoRespaldo String?  @map("documento_respaldo") @db.VarChar(100)
+  estado            String   @default("PROCESADO") @db.VarChar(20)
+  motivo            String?
+  activo            Boolean  @default(true)
+  creadoEn          DateTime @default(now()) @map("creado_en") @db.Timestamptz
+
+  oficinaRemitente InOficina    @relation("OficinaRemitente", fields: [codOfiRem], references: [codOfic], onDelete: Restrict)
+  oficinaDestino   InOficina    @relation("OficinaDestino", fields: [codOfiDest], references: [codOfic], onDelete: Restrict)
+  asignacionOrigen InAsignado?  @relation(fields: [codAsigDe], references: [codAsig], onDelete: Restrict)
+  detalles         InDetTranf[]
+
+  @@map("in_transferido")
+}
+
+model InDetTranf {
+  id          Int     @id @default(autoincrement())
+  codTransf   Int     @map("cod_transf")
+  nroActivo   Int     @map("nro_activo")
+  observacion String?
+  activo      Boolean @default(true)
+
+  transferido InTransferido @relation(fields: [codTransf], references: [codTransf], onDelete: Restrict)
+  activoRef   InActivo      @relation(fields: [nroActivo], references: [nroActivo], onDelete: Restrict)
+
+  @@map("in_det_tranf")
+}
+
+model InBajaAct {
+  nro         Int       @id
+  nroActivo   Int       @unique @map("nro_activo")
+  codAsig     Int?      @map("cod_asig")
+  documento   String?   @db.VarChar(100)
+  motivo      String
+  fechaBajaTe DateTime? @map("fecha_baja_te") @db.Date
+  fechaBajaEf DateTime  @map("fecha_baja_ef") @db.Date
+  tipoPerAut  String?   @map("tipo_per_aut") @db.VarChar(50)
+  codEmpAut   Int?      @map("cod_emp_aut")
+  valorFinal  Decimal?  @map("valor_final") @db.Decimal(14, 2)
+  observacion String?
+  activo      Boolean   @default(true)
+  creadoEn    DateTime  @default(now()) @map("creado_en") @db.Timestamptz
+
+  activoRef           InActivo    @relation(fields: [nroActivo], references: [nroActivo], onDelete: Restrict)
+  empleadoAutorizador InEmpleado? @relation(fields: [codEmpAut], references: [codEmp], onDelete: Restrict)
+
+  @@map("in_baja_act")
+}
+
+model InRevaluo {
+  codReval            Int      @id @map("cod_reval")
+  fechaReval          DateTime @map("fecha_reval") @db.Date
+  disposicionRespaldo String?  @map("disposicion_respaldo") @db.VarChar(100)
+  motivo              String?
+  codEmpTecnico       Int?     @map("cod_emp_tecnico")
+  estado              String   @default("APROBADO") @db.VarChar(20)
+  activo              Boolean  @default(true)
+
+  tecnico  InEmpleado?  @relation(fields: [codEmpTecnico], references: [codEmp], onDelete: Restrict)
+  detalles InDetReval[]
+
+  @@map("in_revaluo")
+}
+
+model InDetReval {
+  id               Int     @id @default(autoincrement())
+  codReval         Int     @map("cod_reval")
+  nroActivo        Int     @map("nro_activo")
+  valorAnterior    Decimal @map("valor_anterior") @db.Decimal(14, 2)
+  nuevoValor       Decimal @map("nuevo_valor") @db.Decimal(14, 2)
+  nuevaVidaUtilMes Int     @map("nueva_vida_util_mes")
+  activo           Boolean @default(true)
+
+  revaluo   InRevaluo @relation(fields: [codReval], references: [codReval], onDelete: Restrict)
+  activoRef InActivo  @relation(fields: [nroActivo], references: [nroActivo], onDelete: Restrict)
+
+  @@map("in_det_reval")
+}
+
+model InDepAcumulada {
+  id         BigInt   @id @default(autoincrement())
+  nroActivo  Int      @map("nro_activo")
+  gestion    Int
+  mes        Int
+  depMensual Decimal  @map("dep_mensual") @db.Decimal(14, 2)
+  depAcum    Decimal  @map("dep_acum") @db.Decimal(14, 2)
+  valorNeto  Decimal  @map("valor_neto") @db.Decimal(14, 2)
+  ufvActual  Decimal? @map("ufv_actual") @db.Decimal(10, 5)
+  creadoEn   DateTime @default(now()) @map("creado_en") @db.Timestamptz
+
+  activoRef InActivo @relation(fields: [nroActivo], references: [nroActivo], onDelete: Restrict)
+
+  @@index([nroActivo])
+  @@index([gestion, mes])
+  @@map("in_dep_acumulada")
+}
+
+model InIngreso {
+  codIngreso   Int      @id @map("cod_ingreso")
+  nroFactura   String?  @map("nro_factura") @db.VarChar(50)
+  fechaIngreso DateTime @map("fecha_ingreso") @db.Date
+  codProve     Int?     @map("cod_prove")
+  montoTotal   Decimal  @map("monto_total") @db.Decimal(14, 2)
+  estado       String   @default("INGRESADO") @db.VarChar(20)
+  activo       Boolean  @default(true)
+
+  proveedor InProveedor?   @relation(fields: [codProve], references: [codProve], onDelete: Restrict)
+  detalles  InDetIngreso[]
+
+  @@map("in_ingreso")
+}
+
+model InDetIngreso {
+  id            Int     @id @default(autoincrement())
+  codIngreso    Int     @map("cod_ingreso")
+  nroActivo     Int?    @map("nro_activo")
+  montoUnitario Decimal @map("monto_unitario") @db.Decimal(14, 2)
+  activo        Boolean @default(true)
+
+  ingreso   InIngreso @relation(fields: [codIngreso], references: [codIngreso], onDelete: Restrict)
+  activoRef InActivo? @relation(fields: [nroActivo], references: [nroActivo], onDelete: Restrict)
+
+  @@map("in_det_ingreso")
+}
+
+model InEventStore {
+  seqNum      BigInt   @id @default(autoincrement()) @map("seq_num")
+  eventoId    String   @default(dbgenerated("gen_random_uuid()")) @map("evento_id") @db.Uuid
+  tipoEvento  String   @map("tipo_evento") @db.VarChar(80)
+  nroActivo   Int?     @map("nro_activo")
+  codActivo   String?  @map("cod_activo") @db.VarChar(50)
+  usuarioId   String   @map("usuario_id") @db.VarChar(100)
+  ipOrigen    String?  @map("ip_origen") @db.VarChar(45)
+  datosEvento Json     @map("datos_evento")
+  prevHash    String   @map("prev_hash") @db.VarChar(64)
+  hash        String   @db.VarChar(64)
+  creadoEn    DateTime @default(now()) @map("creado_en") @db.Timestamptz
+
+  activoRef InActivo? @relation(fields: [nroActivo], references: [nroActivo], onDelete: Restrict)
+
+  @@index([nroActivo])
+  @@index([tipoEvento])
+  @@index([creadoEn])
+  @@map("in_event_store")
 }
