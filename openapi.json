@@ -57,84 +57,6 @@
         ]
       }
     },
-    "/activos": {
-      "get": {
-        "operationId": "CatalogoController_findAll",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      },
-      "post": {
-        "operationId": "CatalogoController_create",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      }
-    },
-    "/activos/{id}": {
-      "get": {
-        "operationId": "CatalogoController_findById",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      },
-      "patch": {
-        "operationId": "CatalogoController_update",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      },
-      "delete": {
-        "operationId": "CatalogoController_darDeBaja",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      }
-    },
-    "/activos/{id}/historial": {
-      "get": {
-        "operationId": "CatalogoController_getHistory",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      }
-    },
     "/usuarios": {
       "get": {
         "operationId": "UsuariosController_findAll",
@@ -172,6 +94,84 @@
         },
         "tags": [
           "Usuarios"
+        ]
+      }
+    },
+    "/activos": {
+      "get": {
+        "operationId": "PatrimonioController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      },
+      "post": {
+        "operationId": "PatrimonioController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      }
+    },
+    "/activos/{id}": {
+      "get": {
+        "operationId": "PatrimonioController_findById",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      },
+      "patch": {
+        "operationId": "PatrimonioController_update",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      },
+      "delete": {
+        "operationId": "PatrimonioController_darDeBaja",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      }
+    },
+    "/activos/{id}/historial": {
+      "get": {
+        "operationId": "PatrimonioController_getHistory",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
         ]
       }
     },

@@ -33,6 +33,6 @@ import { TrazabilidadModule } from '../trazabilidad/trazabilidad.module.js';
       useClass: PrismaUsuarioRepository,
     },
   ],
-  exports: [USUARIO_REPOSITORY_PORT],
+  exports: [USUARIO_REPOSITORY_PORT, JwtModule],
 })
 export class IdentidadAccesoModule {}
