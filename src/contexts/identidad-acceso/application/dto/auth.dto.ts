@@ -1,9 +1,13 @@
 import { z } from 'zod';
 
 export const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
+  identificador: z.string().trim().min(1).optional(),
+  email: z.string().trim().optional(),
+  password: z.string().min(1, 'La contraseña es requerida'),
   deviceId: z.string().optional().default('web-browser'),
+}).refine((data) => Boolean(data.identificador || data.email), {
+  message: 'Debe ingresar su correo institucional o código de funcionario',
+  path: ['identificador'],
 });
 
 export type LoginDto = z.infer<typeof LoginSchema>;

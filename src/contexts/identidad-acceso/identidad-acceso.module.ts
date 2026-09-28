@@ -11,6 +11,9 @@ import { PrismaUsuarioRepository } from './infrastructure/persistence/prisma-usu
 import { USUARIO_REPOSITORY_PORT } from './domain/ports/usuario-repository.port.js';
 import { TrazabilidadModule } from '../trazabilidad/trazabilidad.module.js';
 
+import { AuditoriaController } from './infrastructure/http/auditoria.controller.js';
+import { RolesController } from './infrastructure/http/roles.controller.js';
+
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -21,7 +24,7 @@ import { TrazabilidadModule } from '../trazabilidad/trazabilidad.module.js';
     }),
     TrazabilidadModule,
   ],
-  controllers: [AuthController, UsuariosController],
+  controllers: [AuthController, UsuariosController, AuditoriaController, RolesController],
   providers: [
     AutenticarUsuarioUseCase,
     RefrescarTokenUseCase,

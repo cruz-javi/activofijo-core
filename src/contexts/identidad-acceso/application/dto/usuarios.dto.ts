@@ -11,18 +11,22 @@ export const CreateUsuarioSchema = z.object({
   nombre: z.string().min(3),
   email: institutionalEmail,
   password: z.string().min(8),
-  rol: z.enum(['ADMIN', 'OFICINA', 'CAMPO']),
+  rol: z.string().min(2).default('FUNCIONARIO'),
+  cargoInstitucional: z.string().optional(),
+  codigoEmpleadoLegado: z.number().int().positive().optional(),
 });
 
 export type CreateUsuarioDto = z.infer<typeof CreateUsuarioSchema>;
 
 export const UpdateUsuarioSchema = z
   .object({
-    rol: z.enum(['ADMIN', 'OFICINA', 'CAMPO']).optional(),
+    rol: z.string().min(2).optional(),
+    roles: z.array(z.string()).optional(),
     activo: z.boolean().optional(),
+    estado: z.string().optional(),
   })
-  .refine((data) => data.rol !== undefined || data.activo !== undefined, {
-    message: 'Debe indicar al menos un campo a actualizar (rol o activo)',
+  .refine((data) => data.rol !== undefined || data.roles !== undefined || data.activo !== undefined || data.estado !== undefined, {
+    message: 'Debe indicar al menos un campo a actualizar (rol, roles, activo o estado)',
   });
 
 export type UpdateUsuarioDto = z.infer<typeof UpdateUsuarioSchema>;

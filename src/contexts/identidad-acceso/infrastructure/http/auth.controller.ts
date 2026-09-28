@@ -30,7 +30,7 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(LoginSchema))
   async login(@Body() body: LoginDto, @Req() req: any) {
     const result = await this.autenticarUsuario.execute({
-      email: body.email,
+      identificador: body.identificador || body.email,
       passwordRaw: body.password,
       deviceId: body.deviceId,
       ipOrigen: req.ip,

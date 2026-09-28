@@ -25,6 +25,23 @@ export class PrismaUsuarioRepository implements UsuarioRepositoryPort {
     return this.mapToDomain(data);
   }
 
+  async findByIdentificador(identificador: string): Promise<Usuario | null> {
+    const limpio = identificador.trim();
+    if (limpio.includes('@')) {
+      return this.findByEmail(limpio.toLowerCase());
+    }
+
+    const codigoNumerico = Number(limpio);
+    if (!Number.isNaN(codigoNumerico)) {
+      const data = await this.prisma.authUsuario.findFirst({
+        where: { codigoEmpleadoLegado: codigoNumerico },
+      });
+      if (data) return this.mapToDomain(data);
+    }
+
+    return this.findByEmail(limpio);
+  }
+
   async save(usuario: Usuario): Promise<void> {
     const data = {
       id: usuario.id,

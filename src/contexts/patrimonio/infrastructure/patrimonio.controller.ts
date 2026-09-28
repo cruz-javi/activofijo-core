@@ -49,13 +49,13 @@ export class PatrimonioController {
   }
 
   @Post()
-  @Roles('ADMIN', 'OFICINA')
+  @Roles('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO', 'ENCARGADO_ACTIVO')
   async create(@Body(new ZodValidationPipe(CreateActivoSchema)) body: CreateActivoDto) {
     return this.patrimonioService.create(body);
   }
 
   @Patch(':id')
-  @Roles('ADMIN', 'OFICINA')
+  @Roles('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO', 'ENCARGADO_ACTIVO')
   async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateActivoSchema)) body: UpdateActivoDto,
@@ -64,7 +64,7 @@ export class PatrimonioController {
   }
 
   @Delete(':id')
-  @Roles('ADMIN')
+  @Roles('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO')
   async darDeBaja(
     @Param('id') id: string,
     @Query('expectedVersion') expectedVersion: string,

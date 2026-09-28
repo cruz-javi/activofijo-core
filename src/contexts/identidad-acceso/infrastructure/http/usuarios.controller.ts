@@ -5,7 +5,7 @@ import { ZodValidationPipe } from '../../../../shared/infrastructure/http/pipes/
 import { Roles } from '../security/roles.decorator.js';
 
 @Controller('usuarios')
-@Roles('ADMIN')
+@Roles('ADMINISTRADOR')
 export class UsuariosController {
   constructor(@Inject(GestionarUsuariosUseCase) private readonly gestionarUsuarios: GestionarUsuariosUseCase) {}
 
@@ -21,6 +21,8 @@ export class UsuariosController {
       nombre: body.nombre,
       passwordRaw: body.password,
       rol: body.rol,
+      cargoInstitucional: body.cargoInstitucional,
+      codigoEmpleadoLegado: body.codigoEmpleadoLegado,
     });
 
     if (result.isFailure) {
@@ -36,7 +38,9 @@ export class UsuariosController {
   ) {
     const result = await this.gestionarUsuarios.update(id, {
       rol: body.rol,
+      roles: body.roles,
       activo: body.activo,
+      estado: body.estado,
     });
 
     if (result.isFailure) {

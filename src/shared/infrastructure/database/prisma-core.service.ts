@@ -14,6 +14,7 @@ export class PrismaCoreService extends PrismaClient implements OnModuleInit, OnM
     const pool = new pg.Pool({
       connectionString,
       ssl: isSsl ? { rejectUnauthorized: false } : undefined,
+      options: '-c timezone=America/La_Paz',
     });
 
     const adapter = new PrismaPg(pool, { schema: 'core' });

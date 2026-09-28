@@ -9,7 +9,8 @@ import argon2 from 'argon2';
 import crypto from 'crypto';
 
 export interface AutenticarUsuarioRequest {
-  email: string;
+  identificador?: string;
+  email?: string;
   passwordRaw: string;
   deviceId?: string;
   ipOrigen?: string;
@@ -22,25 +23,52 @@ export interface AutenticarUsuarioResponse {
     id: string;
     email: string;
     nombre: string;
+    cargoInstitucional?: string | null;
+    codigoEmpleadoLegado?: number | null;
     roles: string[];
     permisos: string[];
   };
 }
+
+const MENSAJE_BLOQUEO_SEGURIDAD =
+  'Usuario bloqueado por conexión sospechosa o múltiples intentos fallidos. Debe consultar personalmente con el Administrador del Sistema para su reactivación.';
 
 @Injectable()
 export class AutenticarUsuarioUseCase {
   constructor(
     @Inject(USUARIO_REPOSITORY_PORT) private readonly usuarioRepo: UsuarioRepositoryPort,
     @Inject(JwtService) private readonly jwtService: JwtService,
-    @Inject(PrismaCoreService) private readonly prisma: PrismaCoreService, // Temp para tokens y auditoría
+    @Inject(PrismaCoreService) private readonly prisma: PrismaCoreService,
     @Inject(EVENT_STORE_PORT) private readonly eventStore: EventStorePort,
   ) {}
 
   async execute(req: AutenticarUsuarioRequest): Promise<Result<AutenticarUsuarioResponse, UnauthorizedError>> {
-    const usuario = await this.usuarioRepo.findByEmail(req.email);
+    const identificador = (req.identificador || req.email || '').trim();
+    if (!identificador) {
+      return Result.fail(new UnauthorizedError('Debe ingresar su correo o código de funcionario'));
+    }
+
+    const usuario = await this.usuarioRepo.findByIdentificador(identificador);
+
+    if (usuario && usuario.estaBloqueado()) {
+      await this.registrarAuditoria(
+        usuario.email,
+        'BLOQUEADO_SEGURIDAD',
+        'Intento de autenticación sobre cuenta con bloqueo definitivo',
+        usuario.id,
+        req.ipOrigen,
+      );
+      return Result.fail(new UnauthorizedError(MENSAJE_BLOQUEO_SEGURIDAD));
+    }
 
     if (!usuario || !usuario.puedeAutenticarse()) {
-      await this.registrarAuditoria(req.email, false, 'Usuario inactivo o no encontrado', usuario?.id, req.ipOrigen);
+      await this.registrarAuditoria(
+        identificador,
+        'DENEGADO_SIN_PERMISO',
+        'Usuario inactivo o no encontrado',
+        usuario?.id,
+        req.ipOrigen,
+      );
       return Result.fail(new UnauthorizedError('Credenciales inválidas'));
     }
 
@@ -48,11 +76,28 @@ export class AutenticarUsuarioUseCase {
     if (!isValid) {
       usuario.registrarIntentoFallido();
       await this.usuarioRepo.save(usuario);
-      await this.registrarAuditoria(req.email, false, 'Contraseña incorrecta', usuario.id, req.ipOrigen);
+
+      if (usuario.estaBloqueado()) {
+        await this.registrarAuditoria(
+          usuario.email,
+          'BLOQUEADO_SEGURIDAD',
+          'Bloqueo definitivo activado al alcanzar 5 intentos fallidos consecutivos',
+          usuario.id,
+          req.ipOrigen,
+        );
+        return Result.fail(new UnauthorizedError(MENSAJE_BLOQUEO_SEGURIDAD));
+      }
+
+      await this.registrarAuditoria(
+        usuario.email,
+        'DENEGADO_SIN_PERMISO',
+        `Contraseña incorrecta (Intento ${usuario.intentosFallidos} de 5)`,
+        usuario.id,
+        req.ipOrigen,
+      );
       return Result.fail(new UnauthorizedError('Credenciales inválidas'));
     }
 
-    // Resetear intentos en login exitoso
     usuario.resetearIntentosFallidos();
     await this.usuarioRepo.save(usuario);
 
@@ -60,15 +105,21 @@ export class AutenticarUsuarioUseCase {
     const permisos = await this.usuarioRepo.getPermisosByUsuarioId(usuario.id);
 
     const accessToken = await this.jwtService.signAsync(
-      { sub: usuario.id, email: usuario.email, roles, permisos, deviceId: req.deviceId || 'web' },
-      { secret: process.env.JWT_SECRET, expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as any }
+      {
+        sub: usuario.id,
+        email: usuario.email,
+        rol: roles[0] || 'FUNCIONARIO',
+        roles,
+        permisos,
+        deviceId: req.deviceId || 'web',
+      },
+      { secret: process.env.JWT_SECRET, expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as any },
     );
 
     const { rawRefreshToken } = await this.issueRefreshToken(usuario.id, req.deviceId || 'web', req.ipOrigen);
 
-    await this.registrarAuditoria(req.email, true, undefined, usuario.id, req.ipOrigen);
+    await this.registrarAuditoria(usuario.email, 'EXITOSO', undefined, usuario.id, req.ipOrigen);
 
-    // Event Store
     try {
       await this.eventStore.append({
         streamId: usuario.id,
@@ -95,6 +146,8 @@ export class AutenticarUsuarioUseCase {
         id: usuario.id,
         email: usuario.email,
         nombre: usuario.nombreCompleto,
+        cargoInstitucional: usuario.cargoInstitucional,
+        codigoEmpleadoLegado: usuario.codigoEmpleadoLegado,
         roles,
         permisos,
       },
@@ -121,14 +174,20 @@ export class AutenticarUsuarioUseCase {
     return { rawRefreshToken, familyId };
   }
 
-  private async registrarAuditoria(email: string, exito: boolean, detalle?: string, usuarioId?: string, ipOrigen?: string) {
+  private async registrarAuditoria(
+    emailUsuario: string,
+    resultado: 'EXITOSO' | 'DENEGADO_SIN_PERMISO' | 'BLOQUEADO_SEGURIDAD',
+    detalle?: string,
+    usuarioId?: string,
+    ipOrigen?: string,
+  ) {
     try {
       await this.prisma.authAuditoriaForense.create({
         data: {
-          emailUsuario: email,
+          emailUsuario,
           accion: 'LOGIN',
           modulo: 'IDENTIDAD_ACCESO',
-          resultado: exito ? 'EXITOSO' : 'DENEGADO_SIN_PERMISO',
+          resultado,
           motivoRechazo: detalle,
           usuarioId,
           ipOrigen: ipOrigen || '127.0.0.1',

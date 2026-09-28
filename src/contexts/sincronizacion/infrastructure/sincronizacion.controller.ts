@@ -3,7 +3,7 @@ import { SincronizacionService } from '../application/sincronizacion.service.js'
 import { Roles } from '../../../contexts/identidad-acceso/infrastructure/security/roles.decorator.js';
 
 @Controller('sincronizacion')
-@Roles('ADMIN')
+@Roles('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO')
 export class SincronizacionController {
   constructor(
     @Inject(SincronizacionService) private readonly sincronizacionService: SincronizacionService,

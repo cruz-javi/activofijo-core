@@ -33,8 +33,7 @@ export class Usuario {
     this.props.intentosFallidos += 1;
     if (this.props.intentosFallidos >= 5) {
       this.props.estado = 'BLOQUEADO_INTENTOS';
-      // Bloquear por 15 minutos
-      this.props.bloqueadoHasta = new Date(Date.now() + 15 * 60 * 1000);
+      this.props.bloqueadoHasta = null;
     }
   }
 
@@ -44,17 +43,16 @@ export class Usuario {
     this.props.bloqueadoHasta = null;
   }
 
+  public estaBloqueado(): boolean {
+    return this.props.estado === 'BLOQUEADO_INTENTOS';
+  }
+
   public puedeAutenticarse(): boolean {
     if (!this.props.activo || this.props.estado === 'INACTIVO' || this.props.estado === 'SUSPENDIDO_AUDITORIA') {
       return false;
     }
-    if (this.props.estado === 'BLOQUEADO_INTENTOS' && this.props.bloqueadoHasta) {
-      if (new Date() < this.props.bloqueadoHasta) {
-        return false;
-      }
-      // El bloqueo expiró
-      this.resetearIntentosFallidos();
-      return true;
+    if (this.props.estado === 'BLOQUEADO_INTENTOS') {
+      return false;
     }
     return true;
   }
