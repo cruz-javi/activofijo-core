@@ -98,33 +98,34 @@ export class LegacyActivoRepository implements ActivoRepository {
       };
     }
 
-    if (filters.unidad && filters.unidad !== 'TODOS') {
-      where.detallesAsignacion = {
-        some: {
-          asignado: {
-            oficina: {
-              desDpto: { contains: filters.unidad, mode: 'insensitive' },
-            },
-          },
-        },
-      };
-    }
+    const hasUnidad = Boolean(filters.unidad && filters.unidad !== 'TODOS');
+    const hasCustodio = Boolean(filters.custodio && filters.custodio.trim());
 
-    if (filters.custodio && filters.custodio.trim()) {
-      const c = filters.custodio.trim();
-      const numCustodio = parseInt(c, 10);
+    if (hasUnidad || hasCustodio) {
+      const asignadoCondition: any = {};
+
+      if (hasUnidad) {
+        asignadoCondition.oficina = {
+          desDpto: { contains: filters.unidad, mode: 'insensitive' },
+        };
+      }
+
+      if (hasCustodio) {
+        const c = filters.custodio!.trim();
+        const numCustodio = parseInt(c, 10);
+        asignadoCondition.responsable = {
+          OR: [
+            { nombres: { contains: c, mode: 'insensitive' } },
+            { apellidos: { contains: c, mode: 'insensitive' } },
+            { ci: { contains: c } },
+            ...(isNaN(numCustodio) ? [] : [{ codEmp: numCustodio }]),
+          ],
+        };
+      }
+
       where.detallesAsignacion = {
         some: {
-          asignado: {
-            responsable: {
-              OR: [
-                { nombres: { contains: c, mode: 'insensitive' } },
-                { apellidos: { contains: c, mode: 'insensitive' } },
-                { ci: { contains: c } },
-                ...(isNaN(numCustodio) ? [] : [{ codEmp: numCustodio }]),
-              ],
-            },
-          },
+          asignado: asignadoCondition,
         },
       };
     }
