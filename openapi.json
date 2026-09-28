@@ -57,6 +57,20 @@
         ]
       }
     },
+    "/auth/verify-password": {
+      "post": {
+        "operationId": "AuthController_verifyPassword",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/usuarios": {
       "get": {
         "operationId": "UsuariosController_findAll",
@@ -206,6 +220,20 @@
     "/activos/filtros-metadata": {
       "get": {
         "operationId": "PatrimonioController_getFiltrosMetadata",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      }
+    },
+    "/activos/formulario-metadata": {
+      "get": {
+        "operationId": "PatrimonioController_getFormularioMetadata",
         "parameters": [],
         "responses": {
           "200": {

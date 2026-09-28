@@ -8,6 +8,7 @@ import {
   Param,
   Query,
   Body,
+  Req,
 } from '@nestjs/common';
 import { PatrimonioService } from '../application/patrimonio.service.js';
 import {
@@ -51,6 +52,11 @@ export class PatrimonioController {
     return this.patrimonioService.getMetadata();
   }
 
+  @Get('formulario-metadata')
+  async getFormularioMetadata() {
+    return this.patrimonioService.getFormularioMetadata();
+  }
+
   @Get(':id')
   async findById(@Param('id') id: string) {
     return this.patrimonioService.findById(id);
@@ -62,9 +68,15 @@ export class PatrimonioController {
   }
 
   @Post()
-  @Roles('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO', 'ENCARGADO_ACTIVO')
-  async create(@Body(new ZodValidationPipe(CreateActivoSchema)) body: CreateActivoDto) {
-    return this.patrimonioService.create(body);
+  @Roles('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO', 'ENCARGADO_ACTIVO', 'OPERADOR_PATRIMONIAL')
+  async create(
+    @Body(new ZodValidationPipe(CreateActivoSchema)) body: CreateActivoDto,
+    @Req() req: any,
+  ) {
+    const user = req.user;
+    const ipOrigen = (req.headers['x-forwarded-for'] as string) || req.ip || '127.0.0.1';
+    const userAgent = (req.headers['user-agent'] as string) || 'Browser';
+    return this.patrimonioService.create(body, user, ipOrigen, userAgent);
   }
 
   @Patch(':id')

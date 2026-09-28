@@ -17,6 +17,7 @@ import { Public } from '../security/public.decorator.js';
 import { UnauthorizedException } from '@nestjs/common';
 import { PrismaCoreService } from '../../../../shared/infrastructure/database/prisma-core.service.js';
 import { ResultadoAuditoria } from '../../../../shared/infrastructure/database/generated/core/enums.js';
+import argon2 from 'argon2';
 
 @Controller('auth')
 export class AuthController {
@@ -99,5 +100,28 @@ export class AuthController {
       throw new UnauthorizedException(result.error?.message);
     }
     return result.getValue();
+  }
+
+  @Post('verify-password')
+  async verifyPassword(@Body('password') password: string, @Req() req: any) {
+    if (!password) {
+      throw new UnauthorizedException('La contraseña es requerida');
+    }
+    const userId = req.user?.sub;
+    if (!userId) {
+      throw new UnauthorizedException('Sesión no identificada');
+    }
+    const user = await this.prisma.authUsuario.findUnique({
+      where: { id: userId },
+      select: { id: true, passwordHash: true, email: true, activo: true, estado: true },
+    });
+    if (!user || !user.activo || user.estado !== 'ACTIVO') {
+      throw new UnauthorizedException('Usuario no válido o bloqueado');
+    }
+    const isValid = await argon2.verify(user.passwordHash, password);
+    if (!isValid) {
+      throw new UnauthorizedException('Contraseña institucional incorrecta');
+    }
+    return { valid: true, email: user.email };
   }
 }
