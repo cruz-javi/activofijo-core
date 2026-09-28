@@ -264,13 +264,39 @@ model InspHallazgo {
 }
 
 model EtiquetaGenerada {
-  id          String   @id @default(uuid()) @db.Uuid
-  nroActivo   Int      @map("nro_activo")
-  codActivo   String   @map("cod_activo") @db.VarChar(50)
-  formato     String   @db.VarChar(20)
-  generadoPor String   @map("generado_por") @db.Uuid
-  generadoEn  DateTime @default(now()) @map("generado_en") @db.Timestamptz
-  impreso     Boolean  @default(false)
+  id              String    @id @default(uuid()) @db.Uuid
+  nroActivo       Int       @map("nro_activo")
+  codActivo       String    @map("cod_activo") @db.VarChar(50)
+  formato         String    @default("HIBRIDO") @db.VarChar(20) // QR, CODE128, HIBRIDO
+  motivo          String    @default("ALTA") @db.VarChar(30)    // ALTA, REPOSICION, REIMPRESION
+  versionEtiqueta Int       @default(1) @map("version_etiqueta")
+  vigente         Boolean   @default(true)
+  hashSeguridad   String?   @map("hash_seguridad") @db.VarChar(64)
+  plantillaNombre String?   @map("plantilla_nombre") @db.VarChar(80)
+  observacion     String?   @db.Text
+  generadoPor     String    @map("generado_por") @db.Uuid
+  generadoEn      DateTime  @default(now()) @map("generado_en") @db.Timestamptz
+  impreso         Boolean   @default(false)
+  invalidadaEn    DateTime? @map("invalidada_en") @db.Timestamptz
 
   @@map("etiqueta_generada")
+}
+
+model PlantillaEtiqueta {
+  id               String   @id @default(uuid()) @db.Uuid
+  nombre           String   @unique @db.VarChar(80)
+  descripcion      String?  @db.VarChar(200)
+  tipoPapel        String   @map("tipo_papel") @db.VarChar(30) // ROLLO_TERMICO, HOJA_A4, INDIVIDUAL
+  anchoMm          Float    @map("ancho_mm")
+  altoMm           Float    @map("alto_mm")
+  columnas         Int      @default(1)
+  filas            Int      @default(1)
+  tipoCodigo       String   @map("tipo_codigo") @db.VarChar(20) // QR, BARCODE_128, HIBRIDO
+  configuracion    Json     // Opciones JSON: showLogo, showInstitucion, showCodigoTexto, showDescripcion, etc.
+  esPredeterminada Boolean  @default(false) @map("es_predeterminada")
+  esSistema        Boolean  @default(false) @map("es_sistema")
+  creadoEn         DateTime @default(now()) @map("creado_en") @db.Timestamptz
+  actualizadoEn    DateTime @updatedAt @map("actualizado_en") @db.Timestamptz
+
+  @@map("plantilla_etiqueta")
 }

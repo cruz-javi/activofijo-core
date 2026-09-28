@@ -67,7 +67,8 @@ export const ModelName = {
   NormativaRegla: 'NormativaRegla',
   InspInspeccion: 'InspInspeccion',
   InspHallazgo: 'InspHallazgo',
-  EtiquetaGenerada: 'EtiquetaGenerada'
+  EtiquetaGenerada: 'EtiquetaGenerada',
+  PlantillaEtiqueta: 'PlantillaEtiqueta'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -314,12 +315,39 @@ export const EtiquetaGeneradaScalarFieldEnum = {
   nroActivo: 'nroActivo',
   codActivo: 'codActivo',
   formato: 'formato',
+  motivo: 'motivo',
+  versionEtiqueta: 'versionEtiqueta',
+  vigente: 'vigente',
+  hashSeguridad: 'hashSeguridad',
+  plantillaNombre: 'plantillaNombre',
+  observacion: 'observacion',
   generadoPor: 'generadoPor',
   generadoEn: 'generadoEn',
-  impreso: 'impreso'
+  impreso: 'impreso',
+  invalidadaEn: 'invalidadaEn'
 } as const
 
 export type EtiquetaGeneradaScalarFieldEnum = (typeof EtiquetaGeneradaScalarFieldEnum)[keyof typeof EtiquetaGeneradaScalarFieldEnum]
+
+
+export const PlantillaEtiquetaScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  descripcion: 'descripcion',
+  tipoPapel: 'tipoPapel',
+  anchoMm: 'anchoMm',
+  altoMm: 'altoMm',
+  columnas: 'columnas',
+  filas: 'filas',
+  tipoCodigo: 'tipoCodigo',
+  configuracion: 'configuracion',
+  esPredeterminada: 'esPredeterminada',
+  esSistema: 'esSistema',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type PlantillaEtiquetaScalarFieldEnum = (typeof PlantillaEtiquetaScalarFieldEnum)[keyof typeof PlantillaEtiquetaScalarFieldEnum]
 
 
 export const SortOrder = {

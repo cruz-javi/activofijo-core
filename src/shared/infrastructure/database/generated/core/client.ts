@@ -126,3 +126,8 @@ export type InspHallazgo = Prisma.InspHallazgoModel
  * 
  */
 export type EtiquetaGenerada = Prisma.EtiquetaGeneradaModel
+/**
+ * Model PlantillaEtiqueta
+ * 
+ */
+export type PlantillaEtiqueta = Prisma.PlantillaEtiquetaModel

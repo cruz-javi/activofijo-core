@@ -413,7 +413,8 @@ export const ModelName = {
   NormativaRegla: 'NormativaRegla',
   InspInspeccion: 'InspInspeccion',
   InspHallazgo: 'InspHallazgo',
-  EtiquetaGenerada: 'EtiquetaGenerada'
+  EtiquetaGenerada: 'EtiquetaGenerada',
+  PlantillaEtiqueta: 'PlantillaEtiqueta'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -429,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "eventStore" | "activoProyeccion" | "authUsuario" | "authRol" | "authPermiso" | "authRolPermiso" | "authUsuarioRol" | "authRefreshToken" | "authAuditoriaForense" | "projectionCheckpoint" | "sincronizacionLog" | "tramite" | "tramitePaso" | "normativaRegla" | "inspInspeccion" | "inspHallazgo" | "etiquetaGenerada"
+    modelProps: "eventStore" | "activoProyeccion" | "authUsuario" | "authRol" | "authPermiso" | "authRolPermiso" | "authUsuarioRol" | "authRefreshToken" | "authAuditoriaForense" | "projectionCheckpoint" | "sincronizacionLog" | "tramite" | "tramitePaso" | "normativaRegla" | "inspInspeccion" | "inspHallazgo" | "etiquetaGenerada" | "plantillaEtiqueta"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1691,6 +1692,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PlantillaEtiqueta: {
+      payload: Prisma.$PlantillaEtiquetaPayload<ExtArgs>
+      fields: Prisma.PlantillaEtiquetaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlantillaEtiquetaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlantillaEtiquetaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload>
+        }
+        findFirst: {
+          args: Prisma.PlantillaEtiquetaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlantillaEtiquetaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload>
+        }
+        findMany: {
+          args: Prisma.PlantillaEtiquetaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload>[]
+        }
+        create: {
+          args: Prisma.PlantillaEtiquetaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload>
+        }
+        createMany: {
+          args: Prisma.PlantillaEtiquetaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlantillaEtiquetaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload>[]
+        }
+        delete: {
+          args: Prisma.PlantillaEtiquetaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload>
+        }
+        update: {
+          args: Prisma.PlantillaEtiquetaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlantillaEtiquetaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlantillaEtiquetaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlantillaEtiquetaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlantillaEtiquetaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlantillaEtiquetaPayload>
+        }
+        aggregate: {
+          args: Prisma.PlantillaEtiquetaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlantillaEtiqueta>
+        }
+        groupBy: {
+          args: Prisma.PlantillaEtiquetaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlantillaEtiquetaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlantillaEtiquetaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlantillaEtiquetaCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1958,12 +2033,39 @@ export const EtiquetaGeneradaScalarFieldEnum = {
   nroActivo: 'nroActivo',
   codActivo: 'codActivo',
   formato: 'formato',
+  motivo: 'motivo',
+  versionEtiqueta: 'versionEtiqueta',
+  vigente: 'vigente',
+  hashSeguridad: 'hashSeguridad',
+  plantillaNombre: 'plantillaNombre',
+  observacion: 'observacion',
   generadoPor: 'generadoPor',
   generadoEn: 'generadoEn',
-  impreso: 'impreso'
+  impreso: 'impreso',
+  invalidadaEn: 'invalidadaEn'
 } as const
 
 export type EtiquetaGeneradaScalarFieldEnum = (typeof EtiquetaGeneradaScalarFieldEnum)[keyof typeof EtiquetaGeneradaScalarFieldEnum]
+
+
+export const PlantillaEtiquetaScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  descripcion: 'descripcion',
+  tipoPapel: 'tipoPapel',
+  anchoMm: 'anchoMm',
+  altoMm: 'altoMm',
+  columnas: 'columnas',
+  filas: 'filas',
+  tipoCodigo: 'tipoCodigo',
+  configuracion: 'configuracion',
+  esPredeterminada: 'esPredeterminada',
+  esSistema: 'esSistema',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type PlantillaEtiquetaScalarFieldEnum = (typeof PlantillaEtiquetaScalarFieldEnum)[keyof typeof PlantillaEtiquetaScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2334,6 +2436,7 @@ export type GlobalOmitConfig = {
   inspInspeccion?: Prisma.InspInspeccionOmit
   inspHallazgo?: Prisma.InspHallazgoOmit
   etiquetaGenerada?: Prisma.EtiquetaGeneradaOmit
+  plantillaEtiqueta?: Prisma.PlantillaEtiquetaOmit
 }
 
 /* Types for Logging */

@@ -28,10 +28,12 @@ export type AggregateEtiquetaGenerada = {
 
 export type EtiquetaGeneradaAvgAggregateOutputType = {
   nroActivo: number | null
+  versionEtiqueta: number | null
 }
 
 export type EtiquetaGeneradaSumAggregateOutputType = {
   nroActivo: number | null
+  versionEtiqueta: number | null
 }
 
 export type EtiquetaGeneradaMinAggregateOutputType = {
@@ -39,9 +41,16 @@ export type EtiquetaGeneradaMinAggregateOutputType = {
   nroActivo: number | null
   codActivo: string | null
   formato: string | null
+  motivo: string | null
+  versionEtiqueta: number | null
+  vigente: boolean | null
+  hashSeguridad: string | null
+  plantillaNombre: string | null
+  observacion: string | null
   generadoPor: string | null
   generadoEn: Date | null
   impreso: boolean | null
+  invalidadaEn: Date | null
 }
 
 export type EtiquetaGeneradaMaxAggregateOutputType = {
@@ -49,9 +58,16 @@ export type EtiquetaGeneradaMaxAggregateOutputType = {
   nroActivo: number | null
   codActivo: string | null
   formato: string | null
+  motivo: string | null
+  versionEtiqueta: number | null
+  vigente: boolean | null
+  hashSeguridad: string | null
+  plantillaNombre: string | null
+  observacion: string | null
   generadoPor: string | null
   generadoEn: Date | null
   impreso: boolean | null
+  invalidadaEn: Date | null
 }
 
 export type EtiquetaGeneradaCountAggregateOutputType = {
@@ -59,19 +75,28 @@ export type EtiquetaGeneradaCountAggregateOutputType = {
   nroActivo: number
   codActivo: number
   formato: number
+  motivo: number
+  versionEtiqueta: number
+  vigente: number
+  hashSeguridad: number
+  plantillaNombre: number
+  observacion: number
   generadoPor: number
   generadoEn: number
   impreso: number
+  invalidadaEn: number
   _all: number
 }
 
 
 export type EtiquetaGeneradaAvgAggregateInputType = {
   nroActivo?: true
+  versionEtiqueta?: true
 }
 
 export type EtiquetaGeneradaSumAggregateInputType = {
   nroActivo?: true
+  versionEtiqueta?: true
 }
 
 export type EtiquetaGeneradaMinAggregateInputType = {
@@ -79,9 +104,16 @@ export type EtiquetaGeneradaMinAggregateInputType = {
   nroActivo?: true
   codActivo?: true
   formato?: true
+  motivo?: true
+  versionEtiqueta?: true
+  vigente?: true
+  hashSeguridad?: true
+  plantillaNombre?: true
+  observacion?: true
   generadoPor?: true
   generadoEn?: true
   impreso?: true
+  invalidadaEn?: true
 }
 
 export type EtiquetaGeneradaMaxAggregateInputType = {
@@ -89,9 +121,16 @@ export type EtiquetaGeneradaMaxAggregateInputType = {
   nroActivo?: true
   codActivo?: true
   formato?: true
+  motivo?: true
+  versionEtiqueta?: true
+  vigente?: true
+  hashSeguridad?: true
+  plantillaNombre?: true
+  observacion?: true
   generadoPor?: true
   generadoEn?: true
   impreso?: true
+  invalidadaEn?: true
 }
 
 export type EtiquetaGeneradaCountAggregateInputType = {
@@ -99,9 +138,16 @@ export type EtiquetaGeneradaCountAggregateInputType = {
   nroActivo?: true
   codActivo?: true
   formato?: true
+  motivo?: true
+  versionEtiqueta?: true
+  vigente?: true
+  hashSeguridad?: true
+  plantillaNombre?: true
+  observacion?: true
   generadoPor?: true
   generadoEn?: true
   impreso?: true
+  invalidadaEn?: true
   _all?: true
 }
 
@@ -196,9 +242,16 @@ export type EtiquetaGeneradaGroupByOutputType = {
   nroActivo: number
   codActivo: string
   formato: string
+  motivo: string
+  versionEtiqueta: number
+  vigente: boolean
+  hashSeguridad: string | null
+  plantillaNombre: string | null
+  observacion: string | null
   generadoPor: string
   generadoEn: Date
   impreso: boolean
+  invalidadaEn: Date | null
   _count: EtiquetaGeneradaCountAggregateOutputType | null
   _avg: EtiquetaGeneradaAvgAggregateOutputType | null
   _sum: EtiquetaGeneradaSumAggregateOutputType | null
@@ -229,9 +282,16 @@ export type EtiquetaGeneradaWhereInput = {
   nroActivo?: Prisma.IntFilter<"EtiquetaGenerada"> | number
   codActivo?: Prisma.StringFilter<"EtiquetaGenerada"> | string
   formato?: Prisma.StringFilter<"EtiquetaGenerada"> | string
+  motivo?: Prisma.StringFilter<"EtiquetaGenerada"> | string
+  versionEtiqueta?: Prisma.IntFilter<"EtiquetaGenerada"> | number
+  vigente?: Prisma.BoolFilter<"EtiquetaGenerada"> | boolean
+  hashSeguridad?: Prisma.StringNullableFilter<"EtiquetaGenerada"> | string | null
+  plantillaNombre?: Prisma.StringNullableFilter<"EtiquetaGenerada"> | string | null
+  observacion?: Prisma.StringNullableFilter<"EtiquetaGenerada"> | string | null
   generadoPor?: Prisma.UuidFilter<"EtiquetaGenerada"> | string
   generadoEn?: Prisma.DateTimeFilter<"EtiquetaGenerada"> | Date | string
   impreso?: Prisma.BoolFilter<"EtiquetaGenerada"> | boolean
+  invalidadaEn?: Prisma.DateTimeNullableFilter<"EtiquetaGenerada"> | Date | string | null
 }
 
 export type EtiquetaGeneradaOrderByWithRelationInput = {
@@ -239,9 +299,16 @@ export type EtiquetaGeneradaOrderByWithRelationInput = {
   nroActivo?: Prisma.SortOrder
   codActivo?: Prisma.SortOrder
   formato?: Prisma.SortOrder
+  motivo?: Prisma.SortOrder
+  versionEtiqueta?: Prisma.SortOrder
+  vigente?: Prisma.SortOrder
+  hashSeguridad?: Prisma.SortOrderInput | Prisma.SortOrder
+  plantillaNombre?: Prisma.SortOrderInput | Prisma.SortOrder
+  observacion?: Prisma.SortOrderInput | Prisma.SortOrder
   generadoPor?: Prisma.SortOrder
   generadoEn?: Prisma.SortOrder
   impreso?: Prisma.SortOrder
+  invalidadaEn?: Prisma.SortOrderInput | Prisma.SortOrder
 }
 
 export type EtiquetaGeneradaWhereUniqueInput = Prisma.AtLeast<{
@@ -252,9 +319,16 @@ export type EtiquetaGeneradaWhereUniqueInput = Prisma.AtLeast<{
   nroActivo?: Prisma.IntFilter<"EtiquetaGenerada"> | number
   codActivo?: Prisma.StringFilter<"EtiquetaGenerada"> | string
   formato?: Prisma.StringFilter<"EtiquetaGenerada"> | string
+  motivo?: Prisma.StringFilter<"EtiquetaGenerada"> | string
+  versionEtiqueta?: Prisma.IntFilter<"EtiquetaGenerada"> | number
+  vigente?: Prisma.BoolFilter<"EtiquetaGenerada"> | boolean
+  hashSeguridad?: Prisma.StringNullableFilter<"EtiquetaGenerada"> | string | null
+  plantillaNombre?: Prisma.StringNullableFilter<"EtiquetaGenerada"> | string | null
+  observacion?: Prisma.StringNullableFilter<"EtiquetaGenerada"> | string | null
   generadoPor?: Prisma.UuidFilter<"EtiquetaGenerada"> | string
   generadoEn?: Prisma.DateTimeFilter<"EtiquetaGenerada"> | Date | string
   impreso?: Prisma.BoolFilter<"EtiquetaGenerada"> | boolean
+  invalidadaEn?: Prisma.DateTimeNullableFilter<"EtiquetaGenerada"> | Date | string | null
 }, "id">
 
 export type EtiquetaGeneradaOrderByWithAggregationInput = {
@@ -262,9 +336,16 @@ export type EtiquetaGeneradaOrderByWithAggregationInput = {
   nroActivo?: Prisma.SortOrder
   codActivo?: Prisma.SortOrder
   formato?: Prisma.SortOrder
+  motivo?: Prisma.SortOrder
+  versionEtiqueta?: Prisma.SortOrder
+  vigente?: Prisma.SortOrder
+  hashSeguridad?: Prisma.SortOrderInput | Prisma.SortOrder
+  plantillaNombre?: Prisma.SortOrderInput | Prisma.SortOrder
+  observacion?: Prisma.SortOrderInput | Prisma.SortOrder
   generadoPor?: Prisma.SortOrder
   generadoEn?: Prisma.SortOrder
   impreso?: Prisma.SortOrder
+  invalidadaEn?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.EtiquetaGeneradaCountOrderByAggregateInput
   _avg?: Prisma.EtiquetaGeneradaAvgOrderByAggregateInput
   _max?: Prisma.EtiquetaGeneradaMaxOrderByAggregateInput
@@ -280,29 +361,50 @@ export type EtiquetaGeneradaScalarWhereWithAggregatesInput = {
   nroActivo?: Prisma.IntWithAggregatesFilter<"EtiquetaGenerada"> | number
   codActivo?: Prisma.StringWithAggregatesFilter<"EtiquetaGenerada"> | string
   formato?: Prisma.StringWithAggregatesFilter<"EtiquetaGenerada"> | string
+  motivo?: Prisma.StringWithAggregatesFilter<"EtiquetaGenerada"> | string
+  versionEtiqueta?: Prisma.IntWithAggregatesFilter<"EtiquetaGenerada"> | number
+  vigente?: Prisma.BoolWithAggregatesFilter<"EtiquetaGenerada"> | boolean
+  hashSeguridad?: Prisma.StringNullableWithAggregatesFilter<"EtiquetaGenerada"> | string | null
+  plantillaNombre?: Prisma.StringNullableWithAggregatesFilter<"EtiquetaGenerada"> | string | null
+  observacion?: Prisma.StringNullableWithAggregatesFilter<"EtiquetaGenerada"> | string | null
   generadoPor?: Prisma.UuidWithAggregatesFilter<"EtiquetaGenerada"> | string
   generadoEn?: Prisma.DateTimeWithAggregatesFilter<"EtiquetaGenerada"> | Date | string
   impreso?: Prisma.BoolWithAggregatesFilter<"EtiquetaGenerada"> | boolean
+  invalidadaEn?: Prisma.DateTimeNullableWithAggregatesFilter<"EtiquetaGenerada"> | Date | string | null
 }
 
 export type EtiquetaGeneradaCreateInput = {
   id?: string
   nroActivo: number
   codActivo: string
-  formato: string
+  formato?: string
+  motivo?: string
+  versionEtiqueta?: number
+  vigente?: boolean
+  hashSeguridad?: string | null
+  plantillaNombre?: string | null
+  observacion?: string | null
   generadoPor: string
   generadoEn?: Date | string
   impreso?: boolean
+  invalidadaEn?: Date | string | null
 }
 
 export type EtiquetaGeneradaUncheckedCreateInput = {
   id?: string
   nroActivo: number
   codActivo: string
-  formato: string
+  formato?: string
+  motivo?: string
+  versionEtiqueta?: number
+  vigente?: boolean
+  hashSeguridad?: string | null
+  plantillaNombre?: string | null
+  observacion?: string | null
   generadoPor: string
   generadoEn?: Date | string
   impreso?: boolean
+  invalidadaEn?: Date | string | null
 }
 
 export type EtiquetaGeneradaUpdateInput = {
@@ -310,9 +412,16 @@ export type EtiquetaGeneradaUpdateInput = {
   nroActivo?: Prisma.IntFieldUpdateOperationsInput | number
   codActivo?: Prisma.StringFieldUpdateOperationsInput | string
   formato?: Prisma.StringFieldUpdateOperationsInput | string
+  motivo?: Prisma.StringFieldUpdateOperationsInput | string
+  versionEtiqueta?: Prisma.IntFieldUpdateOperationsInput | number
+  vigente?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hashSeguridad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantillaNombre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  observacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   generadoPor?: Prisma.StringFieldUpdateOperationsInput | string
   generadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   impreso?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invalidadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EtiquetaGeneradaUncheckedUpdateInput = {
@@ -320,19 +429,33 @@ export type EtiquetaGeneradaUncheckedUpdateInput = {
   nroActivo?: Prisma.IntFieldUpdateOperationsInput | number
   codActivo?: Prisma.StringFieldUpdateOperationsInput | string
   formato?: Prisma.StringFieldUpdateOperationsInput | string
+  motivo?: Prisma.StringFieldUpdateOperationsInput | string
+  versionEtiqueta?: Prisma.IntFieldUpdateOperationsInput | number
+  vigente?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hashSeguridad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantillaNombre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  observacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   generadoPor?: Prisma.StringFieldUpdateOperationsInput | string
   generadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   impreso?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invalidadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EtiquetaGeneradaCreateManyInput = {
   id?: string
   nroActivo: number
   codActivo: string
-  formato: string
+  formato?: string
+  motivo?: string
+  versionEtiqueta?: number
+  vigente?: boolean
+  hashSeguridad?: string | null
+  plantillaNombre?: string | null
+  observacion?: string | null
   generadoPor: string
   generadoEn?: Date | string
   impreso?: boolean
+  invalidadaEn?: Date | string | null
 }
 
 export type EtiquetaGeneradaUpdateManyMutationInput = {
@@ -340,9 +463,16 @@ export type EtiquetaGeneradaUpdateManyMutationInput = {
   nroActivo?: Prisma.IntFieldUpdateOperationsInput | number
   codActivo?: Prisma.StringFieldUpdateOperationsInput | string
   formato?: Prisma.StringFieldUpdateOperationsInput | string
+  motivo?: Prisma.StringFieldUpdateOperationsInput | string
+  versionEtiqueta?: Prisma.IntFieldUpdateOperationsInput | number
+  vigente?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hashSeguridad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantillaNombre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  observacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   generadoPor?: Prisma.StringFieldUpdateOperationsInput | string
   generadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   impreso?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invalidadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EtiquetaGeneradaUncheckedUpdateManyInput = {
@@ -350,9 +480,16 @@ export type EtiquetaGeneradaUncheckedUpdateManyInput = {
   nroActivo?: Prisma.IntFieldUpdateOperationsInput | number
   codActivo?: Prisma.StringFieldUpdateOperationsInput | string
   formato?: Prisma.StringFieldUpdateOperationsInput | string
+  motivo?: Prisma.StringFieldUpdateOperationsInput | string
+  versionEtiqueta?: Prisma.IntFieldUpdateOperationsInput | number
+  vigente?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hashSeguridad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantillaNombre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  observacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   generadoPor?: Prisma.StringFieldUpdateOperationsInput | string
   generadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   impreso?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invalidadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EtiquetaGeneradaCountOrderByAggregateInput = {
@@ -360,13 +497,21 @@ export type EtiquetaGeneradaCountOrderByAggregateInput = {
   nroActivo?: Prisma.SortOrder
   codActivo?: Prisma.SortOrder
   formato?: Prisma.SortOrder
+  motivo?: Prisma.SortOrder
+  versionEtiqueta?: Prisma.SortOrder
+  vigente?: Prisma.SortOrder
+  hashSeguridad?: Prisma.SortOrder
+  plantillaNombre?: Prisma.SortOrder
+  observacion?: Prisma.SortOrder
   generadoPor?: Prisma.SortOrder
   generadoEn?: Prisma.SortOrder
   impreso?: Prisma.SortOrder
+  invalidadaEn?: Prisma.SortOrder
 }
 
 export type EtiquetaGeneradaAvgOrderByAggregateInput = {
   nroActivo?: Prisma.SortOrder
+  versionEtiqueta?: Prisma.SortOrder
 }
 
 export type EtiquetaGeneradaMaxOrderByAggregateInput = {
@@ -374,9 +519,16 @@ export type EtiquetaGeneradaMaxOrderByAggregateInput = {
   nroActivo?: Prisma.SortOrder
   codActivo?: Prisma.SortOrder
   formato?: Prisma.SortOrder
+  motivo?: Prisma.SortOrder
+  versionEtiqueta?: Prisma.SortOrder
+  vigente?: Prisma.SortOrder
+  hashSeguridad?: Prisma.SortOrder
+  plantillaNombre?: Prisma.SortOrder
+  observacion?: Prisma.SortOrder
   generadoPor?: Prisma.SortOrder
   generadoEn?: Prisma.SortOrder
   impreso?: Prisma.SortOrder
+  invalidadaEn?: Prisma.SortOrder
 }
 
 export type EtiquetaGeneradaMinOrderByAggregateInput = {
@@ -384,13 +536,21 @@ export type EtiquetaGeneradaMinOrderByAggregateInput = {
   nroActivo?: Prisma.SortOrder
   codActivo?: Prisma.SortOrder
   formato?: Prisma.SortOrder
+  motivo?: Prisma.SortOrder
+  versionEtiqueta?: Prisma.SortOrder
+  vigente?: Prisma.SortOrder
+  hashSeguridad?: Prisma.SortOrder
+  plantillaNombre?: Prisma.SortOrder
+  observacion?: Prisma.SortOrder
   generadoPor?: Prisma.SortOrder
   generadoEn?: Prisma.SortOrder
   impreso?: Prisma.SortOrder
+  invalidadaEn?: Prisma.SortOrder
 }
 
 export type EtiquetaGeneradaSumOrderByAggregateInput = {
   nroActivo?: Prisma.SortOrder
+  versionEtiqueta?: Prisma.SortOrder
 }
 
 
@@ -400,9 +560,16 @@ export type EtiquetaGeneradaSelect<ExtArgs extends runtime.Types.Extensions.Inte
   nroActivo?: boolean
   codActivo?: boolean
   formato?: boolean
+  motivo?: boolean
+  versionEtiqueta?: boolean
+  vigente?: boolean
+  hashSeguridad?: boolean
+  plantillaNombre?: boolean
+  observacion?: boolean
   generadoPor?: boolean
   generadoEn?: boolean
   impreso?: boolean
+  invalidadaEn?: boolean
 }, ExtArgs["result"]["etiquetaGenerada"]>
 
 export type EtiquetaGeneradaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -410,9 +577,16 @@ export type EtiquetaGeneradaSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   nroActivo?: boolean
   codActivo?: boolean
   formato?: boolean
+  motivo?: boolean
+  versionEtiqueta?: boolean
+  vigente?: boolean
+  hashSeguridad?: boolean
+  plantillaNombre?: boolean
+  observacion?: boolean
   generadoPor?: boolean
   generadoEn?: boolean
   impreso?: boolean
+  invalidadaEn?: boolean
 }, ExtArgs["result"]["etiquetaGenerada"]>
 
 export type EtiquetaGeneradaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -420,9 +594,16 @@ export type EtiquetaGeneradaSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   nroActivo?: boolean
   codActivo?: boolean
   formato?: boolean
+  motivo?: boolean
+  versionEtiqueta?: boolean
+  vigente?: boolean
+  hashSeguridad?: boolean
+  plantillaNombre?: boolean
+  observacion?: boolean
   generadoPor?: boolean
   generadoEn?: boolean
   impreso?: boolean
+  invalidadaEn?: boolean
 }, ExtArgs["result"]["etiquetaGenerada"]>
 
 export type EtiquetaGeneradaSelectScalar = {
@@ -430,12 +611,19 @@ export type EtiquetaGeneradaSelectScalar = {
   nroActivo?: boolean
   codActivo?: boolean
   formato?: boolean
+  motivo?: boolean
+  versionEtiqueta?: boolean
+  vigente?: boolean
+  hashSeguridad?: boolean
+  plantillaNombre?: boolean
+  observacion?: boolean
   generadoPor?: boolean
   generadoEn?: boolean
   impreso?: boolean
+  invalidadaEn?: boolean
 }
 
-export type EtiquetaGeneradaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nroActivo" | "codActivo" | "formato" | "generadoPor" | "generadoEn" | "impreso", ExtArgs["result"]["etiquetaGenerada"]>
+export type EtiquetaGeneradaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nroActivo" | "codActivo" | "formato" | "motivo" | "versionEtiqueta" | "vigente" | "hashSeguridad" | "plantillaNombre" | "observacion" | "generadoPor" | "generadoEn" | "impreso" | "invalidadaEn", ExtArgs["result"]["etiquetaGenerada"]>
 
 export type $EtiquetaGeneradaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "EtiquetaGenerada"
@@ -445,9 +633,16 @@ export type $EtiquetaGeneradaPayload<ExtArgs extends runtime.Types.Extensions.In
     nroActivo: number
     codActivo: string
     formato: string
+    motivo: string
+    versionEtiqueta: number
+    vigente: boolean
+    hashSeguridad: string | null
+    plantillaNombre: string | null
+    observacion: string | null
     generadoPor: string
     generadoEn: Date
     impreso: boolean
+    invalidadaEn: Date | null
   }, ExtArgs["result"]["etiquetaGenerada"]>
   composites: {}
 }
@@ -875,9 +1070,16 @@ export interface EtiquetaGeneradaFieldRefs {
   readonly nroActivo: Prisma.FieldRef<"EtiquetaGenerada", 'Int'>
   readonly codActivo: Prisma.FieldRef<"EtiquetaGenerada", 'String'>
   readonly formato: Prisma.FieldRef<"EtiquetaGenerada", 'String'>
+  readonly motivo: Prisma.FieldRef<"EtiquetaGenerada", 'String'>
+  readonly versionEtiqueta: Prisma.FieldRef<"EtiquetaGenerada", 'Int'>
+  readonly vigente: Prisma.FieldRef<"EtiquetaGenerada", 'Boolean'>
+  readonly hashSeguridad: Prisma.FieldRef<"EtiquetaGenerada", 'String'>
+  readonly plantillaNombre: Prisma.FieldRef<"EtiquetaGenerada", 'String'>
+  readonly observacion: Prisma.FieldRef<"EtiquetaGenerada", 'String'>
   readonly generadoPor: Prisma.FieldRef<"EtiquetaGenerada", 'String'>
   readonly generadoEn: Prisma.FieldRef<"EtiquetaGenerada", 'DateTime'>
   readonly impreso: Prisma.FieldRef<"EtiquetaGenerada", 'Boolean'>
+  readonly invalidadaEn: Prisma.FieldRef<"EtiquetaGenerada", 'DateTime'>
 }
     
 

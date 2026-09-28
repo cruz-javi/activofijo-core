@@ -325,6 +325,126 @@
         ]
       }
     },
+    "/etiquetas/plantillas": {
+      "get": {
+        "operationId": "EtiquetadoController_listarPlantillas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      },
+      "post": {
+        "operationId": "EtiquetadoController_crearPlantilla",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
+    "/etiquetas/plantillas/{id}": {
+      "get": {
+        "operationId": "EtiquetadoController_obtenerPlantilla",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      },
+      "put": {
+        "operationId": "EtiquetadoController_actualizarPlantilla",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      },
+      "delete": {
+        "operationId": "EtiquetadoController_eliminarPlantilla",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
+    "/etiquetas/plantillas/{id}/predeterminada": {
+      "patch": {
+        "operationId": "EtiquetadoController_establecerPredeterminada",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
+    "/etiquetas/generar-lote": {
+      "post": {
+        "operationId": "EtiquetadoController_generarEtiquetasLote",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
+    "/etiquetas/reponer": {
+      "post": {
+        "operationId": "EtiquetadoController_reponerEtiqueta",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
+    "/etiquetas/historial/{codActivo}": {
+      "get": {
+        "operationId": "EtiquetadoController_obtenerHistorial",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
     "/health": {
       "get": {
         "operationId": "HealthController_check",
