@@ -15,6 +15,8 @@ import { LoginSchema, LoginDto, RefreshSchema, RefreshDto } from '../../applicat
 import { ZodValidationPipe } from '../../../../shared/infrastructure/http/pipes/zod-validation.pipe.js';
 import { Public } from '../security/public.decorator.js';
 import { UnauthorizedException } from '@nestjs/common';
+import { PrismaCoreService } from '../../../../shared/infrastructure/database/prisma-core.service.js';
+import { ResultadoAuditoria } from '../../../../shared/infrastructure/database/generated/core/enums.js';
 
 @Controller('auth')
 export class AuthController {
@@ -23,6 +25,7 @@ export class AuthController {
     @Inject(RefrescarTokenUseCase) private readonly refrescarToken: RefrescarTokenUseCase,
     @Inject(CerrarSesionUseCase) private readonly cerrarSesion: CerrarSesionUseCase,
     @Inject(ObtenerPerfilUseCase) private readonly obtenerPerfil: ObtenerPerfilUseCase,
+    @Inject(PrismaCoreService) private readonly prisma: PrismaCoreService,
   ) {}
 
   @Public()
@@ -60,10 +63,32 @@ export class AuthController {
 
   @Public()
   @Post('logout')
-  async logout(@Body('refreshToken') refreshToken: string) {
+  async logout(@Body('refreshToken') refreshToken: string, @Req() req: any) {
+    let emailUsuario = 'usuario@uagrm.edu.bo';
     if (refreshToken) {
-      await this.cerrarSesion.execute(refreshToken);
+      const email = await this.cerrarSesion.execute(refreshToken);
+      if (email) emailUsuario = email;
     }
+
+    const clientIp = (req?.headers?.['x-forwarded-for'] as string) || req?.ip || '127.0.0.1';
+    const userAgent = (req?.headers?.['user-agent'] as string) || 'Browser';
+
+    try {
+      await this.prisma.authAuditoriaForense.create({
+        data: {
+          emailUsuario,
+          accion: 'LOGOUT',
+          modulo: 'AUTENTICACION',
+          resultado: ResultadoAuditoria.EXITOSO,
+          motivoRechazo: 'Cierre de sesión seguro',
+          ipOrigen: clientIp,
+          userAgent,
+        },
+      });
+    } catch (e) {
+      console.warn(`Error al registrar logout en bitácora: ${(e as Error).message}`);
+    }
+
     return { success: true };
   }
 

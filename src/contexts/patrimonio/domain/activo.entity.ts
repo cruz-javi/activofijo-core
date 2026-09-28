@@ -4,9 +4,20 @@ export interface ActivoProps {
   descripcion: string;
   grupoContable: string;
   ubicacion: string;
+  unidad?: string;
+  custodio?: {
+    codigo?: number | null;
+    nombreCompleto: string;
+    cargo?: string | null;
+    ci?: string | null;
+  } | null;
   estado: string;
+  condicion?: string;
   valor: number;
   fechaAlta: Date;
+  nroSerie?: string | null;
+  marca?: string | null;
+  modelo?: string | null;
   version: number;
 }
 
@@ -22,9 +33,15 @@ export class Activo {
   get descripcion(): string { return this.props.descripcion; }
   get grupoContable(): string { return this.props.grupoContable; }
   get ubicacion(): string { return this.props.ubicacion; }
+  get unidad(): string | undefined { return this.props.unidad; }
+  get custodio(): ActivoProps['custodio'] { return this.props.custodio; }
   get estado(): string { return this.props.estado; }
+  get condicion(): string | undefined { return this.props.condicion; }
   get valor(): number { return this.props.valor; }
   get fechaAlta(): Date { return this.props.fechaAlta; }
+  get nroSerie(): string | null | undefined { return this.props.nroSerie; }
+  get marca(): string | null | undefined { return this.props.marca; }
+  get modelo(): string | null | undefined { return this.props.modelo; }
   get version(): number { return this.props.version; }
 
   static create(props: Omit<ActivoProps, 'version'>): Activo {

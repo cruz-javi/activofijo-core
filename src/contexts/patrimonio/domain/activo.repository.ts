@@ -4,8 +4,12 @@ export const ACTIVO_REPOSITORY = Symbol('ACTIVO_REPOSITORY');
 
 export interface ActivoFilters {
   search?: string;
+  codigo?: string;
   ubicacion?: string;
+  unidad?: string;
+  custodio?: string;
   estado?: string;
+  grupoContable?: string;
 }
 
 export interface ActivoRepository {

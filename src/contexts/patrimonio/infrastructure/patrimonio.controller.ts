@@ -28,14 +28,27 @@ export class PatrimonioController {
     @Query('limit') limit = '50',
     @Query('offset') offset = '0',
     @Query('search') search?: string,
+    @Query('codigo') codigo?: string,
     @Query('ubicacion') ubicacion?: string,
+    @Query('unidad') unidad?: string,
+    @Query('custodio') custodio?: string,
     @Query('estado') estado?: string,
+    @Query('grupo') grupo?: string,
   ) {
     return this.patrimonioService.findAll(parseInt(limit, 10), parseInt(offset, 10), {
       search,
+      codigo,
       ubicacion,
+      unidad,
+      custodio,
       estado,
+      grupoContable: grupo,
     });
+  }
+
+  @Get('filtros-metadata')
+  async getFiltrosMetadata() {
+    return this.patrimonioService.getMetadata();
   }
 
   @Get(':id')

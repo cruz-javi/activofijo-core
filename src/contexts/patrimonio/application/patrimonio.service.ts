@@ -28,6 +28,19 @@ export class PatrimonioService {
     };
   }
 
+  async getMetadata() {
+    const items = await this.repository.findAll(200, 0);
+    const unidades = Array.from(new Set(items.map((i) => i.unidad || i.ubicacion).filter(Boolean)));
+    const estados = Array.from(new Set(items.map((i) => i.estado).filter(Boolean)));
+    const grupos = Array.from(new Set(items.map((i) => i.grupoContable).filter(Boolean)));
+
+    return {
+      unidades,
+      estados: estados.length > 0 ? estados : ['BUENO', 'REGULAR', 'MALO', 'EN_REPARACION', 'BAJA'],
+      grupos,
+    };
+  }
+
   async findById(id: string) {
     const item = await this.repository.findById(id);
     if (!item) throw new NotFoundException(`Activo with id ${id} not found`);

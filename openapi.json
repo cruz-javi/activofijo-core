@@ -203,6 +203,20 @@
         ]
       }
     },
+    "/activos/filtros-metadata": {
+      "get": {
+        "operationId": "PatrimonioController_getFiltrosMetadata",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      }
+    },
     "/activos/{id}": {
       "get": {
         "operationId": "PatrimonioController_findById",
