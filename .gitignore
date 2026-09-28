@@ -30,9 +30,12 @@ node_modules/
 !.env.example
 
 # Prisma generated clients
+src/shared/infrastructure/database/generated/
+src/**/generated/
 src/infrastructure/persistence/core/generated/
 src/infrastructure/persistence/legacy/generated/
 
 # OS files
 .DS_Store
 Thumbs.db
+

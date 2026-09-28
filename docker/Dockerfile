@@ -24,9 +24,9 @@ RUN corepack enable && corepack prepare pnpm@10.5.2 --activate
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --prod --frozen-lockfile
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/src/infrastructure/persistence/core/generated ./dist/src/infrastructure/persistence/core/generated
-COPY --from=builder /app/src/infrastructure/persistence/legacy/generated ./dist/src/infrastructure/persistence/legacy/generated
+COPY --from=builder --chown=node:node /app/dist ./dist
+COPY --from=builder --chown=node:node /app/prisma ./prisma
+COPY --from=builder --chown=node:node /app/prisma.config.ts /app/prisma.legacy.config.ts ./
 
 USER node
 

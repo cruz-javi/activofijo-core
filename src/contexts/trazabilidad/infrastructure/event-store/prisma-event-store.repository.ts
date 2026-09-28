@@ -55,10 +55,15 @@ export class PrismaEventStoreRepository implements EventStorePort {
   }
 
   async readStream(streamId: string): Promise<any[]> {
-    return this.prisma.eventStore.findMany({
+    const events = await this.prisma.eventStore.findMany({
       where: { streamId },
       orderBy: { version: 'asc' },
     });
+    return events.map((ev) => ({
+      ...ev,
+      globalPosition: ev.globalPosition !== null && ev.globalPosition !== undefined ? Number(ev.globalPosition) : null,
+      hash: ev.hash ? Buffer.from(ev.hash).toString('hex') : null,
+    }));
   }
 
   async verifyStreamIntegrity(streamId: string): Promise<boolean> {

