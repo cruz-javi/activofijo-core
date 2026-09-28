@@ -17,7 +17,7 @@ export class AuditoriaController {
     @Query('limit') limit = '50',
     @Query('offset') offset = '0',
   ) {
-    const take = Math.min(parseInt(limit, 10) || 50, 200);
+    const take = Math.min(parseInt(limit, 10) || 50, 5000);
     const skip = parseInt(offset, 10) || 0;
 
     const where: any = {};
