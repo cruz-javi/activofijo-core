@@ -19,7 +19,8 @@
     "test:sprint1": "node tests/sprint1-diagnostics/run-sprint1-suite.mjs",
     "test:2fa": "node tests/2fa-diagnostics/run-2fa-suite.mjs",
     "test:2fa:web": "node tests/2fa-diagnostics/run-bff-web-suite.mjs",
-    "test:2fa:movil": "tsx tests/2fa-diagnostics/run-cliente-movil-suite.mjs"
+    "test:2fa:movil": "tsx tests/2fa-diagnostics/run-cliente-movil-suite.mjs",
+    "test:export": "tsx tests/export-diagnostics/run-sanitizacion-suite.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.10",
