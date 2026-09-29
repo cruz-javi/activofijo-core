@@ -11,8 +11,58 @@
  * - CU06: Generación de Reportes Parametrizados (PDF, Excel, CSV)
  */
 
+import 'dotenv/config';
+import argon2 from 'argon2';
+import pg from 'pg';
+import { generate } from 'otplib';
+
 const BASE_URL = process.env.API_URL || 'http://localhost:3000';
 const WEB_URL = process.env.WEB_URL || 'http://localhost:3001';
+const PASSWORD_SEMILLA = 'Uagrm2026*';
+
+// El rol ADMINISTRADOR exige verificación en dos pasos: la suite no puede completarla con la cuenta real (su secreto es del usuario),
+// así que opera con una cuenta de servicio temporal `test.sprint1.*` con el mismo rol, que se desactiva al terminar.
+const cuentasTemporales = [];
+
+const db = new pg.Client({
+  connectionString: process.env.DIRECT_DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
+
+async function publicar(ruta, cuerpo) {
+  const res = await fetch(`${BASE_URL}${ruta}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(cuerpo),
+  });
+  return { status: res.status, json: await res.json() };
+}
+
+async function crearAdministradorDeServicio() {
+  const email = `test.sprint1.${Date.now()}.admin@uagrm.edu.bo`;
+  const { rows } = await db.query(
+    'INSERT INTO core.auth_usuario (email, password_hash, nombre_completo) VALUES ($1, $2, $3) RETURNING id',
+    [email, await argon2.hash(PASSWORD_SEMILLA), 'Administrador de servicio (suite Sprint 1)'],
+  );
+  await db.query("INSERT INTO core.auth_usuario_rol (usuario_id, rol_id) VALUES ($1, 'ADMINISTRADOR')", [rows[0].id]);
+  cuentasTemporales.push(rows[0].id);
+
+  const login = await publicar('/auth/login', { identificador: email, password: PASSWORD_SEMILLA });
+  const { desafioToken } = login.json;
+  const configuracion = await publicar('/auth/2fa/inicial/configurar', { desafioToken });
+  const activacion = await publicar('/auth/2fa/inicial/activar', {
+    desafioToken,
+    codigo: await generate({ secret: configuracion.json.secreto }),
+  });
+  return activacion.json.sesion;
+}
+
+async function desactivarCuentasTemporales() {
+  if (cuentasTemporales.length > 0) {
+    await db.query("UPDATE core.auth_usuario SET activo = false, estado = 'INACTIVO' WHERE id = ANY($1)", [cuentasTemporales]);
+  }
+  await db.end();
+}
 
 const testResults = {
   timestamp: new Date().toISOString(),
@@ -68,46 +118,38 @@ async function runSuiteCU01() {
   console.log('============================================================');
 
   let adminToken = null;
-  let adminRefreshToken = null;
   let funcionarioToken = null;
 
-  // CP-CU01-01: Login con Código de Funcionario (1001)
+  try {
+    const sesionAdmin = await crearAdministradorDeServicio();
+    adminToken = sesionAdmin.accessToken;
+  } catch (err) {
+    console.error(`No fue posible preparar la cuenta de servicio ADMINISTRADOR: ${err.message}`);
+  }
+
+  // CP-CU01-01: Login con Código de Funcionario (1001). El ADMINISTRADOR exige segundo paso: no se emite sesión con solo la contraseña.
   {
     const t0 = Date.now();
     try {
-      const res = await fetch(`${BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: '1001', password: 'Uagrm2026*' }),
-      });
+      const { status, json } = await publicar('/auth/login', { email: '1001', password: PASSWORD_SEMILLA });
       const d = Date.now() - t0;
-      const json = await res.json();
-      const ok = res.status === 201 && !!json.accessToken && json.user?.email === 'admin@uagrm.edu.bo';
-      if (ok) {
-        adminToken = json.accessToken;
-        adminRefreshToken = json.refreshToken;
-      }
-      recordTest('CU01', 'CP-CU01-01', 'Login con Código de Funcionario (1001)', ok, { status: res.status, user: json.user?.nombreCompleto }, d);
+      const ok = status === 201 && !json.accessToken && !!json.desafioToken && (json.requiere2fa === true || json.requiereConfiguracion2fa === true);
+      recordTest('CU01', 'CP-CU01-01', 'Login con Código de Funcionario (1001): identidad validada y segundo paso exigido al ADMINISTRADOR', ok, { status, requiere2fa: json.requiere2fa, requiereConfiguracion2fa: json.requiereConfiguracion2fa }, d);
     } catch (err) {
-      recordTest('CU01', 'CP-CU01-01', 'Login con Código de Funcionario (1001)', false, { error: err.message }, Date.now() - t0);
+      recordTest('CU01', 'CP-CU01-01', 'Login con Código de Funcionario (1001): identidad validada y segundo paso exigido al ADMINISTRADOR', false, { error: err.message }, Date.now() - t0);
     }
   }
 
-  // CP-CU01-02: Login con Correo Institucional
+  // CP-CU01-02: Login con Correo Institucional (mismo contrato de segundo paso)
   {
     const t0 = Date.now();
     try {
-      const res = await fetch(`${BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'admin@uagrm.edu.bo', password: 'Uagrm2026*' }),
-      });
+      const { status, json } = await publicar('/auth/login', { email: 'admin@uagrm.edu.bo', password: PASSWORD_SEMILLA });
       const d = Date.now() - t0;
-      const json = await res.json();
-      const ok = res.status === 201 && !!json.accessToken && json.user?.roles?.includes('ADMINISTRADOR');
-      recordTest('CU01', 'CP-CU01-02', 'Login con Correo Institucional (admin@uagrm.edu.bo)', ok, { status: res.status, roles: json.user?.roles }, d);
+      const ok = status === 201 && !json.accessToken && !!json.desafioToken && (json.requiere2fa === true || json.requiereConfiguracion2fa === true);
+      recordTest('CU01', 'CP-CU01-02', 'Login con Correo Institucional (admin@uagrm.edu.bo): segundo paso exigido al ADMINISTRADOR', ok, { status, requiere2fa: json.requiere2fa, requiereConfiguracion2fa: json.requiereConfiguracion2fa }, d);
     } catch (err) {
-      recordTest('CU01', 'CP-CU01-02', 'Login con Correo Institucional (admin@uagrm.edu.bo)', false, { error: err.message }, Date.now() - t0);
+      recordTest('CU01', 'CP-CU01-02', 'Login con Correo Institucional (admin@uagrm.edu.bo): segundo paso exigido al ADMINISTRADOR', false, { error: err.message }, Date.now() - t0);
     }
   }
 
@@ -174,7 +216,7 @@ async function runSuiteCU01() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${adminToken}`,
         },
-        body: JSON.stringify({ password: 'Uagrm2026*' }),
+        body: JSON.stringify({ password: PASSWORD_SEMILLA }),
       });
       const jsonValid = await resValid.json();
 
@@ -830,10 +872,12 @@ async function main() {
   console.log('============================================================');
 
   try {
+    await db.connect();
     const { adminToken, funcionarioToken } = await runSuiteCU01();
 
     if (!adminToken) {
       console.error('ERROR CRÍTICO: No fue posible autenticar como Administrador. Abortando pruebas subsiguientes.');
+      await desactivarCuentasTemporales();
       process.exit(1);
     }
 
@@ -843,6 +887,7 @@ async function main() {
     await runSuiteCU05(adminToken, firstActivoCodigo);
     await runSuiteCU06(adminToken);
 
+    await desactivarCuentasTemporales();
     testResults.summary.durationMs = Date.now() - tGlobalStart;
 
     console.log('\n============================================================');
@@ -863,6 +908,7 @@ async function main() {
     });
   } catch (err) {
     console.error('Fallo en la ejecución de la suite diagnóstica:', err);
+    await desactivarCuentasTemporales().catch((e) => console.error(`No se pudieron desactivar las cuentas temporales: ${e.message}`));
     process.exit(1);
   }
 }
