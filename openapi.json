@@ -57,21 +57,9 @@
         ]
       }
     },
-    "/activos": {
-      "get": {
-        "operationId": "CatalogoController_findAll",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      },
+    "/auth/verify-password": {
       "post": {
-        "operationId": "CatalogoController_create",
+        "operationId": "AuthController_verifyPassword",
         "parameters": [],
         "responses": {
           "201": {
@@ -79,127 +67,7 @@
           }
         },
         "tags": [
-          "Catalogo"
-        ]
-      }
-    },
-    "/activos/{id}": {
-      "get": {
-        "operationId": "CatalogoController_findById",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      },
-      "patch": {
-        "operationId": "CatalogoController_update",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      },
-      "delete": {
-        "operationId": "CatalogoController_darDeBaja",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      }
-    },
-    "/activos/{id}/historial": {
-      "get": {
-        "operationId": "CatalogoController_getHistory",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      }
-    },
-    "/activos/{id}/depreciacion": {
-      "get": {
-        "operationId": "CatalogoController_getDepreciacion",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      }
-    },
-    "/activos/{id}/reconstruccion": {
-      "get": {
-        "operationId": "CatalogoController_reconstruir",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Catalogo"
-        ]
-      }
-    },
-    "/reglas/configuracion": {
-      "get": {
-        "operationId": "ReglasController_getActiva",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Reglas"
-        ]
-      },
-      "post": {
-        "operationId": "ReglasController_crear",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Reglas"
-        ]
-      }
-    },
-    "/reglas/configuracion/historial": {
-      "get": {
-        "operationId": "ReglasController_historial",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Reglas"
+          "Auth"
         ]
       }
     },
@@ -243,6 +111,192 @@
         ]
       }
     },
+    "/auditoria": {
+      "get": {
+        "operationId": "AuditoriaController_getBitacora",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auditoria"
+        ]
+      }
+    },
+    "/roles": {
+      "get": {
+        "operationId": "RolesController_findAllRoles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      },
+      "post": {
+        "operationId": "RolesController_createRole",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      }
+    },
+    "/roles/{id}": {
+      "patch": {
+        "operationId": "RolesController_updateRole",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      },
+      "delete": {
+        "operationId": "RolesController_deleteRole",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      }
+    },
+    "/permisos": {
+      "get": {
+        "operationId": "RolesController_findAllPermisos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      }
+    },
+    "/activos": {
+      "get": {
+        "operationId": "PatrimonioController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      },
+      "post": {
+        "operationId": "PatrimonioController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      }
+    },
+    "/activos/filtros-metadata": {
+      "get": {
+        "operationId": "PatrimonioController_getFiltrosMetadata",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      }
+    },
+    "/activos/formulario-metadata": {
+      "get": {
+        "operationId": "PatrimonioController_getFormularioMetadata",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      }
+    },
+    "/activos/{id}": {
+      "get": {
+        "operationId": "PatrimonioController_findById",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      },
+      "patch": {
+        "operationId": "PatrimonioController_update",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      },
+      "delete": {
+        "operationId": "PatrimonioController_darDeBaja",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      }
+    },
+    "/activos/{id}/historial": {
+      "get": {
+        "operationId": "PatrimonioController_getHistory",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      }
+    },
     "/sincronizacion/ejecutar": {
       "post": {
         "operationId": "SincronizacionController_ejecutar",
@@ -268,6 +322,126 @@
         },
         "tags": [
           "Sincronizacion"
+        ]
+      }
+    },
+    "/etiquetas/plantillas": {
+      "get": {
+        "operationId": "EtiquetadoController_listarPlantillas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      },
+      "post": {
+        "operationId": "EtiquetadoController_crearPlantilla",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
+    "/etiquetas/plantillas/{id}": {
+      "get": {
+        "operationId": "EtiquetadoController_obtenerPlantilla",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      },
+      "put": {
+        "operationId": "EtiquetadoController_actualizarPlantilla",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      },
+      "delete": {
+        "operationId": "EtiquetadoController_eliminarPlantilla",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
+    "/etiquetas/plantillas/{id}/predeterminada": {
+      "patch": {
+        "operationId": "EtiquetadoController_establecerPredeterminada",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
+    "/etiquetas/generar-lote": {
+      "post": {
+        "operationId": "EtiquetadoController_generarEtiquetasLote",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
+    "/etiquetas/reponer": {
+      "post": {
+        "operationId": "EtiquetadoController_reponerEtiqueta",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
+        ]
+      }
+    },
+    "/etiquetas/historial/{codActivo}": {
+      "get": {
+        "operationId": "EtiquetadoController_obtenerHistorial",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Etiquetado"
         ]
       }
     },

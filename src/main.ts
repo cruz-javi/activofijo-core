@@ -1,5 +1,10 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
+
+// Serializador global para BigInt en respuestas JSON de Express/NestJS
+(BigInt.prototype as any).toJSON = function () {
+  return Number(this);
+};
 import { AppModule } from './app.module.js';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
