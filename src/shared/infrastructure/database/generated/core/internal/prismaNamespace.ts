@@ -405,6 +405,7 @@ export const ModelName = {
   AuthRolPermiso: 'AuthRolPermiso',
   AuthUsuarioRol: 'AuthUsuarioRol',
   AuthRefreshToken: 'AuthRefreshToken',
+  AuthCodigoRespaldo: 'AuthCodigoRespaldo',
   AuthAuditoriaForense: 'AuthAuditoriaForense',
   ProjectionCheckpoint: 'ProjectionCheckpoint',
   SincronizacionLog: 'SincronizacionLog',
@@ -430,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "eventStore" | "activoProyeccion" | "authUsuario" | "authRol" | "authPermiso" | "authRolPermiso" | "authUsuarioRol" | "authRefreshToken" | "authAuditoriaForense" | "projectionCheckpoint" | "sincronizacionLog" | "tramite" | "tramitePaso" | "normativaRegla" | "inspInspeccion" | "inspHallazgo" | "etiquetaGenerada" | "plantillaEtiqueta"
+    modelProps: "eventStore" | "activoProyeccion" | "authUsuario" | "authRol" | "authPermiso" | "authRolPermiso" | "authUsuarioRol" | "authRefreshToken" | "authCodigoRespaldo" | "authAuditoriaForense" | "projectionCheckpoint" | "sincronizacionLog" | "tramite" | "tramitePaso" | "normativaRegla" | "inspInspeccion" | "inspHallazgo" | "etiquetaGenerada" | "plantillaEtiqueta"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1023,6 +1024,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AuthRefreshTokenCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AuthRefreshTokenCountAggregateOutputType> | number
+        }
+      }
+    }
+    AuthCodigoRespaldo: {
+      payload: Prisma.$AuthCodigoRespaldoPayload<ExtArgs>
+      fields: Prisma.AuthCodigoRespaldoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AuthCodigoRespaldoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AuthCodigoRespaldoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload>
+        }
+        findFirst: {
+          args: Prisma.AuthCodigoRespaldoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AuthCodigoRespaldoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload>
+        }
+        findMany: {
+          args: Prisma.AuthCodigoRespaldoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload>[]
+        }
+        create: {
+          args: Prisma.AuthCodigoRespaldoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload>
+        }
+        createMany: {
+          args: Prisma.AuthCodigoRespaldoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AuthCodigoRespaldoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload>[]
+        }
+        delete: {
+          args: Prisma.AuthCodigoRespaldoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload>
+        }
+        update: {
+          args: Prisma.AuthCodigoRespaldoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload>
+        }
+        deleteMany: {
+          args: Prisma.AuthCodigoRespaldoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AuthCodigoRespaldoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AuthCodigoRespaldoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload>[]
+        }
+        upsert: {
+          args: Prisma.AuthCodigoRespaldoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthCodigoRespaldoPayload>
+        }
+        aggregate: {
+          args: Prisma.AuthCodigoRespaldoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAuthCodigoRespaldo>
+        }
+        groupBy: {
+          args: Prisma.AuthCodigoRespaldoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthCodigoRespaldoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AuthCodigoRespaldoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthCodigoRespaldoCountAggregateOutputType> | number
         }
       }
     }
@@ -1850,6 +1925,8 @@ export const AuthUsuarioScalarFieldEnum = {
   codigoEmpleadoLegado: 'codigoEmpleadoLegado',
   twoFactorHabilitado: 'twoFactorHabilitado',
   twoFactorSecret: 'twoFactorSecret',
+  twoFactorUltimoPaso: 'twoFactorUltimoPaso',
+  twoFactorActivadoEn: 'twoFactorActivadoEn',
   activo: 'activo',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn',
@@ -1920,6 +1997,17 @@ export const AuthRefreshTokenScalarFieldEnum = {
 } as const
 
 export type AuthRefreshTokenScalarFieldEnum = (typeof AuthRefreshTokenScalarFieldEnum)[keyof typeof AuthRefreshTokenScalarFieldEnum]
+
+
+export const AuthCodigoRespaldoScalarFieldEnum = {
+  id: 'id',
+  usuarioId: 'usuarioId',
+  codigoHash: 'codigoHash',
+  usadoEn: 'usadoEn',
+  creadoEn: 'creadoEn'
+} as const
+
+export type AuthCodigoRespaldoScalarFieldEnum = (typeof AuthCodigoRespaldoScalarFieldEnum)[keyof typeof AuthCodigoRespaldoScalarFieldEnum]
 
 
 export const AuthAuditoriaForenseScalarFieldEnum = {
@@ -2427,6 +2515,7 @@ export type GlobalOmitConfig = {
   authRolPermiso?: Prisma.AuthRolPermisoOmit
   authUsuarioRol?: Prisma.AuthUsuarioRolOmit
   authRefreshToken?: Prisma.AuthRefreshTokenOmit
+  authCodigoRespaldo?: Prisma.AuthCodigoRespaldoOmit
   authAuditoriaForense?: Prisma.AuthAuditoriaForenseOmit
   projectionCheckpoint?: Prisma.ProjectionCheckpointOmit
   sincronizacionLog?: Prisma.SincronizacionLogOmit

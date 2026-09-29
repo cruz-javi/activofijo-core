@@ -29,11 +29,13 @@ export type AggregateAuthUsuario = {
 export type AuthUsuarioAvgAggregateOutputType = {
   intentosFallidos: number | null
   codigoEmpleadoLegado: number | null
+  twoFactorUltimoPaso: number | null
 }
 
 export type AuthUsuarioSumAggregateOutputType = {
   intentosFallidos: number | null
   codigoEmpleadoLegado: number | null
+  twoFactorUltimoPaso: bigint | null
 }
 
 export type AuthUsuarioMinAggregateOutputType = {
@@ -48,6 +50,8 @@ export type AuthUsuarioMinAggregateOutputType = {
   codigoEmpleadoLegado: number | null
   twoFactorHabilitado: boolean | null
   twoFactorSecret: string | null
+  twoFactorUltimoPaso: bigint | null
+  twoFactorActivadoEn: Date | null
   activo: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -67,6 +71,8 @@ export type AuthUsuarioMaxAggregateOutputType = {
   codigoEmpleadoLegado: number | null
   twoFactorHabilitado: boolean | null
   twoFactorSecret: string | null
+  twoFactorUltimoPaso: bigint | null
+  twoFactorActivadoEn: Date | null
   activo: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -86,6 +92,8 @@ export type AuthUsuarioCountAggregateOutputType = {
   codigoEmpleadoLegado: number
   twoFactorHabilitado: number
   twoFactorSecret: number
+  twoFactorUltimoPaso: number
+  twoFactorActivadoEn: number
   activo: number
   creadoEn: number
   actualizadoEn: number
@@ -98,11 +106,13 @@ export type AuthUsuarioCountAggregateOutputType = {
 export type AuthUsuarioAvgAggregateInputType = {
   intentosFallidos?: true
   codigoEmpleadoLegado?: true
+  twoFactorUltimoPaso?: true
 }
 
 export type AuthUsuarioSumAggregateInputType = {
   intentosFallidos?: true
   codigoEmpleadoLegado?: true
+  twoFactorUltimoPaso?: true
 }
 
 export type AuthUsuarioMinAggregateInputType = {
@@ -117,6 +127,8 @@ export type AuthUsuarioMinAggregateInputType = {
   codigoEmpleadoLegado?: true
   twoFactorHabilitado?: true
   twoFactorSecret?: true
+  twoFactorUltimoPaso?: true
+  twoFactorActivadoEn?: true
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -136,6 +148,8 @@ export type AuthUsuarioMaxAggregateInputType = {
   codigoEmpleadoLegado?: true
   twoFactorHabilitado?: true
   twoFactorSecret?: true
+  twoFactorUltimoPaso?: true
+  twoFactorActivadoEn?: true
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -155,6 +169,8 @@ export type AuthUsuarioCountAggregateInputType = {
   codigoEmpleadoLegado?: true
   twoFactorHabilitado?: true
   twoFactorSecret?: true
+  twoFactorUltimoPaso?: true
+  twoFactorActivadoEn?: true
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -261,6 +277,8 @@ export type AuthUsuarioGroupByOutputType = {
   codigoEmpleadoLegado: number | null
   twoFactorHabilitado: boolean
   twoFactorSecret: string | null
+  twoFactorUltimoPaso: bigint | null
+  twoFactorActivadoEn: Date | null
   activo: boolean
   creadoEn: Date
   actualizadoEn: Date
@@ -303,6 +321,8 @@ export type AuthUsuarioWhereInput = {
   codigoEmpleadoLegado?: Prisma.IntNullableFilter<"AuthUsuario"> | number | null
   twoFactorHabilitado?: Prisma.BoolFilter<"AuthUsuario"> | boolean
   twoFactorSecret?: Prisma.StringNullableFilter<"AuthUsuario"> | string | null
+  twoFactorUltimoPaso?: Prisma.BigIntNullableFilter<"AuthUsuario"> | bigint | number | null
+  twoFactorActivadoEn?: Prisma.DateTimeNullableFilter<"AuthUsuario"> | Date | string | null
   activo?: Prisma.BoolFilter<"AuthUsuario"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"AuthUsuario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"AuthUsuario"> | Date | string
@@ -311,6 +331,7 @@ export type AuthUsuarioWhereInput = {
   roles?: Prisma.AuthUsuarioRolListRelationFilter
   tokens?: Prisma.AuthRefreshTokenListRelationFilter
   auditorias?: Prisma.AuthAuditoriaForenseListRelationFilter
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoListRelationFilter
 }
 
 export type AuthUsuarioOrderByWithRelationInput = {
@@ -325,6 +346,8 @@ export type AuthUsuarioOrderByWithRelationInput = {
   codigoEmpleadoLegado?: Prisma.SortOrderInput | Prisma.SortOrder
   twoFactorHabilitado?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  twoFactorUltimoPaso?: Prisma.SortOrderInput | Prisma.SortOrder
+  twoFactorActivadoEn?: Prisma.SortOrderInput | Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -333,6 +356,7 @@ export type AuthUsuarioOrderByWithRelationInput = {
   roles?: Prisma.AuthUsuarioRolOrderByRelationAggregateInput
   tokens?: Prisma.AuthRefreshTokenOrderByRelationAggregateInput
   auditorias?: Prisma.AuthAuditoriaForenseOrderByRelationAggregateInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoOrderByRelationAggregateInput
 }
 
 export type AuthUsuarioWhereUniqueInput = Prisma.AtLeast<{
@@ -350,6 +374,8 @@ export type AuthUsuarioWhereUniqueInput = Prisma.AtLeast<{
   codigoEmpleadoLegado?: Prisma.IntNullableFilter<"AuthUsuario"> | number | null
   twoFactorHabilitado?: Prisma.BoolFilter<"AuthUsuario"> | boolean
   twoFactorSecret?: Prisma.StringNullableFilter<"AuthUsuario"> | string | null
+  twoFactorUltimoPaso?: Prisma.BigIntNullableFilter<"AuthUsuario"> | bigint | number | null
+  twoFactorActivadoEn?: Prisma.DateTimeNullableFilter<"AuthUsuario"> | Date | string | null
   activo?: Prisma.BoolFilter<"AuthUsuario"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"AuthUsuario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"AuthUsuario"> | Date | string
@@ -358,6 +384,7 @@ export type AuthUsuarioWhereUniqueInput = Prisma.AtLeast<{
   roles?: Prisma.AuthUsuarioRolListRelationFilter
   tokens?: Prisma.AuthRefreshTokenListRelationFilter
   auditorias?: Prisma.AuthAuditoriaForenseListRelationFilter
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoListRelationFilter
 }, "id" | "email">
 
 export type AuthUsuarioOrderByWithAggregationInput = {
@@ -372,6 +399,8 @@ export type AuthUsuarioOrderByWithAggregationInput = {
   codigoEmpleadoLegado?: Prisma.SortOrderInput | Prisma.SortOrder
   twoFactorHabilitado?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  twoFactorUltimoPaso?: Prisma.SortOrderInput | Prisma.SortOrder
+  twoFactorActivadoEn?: Prisma.SortOrderInput | Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -399,6 +428,8 @@ export type AuthUsuarioScalarWhereWithAggregatesInput = {
   codigoEmpleadoLegado?: Prisma.IntNullableWithAggregatesFilter<"AuthUsuario"> | number | null
   twoFactorHabilitado?: Prisma.BoolWithAggregatesFilter<"AuthUsuario"> | boolean
   twoFactorSecret?: Prisma.StringNullableWithAggregatesFilter<"AuthUsuario"> | string | null
+  twoFactorUltimoPaso?: Prisma.BigIntNullableWithAggregatesFilter<"AuthUsuario"> | bigint | number | null
+  twoFactorActivadoEn?: Prisma.DateTimeNullableWithAggregatesFilter<"AuthUsuario"> | Date | string | null
   activo?: Prisma.BoolWithAggregatesFilter<"AuthUsuario"> | boolean
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"AuthUsuario"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"AuthUsuario"> | Date | string
@@ -418,6 +449,8 @@ export type AuthUsuarioCreateInput = {
   codigoEmpleadoLegado?: number | null
   twoFactorHabilitado?: boolean
   twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -426,6 +459,7 @@ export type AuthUsuarioCreateInput = {
   roles?: Prisma.AuthUsuarioRolCreateNestedManyWithoutUsuarioInput
   tokens?: Prisma.AuthRefreshTokenCreateNestedManyWithoutUsuarioInput
   auditorias?: Prisma.AuthAuditoriaForenseCreateNestedManyWithoutUsuarioInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoCreateNestedManyWithoutUsuarioInput
 }
 
 export type AuthUsuarioUncheckedCreateInput = {
@@ -440,6 +474,8 @@ export type AuthUsuarioUncheckedCreateInput = {
   codigoEmpleadoLegado?: number | null
   twoFactorHabilitado?: boolean
   twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -448,6 +484,7 @@ export type AuthUsuarioUncheckedCreateInput = {
   roles?: Prisma.AuthUsuarioRolUncheckedCreateNestedManyWithoutUsuarioInput
   tokens?: Prisma.AuthRefreshTokenUncheckedCreateNestedManyWithoutUsuarioInput
   auditorias?: Prisma.AuthAuditoriaForenseUncheckedCreateNestedManyWithoutUsuarioInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type AuthUsuarioUpdateInput = {
@@ -462,6 +499,8 @@ export type AuthUsuarioUpdateInput = {
   codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -470,6 +509,7 @@ export type AuthUsuarioUpdateInput = {
   roles?: Prisma.AuthUsuarioRolUpdateManyWithoutUsuarioNestedInput
   tokens?: Prisma.AuthRefreshTokenUpdateManyWithoutUsuarioNestedInput
   auditorias?: Prisma.AuthAuditoriaForenseUpdateManyWithoutUsuarioNestedInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUpdateManyWithoutUsuarioNestedInput
 }
 
 export type AuthUsuarioUncheckedUpdateInput = {
@@ -484,6 +524,8 @@ export type AuthUsuarioUncheckedUpdateInput = {
   codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -492,6 +534,7 @@ export type AuthUsuarioUncheckedUpdateInput = {
   roles?: Prisma.AuthUsuarioRolUncheckedUpdateManyWithoutUsuarioNestedInput
   tokens?: Prisma.AuthRefreshTokenUncheckedUpdateManyWithoutUsuarioNestedInput
   auditorias?: Prisma.AuthAuditoriaForenseUncheckedUpdateManyWithoutUsuarioNestedInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type AuthUsuarioCreateManyInput = {
@@ -506,6 +549,8 @@ export type AuthUsuarioCreateManyInput = {
   codigoEmpleadoLegado?: number | null
   twoFactorHabilitado?: boolean
   twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -525,6 +570,8 @@ export type AuthUsuarioUpdateManyMutationInput = {
   codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -544,6 +591,8 @@ export type AuthUsuarioUncheckedUpdateManyInput = {
   codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -563,6 +612,8 @@ export type AuthUsuarioCountOrderByAggregateInput = {
   codigoEmpleadoLegado?: Prisma.SortOrder
   twoFactorHabilitado?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrder
+  twoFactorUltimoPaso?: Prisma.SortOrder
+  twoFactorActivadoEn?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -573,6 +624,7 @@ export type AuthUsuarioCountOrderByAggregateInput = {
 export type AuthUsuarioAvgOrderByAggregateInput = {
   intentosFallidos?: Prisma.SortOrder
   codigoEmpleadoLegado?: Prisma.SortOrder
+  twoFactorUltimoPaso?: Prisma.SortOrder
 }
 
 export type AuthUsuarioMaxOrderByAggregateInput = {
@@ -587,6 +639,8 @@ export type AuthUsuarioMaxOrderByAggregateInput = {
   codigoEmpleadoLegado?: Prisma.SortOrder
   twoFactorHabilitado?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrder
+  twoFactorUltimoPaso?: Prisma.SortOrder
+  twoFactorActivadoEn?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -606,6 +660,8 @@ export type AuthUsuarioMinOrderByAggregateInput = {
   codigoEmpleadoLegado?: Prisma.SortOrder
   twoFactorHabilitado?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrder
+  twoFactorUltimoPaso?: Prisma.SortOrder
+  twoFactorActivadoEn?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -616,6 +672,7 @@ export type AuthUsuarioMinOrderByAggregateInput = {
 export type AuthUsuarioSumOrderByAggregateInput = {
   intentosFallidos?: Prisma.SortOrder
   codigoEmpleadoLegado?: Prisma.SortOrder
+  twoFactorUltimoPaso?: Prisma.SortOrder
 }
 
 export type AuthUsuarioScalarRelationFilter = {
@@ -652,6 +709,14 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type NullableBigIntFieldUpdateOperationsInput = {
+  set?: bigint | number | null
+  increment?: bigint | number
+  decrement?: bigint | number
+  multiply?: bigint | number
+  divide?: bigint | number
+}
+
 export type AuthUsuarioCreateNestedOneWithoutRolesInput = {
   create?: Prisma.XOR<Prisma.AuthUsuarioCreateWithoutRolesInput, Prisma.AuthUsuarioUncheckedCreateWithoutRolesInput>
   connectOrCreate?: Prisma.AuthUsuarioCreateOrConnectWithoutRolesInput
@@ -678,6 +743,20 @@ export type AuthUsuarioUpdateOneRequiredWithoutTokensNestedInput = {
   upsert?: Prisma.AuthUsuarioUpsertWithoutTokensInput
   connect?: Prisma.AuthUsuarioWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.AuthUsuarioUpdateToOneWithWhereWithoutTokensInput, Prisma.AuthUsuarioUpdateWithoutTokensInput>, Prisma.AuthUsuarioUncheckedUpdateWithoutTokensInput>
+}
+
+export type AuthUsuarioCreateNestedOneWithoutCodigosRespaldoInput = {
+  create?: Prisma.XOR<Prisma.AuthUsuarioCreateWithoutCodigosRespaldoInput, Prisma.AuthUsuarioUncheckedCreateWithoutCodigosRespaldoInput>
+  connectOrCreate?: Prisma.AuthUsuarioCreateOrConnectWithoutCodigosRespaldoInput
+  connect?: Prisma.AuthUsuarioWhereUniqueInput
+}
+
+export type AuthUsuarioUpdateOneRequiredWithoutCodigosRespaldoNestedInput = {
+  create?: Prisma.XOR<Prisma.AuthUsuarioCreateWithoutCodigosRespaldoInput, Prisma.AuthUsuarioUncheckedCreateWithoutCodigosRespaldoInput>
+  connectOrCreate?: Prisma.AuthUsuarioCreateOrConnectWithoutCodigosRespaldoInput
+  upsert?: Prisma.AuthUsuarioUpsertWithoutCodigosRespaldoInput
+  connect?: Prisma.AuthUsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AuthUsuarioUpdateToOneWithWhereWithoutCodigosRespaldoInput, Prisma.AuthUsuarioUpdateWithoutCodigosRespaldoInput>, Prisma.AuthUsuarioUncheckedUpdateWithoutCodigosRespaldoInput>
 }
 
 export type AuthUsuarioCreateNestedOneWithoutAuditoriasInput = {
@@ -708,6 +787,8 @@ export type AuthUsuarioCreateWithoutRolesInput = {
   codigoEmpleadoLegado?: number | null
   twoFactorHabilitado?: boolean
   twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -715,6 +796,7 @@ export type AuthUsuarioCreateWithoutRolesInput = {
   eliminadoPor?: string | null
   tokens?: Prisma.AuthRefreshTokenCreateNestedManyWithoutUsuarioInput
   auditorias?: Prisma.AuthAuditoriaForenseCreateNestedManyWithoutUsuarioInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoCreateNestedManyWithoutUsuarioInput
 }
 
 export type AuthUsuarioUncheckedCreateWithoutRolesInput = {
@@ -729,6 +811,8 @@ export type AuthUsuarioUncheckedCreateWithoutRolesInput = {
   codigoEmpleadoLegado?: number | null
   twoFactorHabilitado?: boolean
   twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -736,6 +820,7 @@ export type AuthUsuarioUncheckedCreateWithoutRolesInput = {
   eliminadoPor?: string | null
   tokens?: Prisma.AuthRefreshTokenUncheckedCreateNestedManyWithoutUsuarioInput
   auditorias?: Prisma.AuthAuditoriaForenseUncheckedCreateNestedManyWithoutUsuarioInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type AuthUsuarioCreateOrConnectWithoutRolesInput = {
@@ -766,6 +851,8 @@ export type AuthUsuarioUpdateWithoutRolesInput = {
   codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -773,6 +860,7 @@ export type AuthUsuarioUpdateWithoutRolesInput = {
   eliminadoPor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokens?: Prisma.AuthRefreshTokenUpdateManyWithoutUsuarioNestedInput
   auditorias?: Prisma.AuthAuditoriaForenseUpdateManyWithoutUsuarioNestedInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUpdateManyWithoutUsuarioNestedInput
 }
 
 export type AuthUsuarioUncheckedUpdateWithoutRolesInput = {
@@ -787,6 +875,8 @@ export type AuthUsuarioUncheckedUpdateWithoutRolesInput = {
   codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -794,6 +884,7 @@ export type AuthUsuarioUncheckedUpdateWithoutRolesInput = {
   eliminadoPor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokens?: Prisma.AuthRefreshTokenUncheckedUpdateManyWithoutUsuarioNestedInput
   auditorias?: Prisma.AuthAuditoriaForenseUncheckedUpdateManyWithoutUsuarioNestedInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type AuthUsuarioCreateWithoutTokensInput = {
@@ -808,6 +899,8 @@ export type AuthUsuarioCreateWithoutTokensInput = {
   codigoEmpleadoLegado?: number | null
   twoFactorHabilitado?: boolean
   twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -815,6 +908,7 @@ export type AuthUsuarioCreateWithoutTokensInput = {
   eliminadoPor?: string | null
   roles?: Prisma.AuthUsuarioRolCreateNestedManyWithoutUsuarioInput
   auditorias?: Prisma.AuthAuditoriaForenseCreateNestedManyWithoutUsuarioInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoCreateNestedManyWithoutUsuarioInput
 }
 
 export type AuthUsuarioUncheckedCreateWithoutTokensInput = {
@@ -829,6 +923,8 @@ export type AuthUsuarioUncheckedCreateWithoutTokensInput = {
   codigoEmpleadoLegado?: number | null
   twoFactorHabilitado?: boolean
   twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -836,6 +932,7 @@ export type AuthUsuarioUncheckedCreateWithoutTokensInput = {
   eliminadoPor?: string | null
   roles?: Prisma.AuthUsuarioRolUncheckedCreateNestedManyWithoutUsuarioInput
   auditorias?: Prisma.AuthAuditoriaForenseUncheckedCreateNestedManyWithoutUsuarioInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type AuthUsuarioCreateOrConnectWithoutTokensInput = {
@@ -866,6 +963,8 @@ export type AuthUsuarioUpdateWithoutTokensInput = {
   codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -873,6 +972,7 @@ export type AuthUsuarioUpdateWithoutTokensInput = {
   eliminadoPor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.AuthUsuarioRolUpdateManyWithoutUsuarioNestedInput
   auditorias?: Prisma.AuthAuditoriaForenseUpdateManyWithoutUsuarioNestedInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUpdateManyWithoutUsuarioNestedInput
 }
 
 export type AuthUsuarioUncheckedUpdateWithoutTokensInput = {
@@ -887,12 +987,127 @@ export type AuthUsuarioUncheckedUpdateWithoutTokensInput = {
   codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   eliminadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eliminadoPor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.AuthUsuarioRolUncheckedUpdateManyWithoutUsuarioNestedInput
+  auditorias?: Prisma.AuthAuditoriaForenseUncheckedUpdateManyWithoutUsuarioNestedInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUncheckedUpdateManyWithoutUsuarioNestedInput
+}
+
+export type AuthUsuarioCreateWithoutCodigosRespaldoInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  nombreCompleto: string
+  cargoInstitucional?: string | null
+  estado?: $Enums.EstadoUsuario
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
+  codigoEmpleadoLegado?: number | null
+  twoFactorHabilitado?: boolean
+  twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  eliminadoEn?: Date | string | null
+  eliminadoPor?: string | null
+  roles?: Prisma.AuthUsuarioRolCreateNestedManyWithoutUsuarioInput
+  tokens?: Prisma.AuthRefreshTokenCreateNestedManyWithoutUsuarioInput
+  auditorias?: Prisma.AuthAuditoriaForenseCreateNestedManyWithoutUsuarioInput
+}
+
+export type AuthUsuarioUncheckedCreateWithoutCodigosRespaldoInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  nombreCompleto: string
+  cargoInstitucional?: string | null
+  estado?: $Enums.EstadoUsuario
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
+  codigoEmpleadoLegado?: number | null
+  twoFactorHabilitado?: boolean
+  twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  eliminadoEn?: Date | string | null
+  eliminadoPor?: string | null
+  roles?: Prisma.AuthUsuarioRolUncheckedCreateNestedManyWithoutUsuarioInput
+  tokens?: Prisma.AuthRefreshTokenUncheckedCreateNestedManyWithoutUsuarioInput
+  auditorias?: Prisma.AuthAuditoriaForenseUncheckedCreateNestedManyWithoutUsuarioInput
+}
+
+export type AuthUsuarioCreateOrConnectWithoutCodigosRespaldoInput = {
+  where: Prisma.AuthUsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.AuthUsuarioCreateWithoutCodigosRespaldoInput, Prisma.AuthUsuarioUncheckedCreateWithoutCodigosRespaldoInput>
+}
+
+export type AuthUsuarioUpsertWithoutCodigosRespaldoInput = {
+  update: Prisma.XOR<Prisma.AuthUsuarioUpdateWithoutCodigosRespaldoInput, Prisma.AuthUsuarioUncheckedUpdateWithoutCodigosRespaldoInput>
+  create: Prisma.XOR<Prisma.AuthUsuarioCreateWithoutCodigosRespaldoInput, Prisma.AuthUsuarioUncheckedCreateWithoutCodigosRespaldoInput>
+  where?: Prisma.AuthUsuarioWhereInput
+}
+
+export type AuthUsuarioUpdateToOneWithWhereWithoutCodigosRespaldoInput = {
+  where?: Prisma.AuthUsuarioWhereInput
+  data: Prisma.XOR<Prisma.AuthUsuarioUpdateWithoutCodigosRespaldoInput, Prisma.AuthUsuarioUncheckedUpdateWithoutCodigosRespaldoInput>
+}
+
+export type AuthUsuarioUpdateWithoutCodigosRespaldoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nombreCompleto?: Prisma.StringFieldUpdateOperationsInput | string
+  cargoInstitucional?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estado?: Prisma.EnumEstadoUsuarioFieldUpdateOperationsInput | $Enums.EstadoUsuario
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eliminadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eliminadoPor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.AuthUsuarioRolUpdateManyWithoutUsuarioNestedInput
+  tokens?: Prisma.AuthRefreshTokenUpdateManyWithoutUsuarioNestedInput
+  auditorias?: Prisma.AuthAuditoriaForenseUpdateManyWithoutUsuarioNestedInput
+}
+
+export type AuthUsuarioUncheckedUpdateWithoutCodigosRespaldoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  nombreCompleto?: Prisma.StringFieldUpdateOperationsInput | string
+  cargoInstitucional?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estado?: Prisma.EnumEstadoUsuarioFieldUpdateOperationsInput | $Enums.EstadoUsuario
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eliminadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eliminadoPor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.AuthUsuarioRolUncheckedUpdateManyWithoutUsuarioNestedInput
+  tokens?: Prisma.AuthRefreshTokenUncheckedUpdateManyWithoutUsuarioNestedInput
   auditorias?: Prisma.AuthAuditoriaForenseUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
@@ -908,6 +1123,8 @@ export type AuthUsuarioCreateWithoutAuditoriasInput = {
   codigoEmpleadoLegado?: number | null
   twoFactorHabilitado?: boolean
   twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -915,6 +1132,7 @@ export type AuthUsuarioCreateWithoutAuditoriasInput = {
   eliminadoPor?: string | null
   roles?: Prisma.AuthUsuarioRolCreateNestedManyWithoutUsuarioInput
   tokens?: Prisma.AuthRefreshTokenCreateNestedManyWithoutUsuarioInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoCreateNestedManyWithoutUsuarioInput
 }
 
 export type AuthUsuarioUncheckedCreateWithoutAuditoriasInput = {
@@ -929,6 +1147,8 @@ export type AuthUsuarioUncheckedCreateWithoutAuditoriasInput = {
   codigoEmpleadoLegado?: number | null
   twoFactorHabilitado?: boolean
   twoFactorSecret?: string | null
+  twoFactorUltimoPaso?: bigint | number | null
+  twoFactorActivadoEn?: Date | string | null
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -936,6 +1156,7 @@ export type AuthUsuarioUncheckedCreateWithoutAuditoriasInput = {
   eliminadoPor?: string | null
   roles?: Prisma.AuthUsuarioRolUncheckedCreateNestedManyWithoutUsuarioInput
   tokens?: Prisma.AuthRefreshTokenUncheckedCreateNestedManyWithoutUsuarioInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type AuthUsuarioCreateOrConnectWithoutAuditoriasInput = {
@@ -966,6 +1187,8 @@ export type AuthUsuarioUpdateWithoutAuditoriasInput = {
   codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -973,6 +1196,7 @@ export type AuthUsuarioUpdateWithoutAuditoriasInput = {
   eliminadoPor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.AuthUsuarioRolUpdateManyWithoutUsuarioNestedInput
   tokens?: Prisma.AuthRefreshTokenUpdateManyWithoutUsuarioNestedInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUpdateManyWithoutUsuarioNestedInput
 }
 
 export type AuthUsuarioUncheckedUpdateWithoutAuditoriasInput = {
@@ -987,6 +1211,8 @@ export type AuthUsuarioUncheckedUpdateWithoutAuditoriasInput = {
   codigoEmpleadoLegado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   twoFactorHabilitado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorUltimoPaso?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  twoFactorActivadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -994,6 +1220,7 @@ export type AuthUsuarioUncheckedUpdateWithoutAuditoriasInput = {
   eliminadoPor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roles?: Prisma.AuthUsuarioRolUncheckedUpdateManyWithoutUsuarioNestedInput
   tokens?: Prisma.AuthRefreshTokenUncheckedUpdateManyWithoutUsuarioNestedInput
+  codigosRespaldo?: Prisma.AuthCodigoRespaldoUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 
@@ -1005,12 +1232,14 @@ export type AuthUsuarioCountOutputType = {
   roles: number
   tokens: number
   auditorias: number
+  codigosRespaldo: number
 }
 
 export type AuthUsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   roles?: boolean | AuthUsuarioCountOutputTypeCountRolesArgs
   tokens?: boolean | AuthUsuarioCountOutputTypeCountTokensArgs
   auditorias?: boolean | AuthUsuarioCountOutputTypeCountAuditoriasArgs
+  codigosRespaldo?: boolean | AuthUsuarioCountOutputTypeCountCodigosRespaldoArgs
 }
 
 /**
@@ -1044,6 +1273,13 @@ export type AuthUsuarioCountOutputTypeCountAuditoriasArgs<ExtArgs extends runtim
   where?: Prisma.AuthAuditoriaForenseWhereInput
 }
 
+/**
+ * AuthUsuarioCountOutputType without action
+ */
+export type AuthUsuarioCountOutputTypeCountCodigosRespaldoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuthCodigoRespaldoWhereInput
+}
+
 
 export type AuthUsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1057,6 +1293,8 @@ export type AuthUsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   codigoEmpleadoLegado?: boolean
   twoFactorHabilitado?: boolean
   twoFactorSecret?: boolean
+  twoFactorUltimoPaso?: boolean
+  twoFactorActivadoEn?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -1065,6 +1303,7 @@ export type AuthUsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   roles?: boolean | Prisma.AuthUsuario$rolesArgs<ExtArgs>
   tokens?: boolean | Prisma.AuthUsuario$tokensArgs<ExtArgs>
   auditorias?: boolean | Prisma.AuthUsuario$auditoriasArgs<ExtArgs>
+  codigosRespaldo?: boolean | Prisma.AuthUsuario$codigosRespaldoArgs<ExtArgs>
   _count?: boolean | Prisma.AuthUsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["authUsuario"]>
 
@@ -1080,6 +1319,8 @@ export type AuthUsuarioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   codigoEmpleadoLegado?: boolean
   twoFactorHabilitado?: boolean
   twoFactorSecret?: boolean
+  twoFactorUltimoPaso?: boolean
+  twoFactorActivadoEn?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -1099,6 +1340,8 @@ export type AuthUsuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   codigoEmpleadoLegado?: boolean
   twoFactorHabilitado?: boolean
   twoFactorSecret?: boolean
+  twoFactorUltimoPaso?: boolean
+  twoFactorActivadoEn?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -1118,6 +1361,8 @@ export type AuthUsuarioSelectScalar = {
   codigoEmpleadoLegado?: boolean
   twoFactorHabilitado?: boolean
   twoFactorSecret?: boolean
+  twoFactorUltimoPaso?: boolean
+  twoFactorActivadoEn?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -1125,11 +1370,12 @@ export type AuthUsuarioSelectScalar = {
   eliminadoPor?: boolean
 }
 
-export type AuthUsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "nombreCompleto" | "cargoInstitucional" | "estado" | "intentosFallidos" | "bloqueadoHasta" | "codigoEmpleadoLegado" | "twoFactorHabilitado" | "twoFactorSecret" | "activo" | "creadoEn" | "actualizadoEn" | "eliminadoEn" | "eliminadoPor", ExtArgs["result"]["authUsuario"]>
+export type AuthUsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "nombreCompleto" | "cargoInstitucional" | "estado" | "intentosFallidos" | "bloqueadoHasta" | "codigoEmpleadoLegado" | "twoFactorHabilitado" | "twoFactorSecret" | "twoFactorUltimoPaso" | "twoFactorActivadoEn" | "activo" | "creadoEn" | "actualizadoEn" | "eliminadoEn" | "eliminadoPor", ExtArgs["result"]["authUsuario"]>
 export type AuthUsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   roles?: boolean | Prisma.AuthUsuario$rolesArgs<ExtArgs>
   tokens?: boolean | Prisma.AuthUsuario$tokensArgs<ExtArgs>
   auditorias?: boolean | Prisma.AuthUsuario$auditoriasArgs<ExtArgs>
+  codigosRespaldo?: boolean | Prisma.AuthUsuario$codigosRespaldoArgs<ExtArgs>
   _count?: boolean | Prisma.AuthUsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AuthUsuarioIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1141,6 +1387,7 @@ export type $AuthUsuarioPayload<ExtArgs extends runtime.Types.Extensions.Interna
     roles: Prisma.$AuthUsuarioRolPayload<ExtArgs>[]
     tokens: Prisma.$AuthRefreshTokenPayload<ExtArgs>[]
     auditorias: Prisma.$AuthAuditoriaForensePayload<ExtArgs>[]
+    codigosRespaldo: Prisma.$AuthCodigoRespaldoPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1154,6 +1401,8 @@ export type $AuthUsuarioPayload<ExtArgs extends runtime.Types.Extensions.Interna
     codigoEmpleadoLegado: number | null
     twoFactorHabilitado: boolean
     twoFactorSecret: string | null
+    twoFactorUltimoPaso: bigint | null
+    twoFactorActivadoEn: Date | null
     activo: boolean
     creadoEn: Date
     actualizadoEn: Date
@@ -1556,6 +1805,7 @@ export interface Prisma__AuthUsuarioClient<T, Null = never, ExtArgs extends runt
   roles<T extends Prisma.AuthUsuario$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthUsuario$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthUsuarioRolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tokens<T extends Prisma.AuthUsuario$tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthUsuario$tokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthRefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditorias<T extends Prisma.AuthUsuario$auditoriasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthUsuario$auditoriasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthAuditoriaForensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  codigosRespaldo<T extends Prisma.AuthUsuario$codigosRespaldoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthUsuario$codigosRespaldoArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthCodigoRespaldoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1596,6 +1846,8 @@ export interface AuthUsuarioFieldRefs {
   readonly codigoEmpleadoLegado: Prisma.FieldRef<"AuthUsuario", 'Int'>
   readonly twoFactorHabilitado: Prisma.FieldRef<"AuthUsuario", 'Boolean'>
   readonly twoFactorSecret: Prisma.FieldRef<"AuthUsuario", 'String'>
+  readonly twoFactorUltimoPaso: Prisma.FieldRef<"AuthUsuario", 'BigInt'>
+  readonly twoFactorActivadoEn: Prisma.FieldRef<"AuthUsuario", 'DateTime'>
   readonly activo: Prisma.FieldRef<"AuthUsuario", 'Boolean'>
   readonly creadoEn: Prisma.FieldRef<"AuthUsuario", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"AuthUsuario", 'DateTime'>
@@ -2063,6 +2315,30 @@ export type AuthUsuario$auditoriasArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.AuthAuditoriaForenseScalarFieldEnum | Prisma.AuthAuditoriaForenseScalarFieldEnum[]
+}
+
+/**
+ * AuthUsuario.codigosRespaldo
+ */
+export type AuthUsuario$codigosRespaldoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuthCodigoRespaldo
+   */
+  select?: Prisma.AuthCodigoRespaldoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuthCodigoRespaldo
+   */
+  omit?: Prisma.AuthCodigoRespaldoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuthCodigoRespaldoInclude<ExtArgs> | null
+  where?: Prisma.AuthCodigoRespaldoWhereInput
+  orderBy?: Prisma.AuthCodigoRespaldoOrderByWithRelationInput | Prisma.AuthCodigoRespaldoOrderByWithRelationInput[]
+  cursor?: Prisma.AuthCodigoRespaldoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuthCodigoRespaldoScalarFieldEnum | Prisma.AuthCodigoRespaldoScalarFieldEnum[]
 }
 
 /**

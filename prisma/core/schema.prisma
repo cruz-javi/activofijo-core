@@ -65,6 +65,8 @@ model AuthUsuario {
   codigoEmpleadoLegado Int?          @map("codigo_empleado_legado")
   twoFactorHabilitado  Boolean       @default(false) @map("two_factor_habilitado")
   twoFactorSecret      String?       @map("two_factor_secret")
+  twoFactorUltimoPaso  BigInt?       @map("two_factor_ultimo_paso")
+  twoFactorActivadoEn  DateTime?     @map("two_factor_activado_en") @db.Timestamptz
   activo               Boolean       @default(true)
   creadoEn             DateTime      @default(now()) @map("creado_en") @db.Timestamptz
   actualizadoEn        DateTime      @default(now()) @updatedAt @map("actualizado_en") @db.Timestamptz
@@ -74,6 +76,7 @@ model AuthUsuario {
   roles      AuthUsuarioRol[]
   tokens     AuthRefreshToken[]
   auditorias AuthAuditoriaForense[]
+  codigosRespaldo AuthCodigoRespaldo[]
 
   @@map("auth_usuario")
 }
@@ -150,6 +153,19 @@ model AuthRefreshToken {
   @@index([usuarioId])
   @@index([familyId])
   @@map("auth_refresh_token")
+}
+
+model AuthCodigoRespaldo {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuarioId  String    @map("usuario_id") @db.Uuid
+  codigoHash String    @map("codigo_hash")
+  usadoEn    DateTime? @map("usado_en") @db.Timestamptz
+  creadoEn   DateTime  @default(now()) @map("creado_en") @db.Timestamptz
+
+  usuario AuthUsuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+
+  @@index([usuarioId])
+  @@map("auth_codigo_respaldo")
 }
 
 model AuthAuditoriaForense {

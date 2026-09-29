@@ -14,6 +14,7 @@ const PUBLIC_SELECT = {
   estado: true,
   activo: true,
   intentosFallidos: true,
+  twoFactorHabilitado: true,
   bloqueadoHasta: true,
   creadoEn: true,
   actualizadoEn: true,

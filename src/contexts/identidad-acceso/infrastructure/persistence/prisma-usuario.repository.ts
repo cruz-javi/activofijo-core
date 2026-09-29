@@ -105,6 +105,9 @@ export class PrismaUsuarioRepository implements UsuarioRepositoryPort {
       bloqueadoHasta: data.bloqueadoHasta,
       codigoEmpleadoLegado: data.codigoEmpleadoLegado,
       activo: data.activo,
+      twoFactorHabilitado: data.twoFactorHabilitado,
+      twoFactorSecretCifrado: data.twoFactorSecret,
+      twoFactorUltimoPaso: data.twoFactorUltimoPaso === null ? null : Number(data.twoFactorUltimoPaso),
     });
   }
 }

@@ -9,6 +9,9 @@ export interface UsuarioProps {
   bloqueadoHasta?: Date | null;
   codigoEmpleadoLegado?: number | null;
   activo: boolean;
+  twoFactorHabilitado?: boolean;
+  twoFactorSecretCifrado?: string | null;
+  twoFactorUltimoPaso?: number | null;
 }
 
 export class Usuario {
@@ -24,6 +27,9 @@ export class Usuario {
   public get bloqueadoHasta(): Date | null | undefined { return this.props.bloqueadoHasta; }
   public get codigoEmpleadoLegado(): number | null | undefined { return this.props.codigoEmpleadoLegado; }
   public get activo(): boolean { return this.props.activo; }
+  public get twoFactorHabilitado(): boolean { return this.props.twoFactorHabilitado ?? false; }
+  public get twoFactorSecretCifrado(): string | null { return this.props.twoFactorSecretCifrado ?? null; }
+  public get twoFactorUltimoPaso(): number | null { return this.props.twoFactorUltimoPaso ?? null; }
 
   public static create(props: UsuarioProps): Usuario {
     return new Usuario(props);

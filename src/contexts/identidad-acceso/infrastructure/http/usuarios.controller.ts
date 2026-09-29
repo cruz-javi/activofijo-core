@@ -1,13 +1,20 @@
-import { Controller, Inject, Get, Post, Patch, Param, Body, ConflictException, NotFoundException } from '@nestjs/common';
+import { Controller, Inject, Get, Post, Patch, Param, Body, Req, ConflictException, NotFoundException } from '@nestjs/common';
+import { z } from 'zod';
 import { GestionarUsuariosUseCase } from '../../application/use-cases/gestionar-usuarios.use-case.js';
 import { CreateUsuarioSchema, CreateUsuarioDto, UpdateUsuarioSchema, UpdateUsuarioDto } from '../../application/dto/usuarios.dto.js';
 import { ZodValidationPipe } from '../../../../shared/infrastructure/http/pipes/zod-validation.pipe.js';
+import { ReiniciarDosFactoresUseCase } from '../../application/use-cases/reiniciar-dos-factores.use-case.js';
+import { SolicitudAutenticada, obtenerContextoSolicitud } from './solicitud-autenticada.js';
+import { mapearErrorDominio } from './mapear-error-dominio.js';
 import { Roles } from '../security/roles.decorator.js';
 
 @Controller('usuarios')
 @Roles('ADMINISTRADOR')
 export class UsuariosController {
-  constructor(@Inject(GestionarUsuariosUseCase) private readonly gestionarUsuarios: GestionarUsuariosUseCase) {}
+  constructor(
+    @Inject(GestionarUsuariosUseCase) private readonly gestionarUsuarios: GestionarUsuariosUseCase,
+    @Inject(ReiniciarDosFactoresUseCase) private readonly reiniciarDosFactores: ReiniciarDosFactoresUseCase,
+  ) {}
 
   @Get()
   async findAll() {
@@ -47,5 +54,22 @@ export class UsuariosController {
       throw new NotFoundException(result.error?.message);
     }
     return result.getValue();
+  }
+
+  @Post(':id/reiniciar-2fa')
+  async reiniciarDosFactoresDeUsuario(
+    @Param('id', new ZodValidationPipe(z.string().uuid())) id: string,
+    @Req() req: SolicitudAutenticada,
+  ) {
+    const result = await this.reiniciarDosFactores.execute({
+      usuarioObjetivoId: id,
+      ejecutadoPor: { id: req.user.sub, email: req.user.email },
+      ...obtenerContextoSolicitud(req),
+    });
+
+    if (result.isFailure) {
+      throw mapearErrorDominio(result.error);
+    }
+    return { success: true };
   }
 }

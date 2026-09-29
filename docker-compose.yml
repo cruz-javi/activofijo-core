@@ -37,6 +37,9 @@ services:
       LEGACY_DATABASE_URL: ${LEGACY_DATABASE_URL}
       JWT_SECRET: ${JWT_SECRET:-uagrm_super_secure_jwt_access_secret_key_32_chars_minimum!}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      JWT_2FA_SECRET: ${JWT_2FA_SECRET}
+      TOTP_ENCRYPTION_KEY: ${TOTP_ENCRYPTION_KEY}
+      TOTP_ISSUER: ${TOTP_ISSUER:-UAGRM Activo Fijo}
       REFRESH_TOKEN_EXPIRES_DAYS: ${REFRESH_TOKEN_EXPIRES_DAYS:-7}
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3001}
     ports:

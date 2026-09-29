@@ -9,7 +9,13 @@ export const envSchema = z.object({
   LEGACY_DATABASE_URL: z.string().optional(),
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters long'),
   JWT_EXPIRES_IN: z.string().default('15m'),
+  JWT_2FA_SECRET: z.string().min(32, 'JWT_2FA_SECRET must be at least 32 characters long'),
+  TOTP_ENCRYPTION_KEY: z
+    .string()
+    .regex(/^[0-9a-fA-F]{64}$/, 'TOTP_ENCRYPTION_KEY must be 32 bytes encoded as 64 hex characters'),
+  TOTP_ISSUER: z.string().min(1).default('UAGRM Activo Fijo'),
   REFRESH_TOKEN_EXPIRES_DAYS: z.coerce.number().default(7),
+  TRUST_PROXY: z.string().optional(),
   CORS_ORIGIN: z.string().default('http://localhost:3001'),
   INITIAL_ADMIN_EMAIL: z.string().email().default('admin@uagrm.edu.bo'),
   INITIAL_ADMIN_PASSWORD: z.string().min(8).default('AdminPass2026!'),

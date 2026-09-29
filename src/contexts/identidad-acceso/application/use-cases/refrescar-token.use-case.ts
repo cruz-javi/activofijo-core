@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { USUARIO_REPOSITORY_PORT, UsuarioRepositoryPort } from '../../domain/ports/usuario-repository.port.js';
 import { Result } from '../../../../shared/domain/result.js';
 import { UnauthorizedError } from '../../../../shared/domain/domain-error.js';
 import { PrismaCoreService } from '../../../../shared/infrastructure/database/prisma-core.service.js';
+import { TOKEN_ACCESO_PORT, TokenAccesoPort } from '../../domain/ports/token-acceso.port.js';
 import crypto from 'crypto';
 
 export interface RefrescarTokenRequest {
@@ -28,7 +28,7 @@ export interface RefrescarTokenResponse {
 export class RefrescarTokenUseCase {
   constructor(
     @Inject(USUARIO_REPOSITORY_PORT) private readonly usuarioRepo: UsuarioRepositoryPort,
-    @Inject(JwtService) private readonly jwtService: JwtService,
+    @Inject(TOKEN_ACCESO_PORT) private readonly tokenAcceso: TokenAccesoPort,
     @Inject(PrismaCoreService) private readonly prisma: PrismaCoreService,
   ) {}
 
@@ -70,10 +70,14 @@ export class RefrescarTokenUseCase {
     const roles = await this.usuarioRepo.getRolesByUsuarioId(usuario.id);
     const permisos = await this.usuarioRepo.getPermisosByUsuarioId(usuario.id);
 
-    const accessToken = await this.jwtService.signAsync(
-      { sub: usuario.id, email: usuario.email, roles, permisos, deviceId: req.deviceId || 'web' },
-      { secret: process.env.JWT_SECRET, expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as any }
-    );
+    const accessToken = await this.tokenAcceso.firmar({
+      sub: usuario.id,
+      email: usuario.email,
+      rol: roles[0] || 'FUNCIONARIO',
+      roles,
+      permisos,
+      deviceId: req.deviceId || 'web',
+    });
 
     const { rawRefreshToken } = await this.issueRefreshToken(usuario.id, tokenRecord.familyId, req.deviceId || 'web', req.ipOrigen);
 

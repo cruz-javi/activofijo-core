@@ -82,6 +82,11 @@ export type AuthUsuarioRol = Prisma.AuthUsuarioRolModel
  */
 export type AuthRefreshToken = Prisma.AuthRefreshTokenModel
 /**
+ * Model AuthCodigoRespaldo
+ * 
+ */
+export type AuthCodigoRespaldo = Prisma.AuthCodigoRespaldoModel
+/**
  * Model AuthAuditoriaForense
  * 
  */

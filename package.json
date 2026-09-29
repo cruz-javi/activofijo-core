@@ -16,7 +16,10 @@
     "prisma:migrate:deploy": "prisma migrate deploy --config prisma.config.ts",
     "prisma:seed": "tsx prisma/core/seed.ts",
     "verify:roles": "node scripts/verify-db-roles.mjs",
-    "test:sprint1": "node tests/sprint1-diagnostics/run-sprint1-suite.mjs"
+    "test:sprint1": "node tests/sprint1-diagnostics/run-sprint1-suite.mjs",
+    "test:2fa": "node tests/2fa-diagnostics/run-2fa-suite.mjs",
+    "test:2fa:web": "node tests/2fa-diagnostics/run-bff-web-suite.mjs",
+    "test:2fa:movil": "tsx tests/2fa-diagnostics/run-cliente-movil-suite.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.10",
@@ -31,6 +34,7 @@
     "argon2": "^0.41.1",
     "dotenv": "^16.4.7",
     "helmet": "^8.0.0",
+    "otplib": "^13.5.0",
     "pg": "^8.13.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",

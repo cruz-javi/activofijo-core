@@ -15,6 +15,90 @@
         ]
       }
     },
+    "/auth/2fa/verificar": {
+      "post": {
+        "operationId": "AuthController_verificar",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/2fa/inicial/configurar": {
+      "post": {
+        "operationId": "AuthController_configurarInicial",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/2fa/inicial/activar": {
+      "post": {
+        "operationId": "AuthController_activarInicial",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/2fa/configurar": {
+      "post": {
+        "operationId": "AuthController_configurar",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/2fa/activar": {
+      "post": {
+        "operationId": "AuthController_activar",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/2fa/desactivar": {
+      "post": {
+        "operationId": "AuthController_desactivar",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/auth/refresh": {
       "post": {
         "operationId": "AuthController_refresh",
@@ -103,6 +187,20 @@
         "parameters": [],
         "responses": {
           "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ]
+      }
+    },
+    "/usuarios/{id}/reiniciar-2fa": {
+      "post": {
+        "operationId": "UsuariosController_reiniciarDosFactoresDeUsuario",
+        "parameters": [],
+        "responses": {
+          "201": {
             "description": ""
           }
         },

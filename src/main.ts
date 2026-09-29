@@ -16,6 +16,13 @@ async function bootstrap() {
 
   app.use(helmet());
 
+  // Sin esto todos los usuarios que llegan por el BFF comparten IP (límites y auditoría). Ej.: TRUST_PROXY=loopback o 1.
+  const trustProxy = process.env.TRUST_PROXY;
+  if (trustProxy) {
+    const valor = /^\d+$/.test(trustProxy) ? Number(trustProxy) : trustProxy === 'true' ? true : trustProxy;
+    app.getHttpAdapter().getInstance().set('trust proxy', valor);
+  }
+
   const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3001')
     .split(',')
     .map((origin) => origin.trim());

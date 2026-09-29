@@ -59,6 +59,7 @@ export const ModelName = {
   AuthRolPermiso: 'AuthRolPermiso',
   AuthUsuarioRol: 'AuthUsuarioRol',
   AuthRefreshToken: 'AuthRefreshToken',
+  AuthCodigoRespaldo: 'AuthCodigoRespaldo',
   AuthAuditoriaForense: 'AuthAuditoriaForense',
   ProjectionCheckpoint: 'ProjectionCheckpoint',
   SincronizacionLog: 'SincronizacionLog',
@@ -132,6 +133,8 @@ export const AuthUsuarioScalarFieldEnum = {
   codigoEmpleadoLegado: 'codigoEmpleadoLegado',
   twoFactorHabilitado: 'twoFactorHabilitado',
   twoFactorSecret: 'twoFactorSecret',
+  twoFactorUltimoPaso: 'twoFactorUltimoPaso',
+  twoFactorActivadoEn: 'twoFactorActivadoEn',
   activo: 'activo',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn',
@@ -202,6 +205,17 @@ export const AuthRefreshTokenScalarFieldEnum = {
 } as const
 
 export type AuthRefreshTokenScalarFieldEnum = (typeof AuthRefreshTokenScalarFieldEnum)[keyof typeof AuthRefreshTokenScalarFieldEnum]
+
+
+export const AuthCodigoRespaldoScalarFieldEnum = {
+  id: 'id',
+  usuarioId: 'usuarioId',
+  codigoHash: 'codigoHash',
+  usadoEn: 'usadoEn',
+  creadoEn: 'creadoEn'
+} as const
+
+export type AuthCodigoRespaldoScalarFieldEnum = (typeof AuthCodigoRespaldoScalarFieldEnum)[keyof typeof AuthCodigoRespaldoScalarFieldEnum]
 
 
 export const AuthAuditoriaForenseScalarFieldEnum = {

@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { USUARIO_REPOSITORY_PORT, UsuarioRepositoryPort } from '../../domain/ports/usuario-repository.port.js';
+import { requiereDosFactores } from '../../domain/services/politica-dos-factores.service.js';
 import { Result } from '../../../../shared/domain/result.js';
 import { NotFoundError } from '../../../../shared/domain/domain-error.js';
 
@@ -10,6 +11,8 @@ export interface ObtenerPerfilResponse {
   roles: string[];
   permisos: string[];
   activo: boolean;
+  dosFactoresActivo: boolean;
+  dosFactoresObligatorio: boolean;
 }
 
 @Injectable()
@@ -34,6 +37,8 @@ export class ObtenerPerfilUseCase {
       roles,
       permisos,
       activo: usuario.activo,
+      dosFactoresActivo: usuario.twoFactorHabilitado,
+      dosFactoresObligatorio: requiereDosFactores(roles),
     });
   }
 }

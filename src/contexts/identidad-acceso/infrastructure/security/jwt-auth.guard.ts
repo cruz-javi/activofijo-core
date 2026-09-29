@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
+import { opcionesVerificacionAcceso } from './jwt-options.js';
 import { IS_PUBLIC_KEY } from './public.decorator.js';
 
 @Injectable()
@@ -33,9 +34,10 @@ export class JwtAuthGuard implements CanActivate {
 
     const token = authHeader.split(' ')[1];
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET,
-      });
+      const payload = await this.jwtService.verifyAsync(token, opcionesVerificacionAcceso());
+      if (payload.purpose) {
+        throw new UnauthorizedException('Token expired or invalid signature');
+      }
       request.user = payload;
       return true;
     } catch {
