@@ -1,10 +1,12 @@
 import { Controller, Inject, Get, Query } from '@nestjs/common';
 import { PrismaCoreService } from '../../../../shared/infrastructure/database/prisma-core.service.js';
 import { Roles } from '../security/roles.decorator.js';
+import { RequirePermissions } from '../security/permissions.decorator.js';
 import { ResultadoAuditoria } from '../../../../shared/infrastructure/database/generated/core/enums.js';
 
 @Controller('auditoria')
 @Roles('ADMINISTRADOR')
+@RequirePermissions('bitacora:consultar')
 export class AuditoriaController {
   constructor(@Inject(PrismaCoreService) private readonly prisma: PrismaCoreService) {}
 

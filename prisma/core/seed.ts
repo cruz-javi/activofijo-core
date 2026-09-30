@@ -29,29 +29,25 @@ async function main() {
     await client.query('DELETE FROM auth_rol;');
     await client.query('DELETE FROM auth_permiso;');
 
-    console.log('📦 Registrando catálogo de permisos por módulo...');
+    console.log('📦 Registrando catálogo de permisos por módulo (Sprint 1)...');
     await client.query(`
       INSERT INTO auth_permiso (id, modulo, descripcion) VALUES
-      ('usuarios:gestionar', 'IDENTIDAD_ACCESO', 'Creación, edición y asignación de roles a usuarios'),
-      ('roles:gestionar', 'IDENTIDAD_ACCESO', 'Creación de roles y configuración de permisos'),
-      ('bitacora:consultar', 'IDENTIDAD_ACCESO', 'Acceso a la bitácora forense de auditoría'),
-      ('activos:consultar', 'PATRIMONIO', 'Consulta del catálogo general de bienes patrimoniales'),
+      ('usuarios:gestionar', 'IDENTIDAD_ACCESO', 'Creación, edición y administración de usuarios'),
+      ('roles:gestionar', 'IDENTIDAD_ACCESO', 'Creación de roles y asignación de permisos dinámicos'),
+      ('bitacora:consultar', 'IDENTIDAD_ACCESO', 'Consulta y visualización forense de auditoría'),
+      ('activos:consultar', 'PATRIMONIO', 'Consulta del catálogo general y fichas técnicas de bienes'),
       ('activos:crear', 'PATRIMONIO', 'Formulario de alta e incorporación de activos'),
-      ('activos:editar', 'PATRIMONIO', 'Modificación de características de activos'),
-      ('activos:baja', 'PATRIMONIO', 'Formulario y trámite de baja de bienes'),
-      ('asignaciones:consultar', 'PATRIMONIO', 'Consulta de custodias y asignaciones'),
-      ('asignaciones:crear', 'PATRIMONIO', 'Registro de asignación de activos a funcionarios'),
-      ('inspecciones:gestionar', 'INSPECCION_CAMPO', 'Inspección física y conciliación in situ'),
-      ('reportes:generar', 'PATRIMONIO', 'Generación de cuadros valorados y reportes oficiales'),
-      ('normativa:consultar', 'NORMATIVA', 'Consulta de manuales, normas NB-SABS y decretos');
+      ('activos:editar', 'PATRIMONIO', 'Modificación de características y datos de activos'),
+      ('reportes:generar', 'PATRIMONIO', 'Generación y exportación de reportes oficiales (PDF/Excel)'),
+      ('etiquetas:gestionar', 'CODIFICACION', 'Generación de códigos QR/128, plantillas y reposición');
     `);
 
     console.log('🏛️ Creando roles primordiales (UML UAGRM)...');
     await client.query(`
       INSERT INTO auth_rol (id, nombre, descripcion, es_sistema) VALUES
       ('ADMINISTRADOR', 'Administrador del Sistema', 'Acceso irrestricto, configuración, usuarios, roles y auditoría forense', true),
-      ('JEFE_ACTIVO_FIJO', 'Jefe de Activo Fijo', 'Supervisión patrimonial, aprobaciones de altas, bajas, traspasos y reportes', true),
-      ('FUNCIONARIO', 'Funcionario Custodio', 'Consulta de bienes asignados a su cargo y confirmación de actas', true);
+      ('JEFE_ACTIVO_FIJO', 'Jefe de Activo Fijo', 'Supervisión patrimonial, aprobaciones de altas, reportes y etiquetas', true),
+      ('FUNCIONARIO', 'Funcionario Custodio', 'Consulta de catálogo de bienes y perfil institucional', true);
     `);
 
     console.log('🔗 Vinculando permisos granulares a los roles...');
@@ -61,27 +57,21 @@ async function main() {
       SELECT 'ADMINISTRADOR', id FROM auth_permiso;
     `);
 
-    // JEFE_ACTIVO_FIJO tiene permisos de gestión patrimonial y auditoría
+    // JEFE_ACTIVO_FIJO tiene permisos de gestión patrimonial, reportes, etiquetas y bitácora
     await client.query(`
       INSERT INTO auth_rol_permiso (rol_id, permiso_id) VALUES
       ('JEFE_ACTIVO_FIJO', 'activos:consultar'),
       ('JEFE_ACTIVO_FIJO', 'activos:crear'),
       ('JEFE_ACTIVO_FIJO', 'activos:editar'),
-      ('JEFE_ACTIVO_FIJO', 'activos:baja'),
-      ('JEFE_ACTIVO_FIJO', 'asignaciones:consultar'),
-      ('JEFE_ACTIVO_FIJO', 'asignaciones:crear'),
-      ('JEFE_ACTIVO_FIJO', 'inspecciones:gestionar'),
       ('JEFE_ACTIVO_FIJO', 'reportes:generar'),
-      ('JEFE_ACTIVO_FIJO', 'bitacora:consultar'),
-      ('JEFE_ACTIVO_FIJO', 'normativa:consultar');
+      ('JEFE_ACTIVO_FIJO', 'etiquetas:gestionar'),
+      ('JEFE_ACTIVO_FIJO', 'bitacora:consultar');
     `);
 
-    // FUNCIONARIO tiene acceso exclusivo de consulta a sus bienes y normativa
+    // FUNCIONARIO tiene acceso de consulta básica
     await client.query(`
       INSERT INTO auth_rol_permiso (rol_id, permiso_id) VALUES
-      ('FUNCIONARIO', 'activos:consultar'),
-      ('FUNCIONARIO', 'asignaciones:consultar'),
-      ('FUNCIONARIO', 'normativa:consultar');
+      ('FUNCIONARIO', 'activos:consultar');
     `);
 
     console.log('🔑 Generando hash de contraseña oficial (Argon2id)...');

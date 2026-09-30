@@ -23,8 +23,10 @@ import {
 } from '../../domain/etiqueta.dto.js';
 import { ZodValidationPipe } from '../../../../shared/infrastructure/http/pipes/zod-validation.pipe.js';
 import { Roles } from '../../../identidad-acceso/infrastructure/security/roles.decorator.js';
+import { RequirePermissions } from '../../../identidad-acceso/infrastructure/security/permissions.decorator.js';
 
 @Controller('etiquetas')
+@RequirePermissions('etiquetas:gestionar')
 export class EtiquetadoController {
   constructor(
     @Inject(EtiquetadoService) private readonly etiquetadoService: EtiquetadoService,

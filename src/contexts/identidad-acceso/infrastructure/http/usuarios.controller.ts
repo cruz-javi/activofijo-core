@@ -7,9 +7,11 @@ import { ReiniciarDosFactoresUseCase } from '../../application/use-cases/reinici
 import { SolicitudAutenticada, obtenerContextoSolicitud } from './solicitud-autenticada.js';
 import { mapearErrorDominio } from './mapear-error-dominio.js';
 import { Roles } from '../security/roles.decorator.js';
+import { RequirePermissions } from '../security/permissions.decorator.js';
 
 @Controller('usuarios')
 @Roles('ADMINISTRADOR')
+@RequirePermissions('usuarios:gestionar')
 export class UsuariosController {
   constructor(
     @Inject(GestionarUsuariosUseCase) private readonly gestionarUsuarios: GestionarUsuariosUseCase,

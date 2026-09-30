@@ -19,8 +19,10 @@ import {
 } from './patrimonio.dto.js';
 import { ZodValidationPipe } from '../../../shared/infrastructure/http/pipes/zod-validation.pipe.js';
 import { Roles } from '../../../contexts/identidad-acceso/infrastructure/security/roles.decorator.js';
+import { RequirePermissions } from '../../../contexts/identidad-acceso/infrastructure/security/permissions.decorator.js';
 
 @Controller('activos')
+@RequirePermissions('activos:consultar')
 export class PatrimonioController {
   constructor(@Inject(PatrimonioService) private readonly patrimonioService: PatrimonioService) {}
 
@@ -69,6 +71,7 @@ export class PatrimonioController {
 
   @Post()
   @Roles('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO', 'ENCARGADO_ACTIVO', 'OPERADOR_PATRIMONIAL')
+  @RequirePermissions('activos:crear')
   async create(
     @Body(new ZodValidationPipe(CreateActivoSchema)) body: CreateActivoDto,
     @Req() req: any,
@@ -81,6 +84,7 @@ export class PatrimonioController {
 
   @Patch(':id')
   @Roles('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO', 'ENCARGADO_ACTIVO')
+  @RequirePermissions('activos:editar')
   async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateActivoSchema)) body: UpdateActivoDto,

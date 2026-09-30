@@ -14,12 +14,14 @@ import {
 } from '@nestjs/common';
 import { PrismaCoreService } from '../../../../shared/infrastructure/database/prisma-core.service.js';
 import { Roles } from '../security/roles.decorator.js';
+import { RequirePermissions } from '../security/permissions.decorator.js';
 import { ResultadoAuditoria } from '../../../../shared/infrastructure/database/generated/core/enums.js';
 
 const ROLES_PROTEGIDOS = ['ADMINISTRADOR', 'JEFE_ACTIVO_FIJO', 'FUNCIONARIO'];
 
 @Controller()
 @Roles('ADMINISTRADOR')
+@RequirePermissions('roles:gestionar')
 export class RolesController {
   constructor(@Inject(PrismaCoreService) private readonly prisma: PrismaCoreService) {}
 

@@ -43,8 +43,21 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    // Validar roles si están definidos
-    if (requiredRoles && requiredRoles.length > 0) {
+    // Si se especifican tanto roles como permisos, permitir acceso si cumple con alguno de los dos
+    const hasRoleCheck = requiredRoles && requiredRoles.length > 0;
+    const hasPermCheck = requiredPermissions && requiredPermissions.length > 0;
+
+    if (hasRoleCheck && hasPermCheck) {
+      const matchesRole = requiredRoles.some((reqRole) => userRoles.includes(reqRole.toUpperCase()));
+      const matchesPerm = requiredPermissions.some((reqPerm) => userPermisos.includes(reqPerm));
+      if (!matchesRole && !matchesPerm) {
+        throw new ForbiddenException('No cuenta con el rol ni con el permiso requerido para esta operación');
+      }
+      return true;
+    }
+
+    // Validar roles si están definidos exclusivamente
+    if (hasRoleCheck) {
       const hasRequiredRole = requiredRoles.some((reqRole) =>
         userRoles.includes(reqRole.toUpperCase())
       );
@@ -53,9 +66,9 @@ export class RolesGuard implements CanActivate {
       }
     }
 
-    // Validar permisos granulares si están definidos
-    if (requiredPermissions && requiredPermissions.length > 0) {
-      const hasRequiredPermission = requiredPermissions.every((reqPerm) =>
+    // Validar permisos granulares si están definidos exclusivamente
+    if (hasPermCheck) {
+      const hasRequiredPermission = requiredPermissions.some((reqPerm) =>
         userPermisos.includes(reqPerm)
       );
       if (!hasRequiredPermission) {
