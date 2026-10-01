@@ -10,4 +10,5 @@ export interface UsuarioRepositoryPort {
   findAll(limit?: number, offset?: number): Promise<Usuario[]>;
   getRolesByUsuarioId(usuarioId: string): Promise<string[]>;
   getPermisosByUsuarioId(usuarioId: string): Promise<string[]>;
+  esDosFactoresObligatorioParaUsuario(usuarioId: string): Promise<boolean>;
 }

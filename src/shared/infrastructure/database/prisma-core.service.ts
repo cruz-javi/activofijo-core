@@ -24,6 +24,19 @@ export class PrismaCoreService extends PrismaClient implements OnModuleInit, OnM
 
   async onModuleInit(): Promise<void> {
     await this.$connect();
+    try {
+      await this.$executeRawUnsafe(`
+        ALTER TABLE core.auth_rol 
+        ADD COLUMN IF NOT EXISTS requiere_dos_pasos BOOLEAN NOT NULL DEFAULT FALSE;
+      `);
+      await this.$executeRawUnsafe(`
+        UPDATE core.auth_rol 
+        SET requiere_dos_pasos = TRUE 
+        WHERE id IN ('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO');
+      `);
+    } catch (e) {
+      console.warn('Verificación columna requiere_dos_pasos:', e);
+    }
   }
 
   async onModuleDestroy(): Promise<void> {

@@ -93,6 +93,17 @@ export class PrismaUsuarioRepository implements UsuarioRepositoryPort {
     return permisos.map((p) => p.permisoId);
   }
 
+  async esDosFactoresObligatorioParaUsuario(usuarioId: string): Promise<boolean> {
+    const rolesUsuario = await this.prisma.authUsuarioRol.findMany({
+      where: { usuarioId },
+      include: { rol: true },
+    });
+    return rolesUsuario.some((ru: any) => {
+      const r = ru.rol;
+      return Boolean(r.requiereDosPasos || r.id === 'ADMINISTRADOR' || r.id === 'JEFE_ACTIVO_FIJO');
+    });
+  }
+
   private mapToDomain(data: any): Usuario {
     return Usuario.create({
       id: data.id,

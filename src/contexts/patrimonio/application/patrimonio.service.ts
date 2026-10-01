@@ -4,6 +4,7 @@ import {
   NotFoundException,
   ConflictException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ACTIVO_REPOSITORY, ActivoRepository, ActivoFilters } from '../domain/activo.repository.js';
 import { Activo } from '../domain/activo.entity.js';
@@ -12,6 +13,7 @@ import { EventStorePort, EVENT_STORE_PORT } from '../../../contexts/trazabilidad
 import { PrismaCoreService } from '../../../shared/infrastructure/database/prisma-core.service.js';
 import { PrismaLegacyService } from '../../../shared/infrastructure/database/prisma-legacy.service.js';
 import { ResultadoAuditoria } from '../../../shared/infrastructure/database/generated/core/enums.js';
+import { verificarStepUpToken } from '../../../shared/infrastructure/security/step-up-token.util.js';
 import argon2 from 'argon2';
 import crypto from 'crypto';
 
@@ -208,11 +210,32 @@ export class PatrimonioService {
       throw new UnauthorizedException('Usuario inactivo o no autorizado');
     }
 
+    if (!usuario.twoFactorHabilitado) {
+      throw new ForbiddenException('Para dar de alta o modificar bienes patrimoniales es obligatorio activar la verificación en dos pasos (2FA).');
+    }
+
     const payloadHash = crypto.createHash('sha256').update(JSON.stringify(dto)).digest('hex');
 
-    const isPasswordValid = await argon2.verify(usuario.passwordHash, dto.passwordConfirm);
-    if (!isPasswordValid) {
-      // Registrar intento de alta con contraseña incorrecta en auditoría forense
+    let esFirmaValida = false;
+    let motivoRechazo = '';
+
+    // Soporte prioritario para Step-Up Token 2FA (Ventana de Gracia 5m)
+    if (dto.stepUpToken && verificarStepUpToken(dto.stepUpToken, usuario.id)) {
+      esFirmaValida = true;
+    } else if (dto.passwordConfirm) {
+      // Compatibilidad con firma por contraseña si aún se envía
+      const isPasswordValid = await argon2.verify(usuario.passwordHash, dto.passwordConfirm);
+      if (isPasswordValid) {
+        esFirmaValida = true;
+      } else {
+        motivoRechazo = 'Firma de re-autenticación fallida: Contraseña incorrecta';
+      }
+    } else {
+      motivoRechazo = 'Firma de seguridad requerida: Token Step-Up 2FA no provisto o expirado';
+    }
+
+    if (!esFirmaValida) {
+      // Registrar intento de alta con firma incorrecta en auditoría forense
       await this.prismaCore.authAuditoriaForense.create({
         data: {
           usuarioId: usuario.id,
@@ -223,11 +246,11 @@ export class PatrimonioService {
           resultado: ResultadoAuditoria.BLOQUEADO_SEGURIDAD,
           ipOrigen,
           userAgent,
-          motivoRechazo: 'Firma de re-autenticación fallida: Contraseña incorrecta',
+          motivoRechazo,
           payloadHash,
         },
       });
-      throw new UnauthorizedException('Contraseña institucional incorrecta. La firma de seguridad del alta ha sido rechazada.');
+      throw new UnauthorizedException(motivoRechazo || 'Firma de seguridad inválida o expirada.');
     }
 
     // 2. VALIDACIÓN DE UNICIDAD DEL CÓDIGO Y PLACA

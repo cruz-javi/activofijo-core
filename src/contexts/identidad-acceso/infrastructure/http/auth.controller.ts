@@ -30,11 +30,22 @@ import {
 } from '../../application/dto/dos-factores.dto.js';
 import { ZodValidationPipe } from '../../../../shared/infrastructure/http/pipes/zod-validation.pipe.js';
 import { Public } from '../security/public.decorator.js';
-import { UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { PrismaCoreService } from '../../../../shared/infrastructure/database/prisma-core.service.js';
 import { ResultadoAuditoria } from '../../../../shared/infrastructure/database/generated/core/enums.js';
 import { mapearErrorDominio } from './mapear-error-dominio.js';
 import { SolicitudAutenticada, obtenerContextoSolicitud } from './solicitud-autenticada.js';
+import {
+  DESAFIO_DOS_FACTORES_PORT,
+  DesafioDosFactoresPort,
+} from '../../domain/ports/desafio-dos-factores.port.js';
+import {
+  USUARIO_REPOSITORY_PORT,
+  UsuarioRepositoryPort,
+} from '../../domain/ports/usuario-repository.port.js';
+import { EmisorSesionService } from '../../application/emisor-sesion.service.js';
+import { ValidadorCodigoDosFactoresService } from '../../application/validador-codigo-dos-factores.service.js';
+import { generarStepUpToken } from '../../../../shared/infrastructure/security/step-up-token.util.js';
 import type { Request } from 'express';
 import argon2 from 'argon2';
 
@@ -54,6 +65,10 @@ export class AuthController {
     @Inject(ActivarDosFactoresUseCase) private readonly activarDosFactores: ActivarDosFactoresUseCase,
     @Inject(DesactivarDosFactoresUseCase) private readonly desactivarDosFactores: DesactivarDosFactoresUseCase,
     @Inject(PrismaCoreService) private readonly prisma: PrismaCoreService,
+    @Inject(DESAFIO_DOS_FACTORES_PORT) private readonly desafio: DesafioDosFactoresPort,
+    @Inject(USUARIO_REPOSITORY_PORT) private readonly usuarioRepo: UsuarioRepositoryPort,
+    @Inject(EmisorSesionService) private readonly emisorSesion: EmisorSesionService,
+    @Inject(ValidadorCodigoDosFactoresService) private readonly validadorTotp: ValidadorCodigoDosFactoresService,
   ) {}
 
   @Public()
@@ -255,5 +270,73 @@ export class AuthController {
       throw new UnauthorizedException('Contraseña institucional incorrecta');
     }
     return { valid: true, email: user.email };
+  }
+
+  @Public()
+  @Throttle(LIMITE_AUTENTICACION)
+  @Header('Cache-Control', 'no-store')
+  @Post('2fa/inicial/omitir')
+  async omitirInicial(
+    @Body('desafioToken') desafioToken: string,
+    @Req() req: Request,
+  ) {
+    if (!desafioToken) {
+      throw new UnauthorizedException('Token de desafío requerido');
+    }
+    const resuelta = await this.desafio.resolverIdentidad({ desafioToken });
+    if (!resuelta) {
+      throw new UnauthorizedException('El desafío expiró o es inválido');
+    }
+    const usuario = await this.usuarioRepo.findById(resuelta.usuarioId);
+    if (!usuario || !usuario.puedeAutenticarse()) {
+      throw new UnauthorizedException('Usuario no válido o bloqueado');
+    }
+    const esObligatorio = await this.usuarioRepo.esDosFactoresObligatorioParaUsuario(usuario.id);
+    if (esObligatorio) {
+      throw new ForbiddenException('La verificación en dos pasos es obligatoria para su rol institucional y no puede omitirse');
+    }
+    const roles = await this.usuarioRepo.getRolesByUsuarioId(usuario.id);
+    const sesion = await this.emisorSesion.emitir(usuario, {
+      deviceId: resuelta.deviceId ?? 'web',
+      ...obtenerContextoSolicitud(req),
+      roles,
+    });
+    return { sesion };
+  }
+
+  @Throttle(LIMITE_AUTENTICACION)
+  @Header('Cache-Control', 'no-store')
+  @Post('stepup/verificar-2fa')
+  async verificarStepUp2fa(
+    @Body('codigo') codigo: string,
+    @Req() req: SolicitudAutenticada,
+  ) {
+    if (!codigo || typeof codigo !== 'string') {
+      throw new UnauthorizedException('Código de verificación 2FA requerido');
+    }
+    const userId = req.user?.sub;
+    if (!userId) {
+      throw new UnauthorizedException('Sesión no identificada');
+    }
+    const usuario = await this.usuarioRepo.findById(userId);
+    if (!usuario || !usuario.puedeAutenticarse() || !usuario.activo) {
+      throw new UnauthorizedException('Usuario no válido o inactivo');
+    }
+    if (!usuario.twoFactorHabilitado) {
+      throw new ForbiddenException('Debe activar la verificación en dos pasos (2FA) en su cuenta institucional');
+    }
+    const metodo = await this.validadorTotp.validar(usuario, codigo.trim(), false);
+    if (!metodo) {
+      await this.validadorTotp.registrarFallo(usuario, 'STEPUP_2FA_FALLIDO', obtenerContextoSolicitud(req));
+      throw new UnauthorizedException('Código de verificación 2FA incorrecto o expirado');
+    }
+    const tokenInfo = generarStepUpToken(usuario.id, usuario.email, 300);
+    return {
+      valid: true,
+      valido: true,
+      stepUpToken: tokenInfo.token,
+      expiraEnSegundos: tokenInfo.expiraEnSegundos,
+      expiraEn: tokenInfo.expiraEn,
+    };
   }
 }

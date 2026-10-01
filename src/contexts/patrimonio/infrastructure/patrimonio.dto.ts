@@ -52,8 +52,9 @@ export const CreateActivoSchema = z.object({
   anioFabricacion: z.coerce.number().optional().nullable(),
   cilindrada: z.string().optional().nullable(),
 
-  // Seguridad y firma de re-autenticación
-  passwordConfirm: z.string().min(1, 'La contraseña de confirmación es obligatoria'),
+  // Seguridad y firma de re-autenticación (2FA Step-Up o Contraseña)
+  passwordConfirm: z.string().optional().nullable(),
+  stepUpToken: z.string().optional().nullable(),
 });
 
 export type CreateActivoDto = z.infer<typeof CreateActivoSchema>;

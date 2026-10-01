@@ -26,7 +26,7 @@ export interface AutenticarUsuarioRequest {
 export type AutenticarUsuarioResponse =
   | SesionIniciada
   | { requiere2fa: true; desafioToken: string }
-  | { requiereConfiguracion2fa: true; desafioToken: string };
+  | { requiereConfiguracion2fa: true; obligatorio: boolean; desafioToken: string };
 
 @Injectable()
 export class AutenticarUsuarioUseCase {
@@ -63,10 +63,13 @@ export class AutenticarUsuarioUseCase {
     if (usuario.twoFactorHabilitado) {
       return { requiere2fa: true, desafioToken: await this.desafio.emitir(usuario.id, 'verificar', deviceId) };
     }
-    if (requiereDosFactores(roles)) {
-      return { requiereConfiguracion2fa: true, desafioToken: await this.desafio.emitir(usuario.id, 'configurar', deviceId) };
-    }
-    return this.emisorSesion.emitir(usuario, { deviceId, ipOrigen: req.ipOrigen, roles });
+    
+    const obligatorio = await this.usuarioRepo.esDosFactoresObligatorioParaUsuario(usuario.id);
+    return {
+      requiereConfiguracion2fa: true,
+      obligatorio,
+      desafioToken: await this.desafio.emitir(usuario.id, 'configurar', deviceId),
+    };
   }
 
   private async rechazarUsuarioInvalido(

@@ -155,6 +155,34 @@
         ]
       }
     },
+    "/auth/2fa/inicial/omitir": {
+      "post": {
+        "operationId": "AuthController_omitirInicial",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/stepup/verificar-2fa": {
+      "post": {
+        "operationId": "AuthController_verificarStepUp2fa",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/usuarios": {
       "get": {
         "operationId": "UsuariosController_findAll",

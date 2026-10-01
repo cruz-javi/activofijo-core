@@ -85,12 +85,13 @@ model AuthRol {
   id            String    @id @db.VarChar(50)
   nombre        String    @db.VarChar(100)
   descripcion   String?   @db.VarChar(255)
-  esSistema     Boolean   @default(false) @map("es_sistema")
-  activo        Boolean   @default(true)
-  creadoEn      DateTime  @default(now()) @map("creado_en") @db.Timestamptz
-  actualizadoEn DateTime  @default(now()) @updatedAt @map("actualizado_en") @db.Timestamptz
-  eliminadoEn   DateTime? @map("eliminado_en") @db.Timestamptz
-  eliminadoPor  String?   @map("eliminado_por") @db.Uuid
+  esSistema        Boolean   @default(false) @map("es_sistema")
+  requiereDosPasos Boolean   @default(false) @map("requiere_dos_pasos")
+  activo           Boolean   @default(true)
+  creadoEn         DateTime  @default(now()) @map("creado_en") @db.Timestamptz
+  actualizadoEn    DateTime  @default(now()) @updatedAt @map("actualizado_en") @db.Timestamptz
+  eliminadoEn      DateTime? @map("eliminado_en") @db.Timestamptz
+  eliminadoPor     String?   @map("eliminado_por") @db.Uuid
 
   permisos AuthRolPermiso[]
   usuarios AuthUsuarioRol[]

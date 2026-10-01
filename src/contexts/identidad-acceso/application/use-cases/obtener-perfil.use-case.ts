@@ -30,6 +30,8 @@ export class ObtenerPerfilUseCase {
     const roles = await this.usuarioRepo.getRolesByUsuarioId(usuarioId);
     const permisos = await this.usuarioRepo.getPermisosByUsuarioId(usuarioId);
 
+    const dosFactoresObligatorio = await this.usuarioRepo.esDosFactoresObligatorioParaUsuario(usuarioId);
+
     return Result.ok({
       id: usuario.id,
       email: usuario.email,
@@ -38,7 +40,7 @@ export class ObtenerPerfilUseCase {
       permisos,
       activo: usuario.activo,
       dosFactoresActivo: usuario.twoFactorHabilitado,
-      dosFactoresObligatorio: requiereDosFactores(roles),
+      dosFactoresObligatorio,
     });
   }
 }

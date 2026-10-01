@@ -41,8 +41,8 @@ export class DesactivarDosFactoresUseCase {
       return Result.fail(new NotFoundError(MENSAJE_USUARIO_NO_ENCONTRADO));
     }
 
-    const roles = await this.usuarioRepo.getRolesByUsuarioId(usuario.id);
-    if (requiereDosFactores(roles)) {
+    const esObligatorio = await this.usuarioRepo.esDosFactoresObligatorioParaUsuario(usuario.id);
+    if (esObligatorio) {
       return Result.fail(new ForbiddenError('Su rol exige mantener activa la verificación en dos pasos'));
     }
     if (!usuario.twoFactorHabilitado) {

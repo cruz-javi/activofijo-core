@@ -43,21 +43,22 @@ export class RolesController {
       orderBy: { creadoEn: 'asc' },
     });
 
-    return roles.map((r) => ({
+    return roles.map((r: any) => ({
       id: r.id,
       nombre: r.nombre,
       descripcion: r.descripcion,
       esSistema: r.esSistema,
+      requiereDosPasos: r.requiereDosPasos ?? (r.id === 'ADMINISTRADOR' || r.id === 'JEFE_ACTIVO_FIJO'),
       totalUsuarios: r._count.usuarios,
-      permisos: r.permisos.map((p) => p.permiso),
-      permisosIds: r.permisos.map((p) => p.permisoId),
+      permisos: r.permisos.map((p: any) => p.permiso),
+      permisosIds: r.permisos.map((p: any) => p.permisoId),
       creadoEn: r.creadoEn,
     }));
   }
 
   @Post('roles')
   async createRole(
-    @Body() body: { id: string; nombre: string; descripcion?: string; permisos?: string[] },
+    @Body() body: { id: string; nombre: string; descripcion?: string; permisos?: string[]; requiereDosPasos?: boolean },
     @Req() req: any,
   ) {
     const roleId = body.id?.trim().toUpperCase();
@@ -76,6 +77,7 @@ export class RolesController {
         nombre: body.nombre?.trim() || roleId,
         descripcion: body.descripcion?.trim() || `Rol institucional ${roleId}`,
         esSistema: false,
+        requiereDosPasos: Boolean(body.requiereDosPasos),
       },
     });
 
@@ -100,7 +102,7 @@ export class RolesController {
       'IDENTIDAD_ACCESO',
       created.id,
       ResultadoAuditoria.EXITOSO,
-      `Rol ${created.id} creado con ${(body.permisos || []).length} permisos asignados`,
+      `Rol ${created.id} creado con ${(body.permisos || []).length} permisos asignados (2FA Requerido: ${Boolean(body.requiereDosPasos)})`,
       clientIp,
       userAgent,
     );
@@ -111,7 +113,7 @@ export class RolesController {
   @Patch('roles/:id')
   async updateRole(
     @Param('id') id: string,
-    @Body() body: { nombre?: string; descripcion?: string; permisos?: string[] },
+    @Body() body: { nombre?: string; descripcion?: string; permisos?: string[]; requiereDosPasos?: boolean },
     @Req() req: any,
   ) {
     const roleId = id.trim().toUpperCase();
@@ -125,6 +127,7 @@ export class RolesController {
       data: {
         ...(body.nombre ? { nombre: body.nombre.trim() } : {}),
         ...(body.descripcion ? { descripcion: body.descripcion.trim() } : {}),
+        ...(typeof body.requiereDosPasos === 'boolean' ? { requiereDosPasos: body.requiereDosPasos } : {}),
       },
     });
 
