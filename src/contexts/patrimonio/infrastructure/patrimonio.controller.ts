@@ -59,6 +59,11 @@ export class PatrimonioController {
     return this.patrimonioService.getFormularioMetadata();
   }
 
+  @Get('resumen-dashboard')
+  async getResumenDashboard() {
+    return this.patrimonioService.getResumenDashboard();
+  }
+
   @Get(':id')
   async findById(@Param('id') id: string) {
     return this.patrimonioService.findById(id);

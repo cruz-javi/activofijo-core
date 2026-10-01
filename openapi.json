@@ -371,6 +371,20 @@
         ]
       }
     },
+    "/activos/resumen-dashboard": {
+      "get": {
+        "operationId": "PatrimonioController_getResumenDashboard",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Patrimonio"
+        ]
+      }
+    },
     "/activos/{id}": {
       "get": {
         "operationId": "PatrimonioController_findById",

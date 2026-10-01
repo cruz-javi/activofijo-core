@@ -8,7 +8,14 @@ import {
 } from '@nestjs/common';
 import { ACTIVO_REPOSITORY, ActivoRepository, ActivoFilters } from '../domain/activo.repository.js';
 import { Activo } from '../domain/activo.entity.js';
-import { CreateActivoDto, UpdateActivoDto } from '../infrastructure/patrimonio.dto.js';
+import {
+  CreateActivoDto,
+  UpdateActivoDto,
+  DashboardResumenDto,
+  DashboardGrupoItem,
+  DashboardEstadoItem,
+  DashboardActivoReciente,
+} from '../infrastructure/patrimonio.dto.js';
 import { EventStorePort, EVENT_STORE_PORT } from '../../../contexts/trazabilidad/domain/ports/event-store.port.js';
 import { PrismaCoreService } from '../../../shared/infrastructure/database/prisma-core.service.js';
 import { PrismaLegacyService } from '../../../shared/infrastructure/database/prisma-legacy.service.js';
@@ -567,5 +574,171 @@ export class PatrimonioService {
 
   async getHistory(id: string) {
     return this.eventStore.readStream(id);
+  }
+
+  async getResumenDashboard(): Promise<DashboardResumenDto> {
+    try {
+      const [
+        totalActivos,
+        sumMontoLegacy,
+        sumMontoCore,
+        totalAsignados,
+        totalEtiquetasVigentes,
+        gruposCatalogo,
+        estadosCatalogo,
+        grupoAgg,
+        estadoAgg,
+        recientesRows,
+      ] = await Promise.all([
+        this.repository.count(),
+        this.prismaLegacy.inActivo.aggregate({
+          _sum: { monto: true },
+          where: { activo: true },
+        }),
+        this.prismaCore.activoProyeccion.aggregate({
+          _sum: { valor: true },
+        }).catch(() => ({ _sum: { valor: null } })),
+        this.prismaLegacy.inDetAsig.count({ where: { activo: true } }).catch(() => 0),
+        this.prismaCore.etiquetaGenerada.count({ where: { vigente: true } }).catch(() => 0),
+        this.prismaLegacy.inGrupo.findMany({
+          select: { codGrupo: true, desGrupo: true },
+        }).catch(() => []),
+        this.prismaLegacy.inEstado.findMany({
+          select: { codEstado: true, desEstado: true },
+        }).catch(() => []),
+        this.prismaLegacy.inActivo.groupBy({
+          by: ['codGrupo'],
+          _count: true,
+          _sum: { monto: true },
+          where: { activo: true },
+        }).catch(() => []),
+        this.prismaLegacy.inActivo.groupBy({
+          by: ['codEstado'],
+          _count: true,
+          where: { activo: true },
+        }).catch(() => []),
+        this.prismaLegacy.inActivo.findMany({
+          where: { activo: true },
+          orderBy: { nroActivo: 'desc' },
+          take: 5,
+          include: {
+            grupo: true,
+            estado: true,
+          },
+        }).catch(() => []),
+      ]);
+
+      const valorTotalInventario =
+        Number(sumMontoLegacy._sum.monto || 0) + Number(sumMontoCore?._sum?.valor || 0);
+
+      // Mapear nombres de grupos
+      const mapaGrupos = new Map<number, string>();
+      gruposCatalogo.forEach((g) => mapaGrupos.set(g.codGrupo, g.desGrupo));
+
+      const grupos: DashboardGrupoItem[] = grupoAgg
+        .filter((g) => g.codGrupo !== null)
+        .map((g) => {
+          const cant = g._count;
+          const val = Number(g._sum.monto || 0);
+          const pct = totalActivos > 0 ? Number(((cant / totalActivos) * 100).toFixed(1)) : 0;
+          return {
+            codigo: g.codGrupo!,
+            nombre: mapaGrupos.get(g.codGrupo!) || `Grupo ${g.codGrupo}`,
+            cantidad: cant,
+            valor: val,
+            porcentaje: pct,
+          };
+        })
+        .sort((a, b) => b.valor - a.valor)
+        .slice(0, 5);
+
+      // Mapear estados y colores semánticos institucionales UAGRM
+      const mapaEstados = new Map<number, string>();
+      estadosCatalogo.forEach((e) => mapaEstados.set(e.codEstado, e.desEstado));
+
+      let totalOperativos = 0;
+      const estados: DashboardEstadoItem[] = estadoAgg
+        .filter((e) => e.codEstado !== null)
+        .map((e) => {
+          const cant = e._count;
+          const pct = totalActivos > 0 ? Number(((cant / totalActivos) * 100).toFixed(1)) : 0;
+          const nombreEstado = (mapaEstados.get(e.codEstado!) || `Estado ${e.codEstado}`).toUpperCase();
+
+          let colorTone: 'brand' | 'accent' | 'danger' | 'neutral' | 'success' = 'neutral';
+          if (nombreEstado.includes('USO') || nombreEstado.includes('BUENO') || nombreEstado.includes('OPERATIVO')) {
+            colorTone = 'brand';
+            totalOperativos += cant;
+          } else if (nombreEstado.includes('DEPÓSITO') || nombreEstado.includes('DEPOSITO') || nombreEstado.includes('REGULAR')) {
+            colorTone = 'accent';
+            totalOperativos += cant;
+          } else if (nombreEstado.includes('MANTENIMIENTO') || nombreEstado.includes('REPARACIÓN')) {
+            colorTone = 'neutral';
+          } else if (nombreEstado.includes('BAJA') || nombreEstado.includes('MALO') || nombreEstado.includes('DESUSO')) {
+            colorTone = 'danger';
+          } else {
+            colorTone = 'success';
+            totalOperativos += cant;
+          }
+
+          return {
+            estado: nombreEstado,
+            cantidad: cant,
+            porcentaje: pct,
+            colorTone,
+          };
+        })
+        .sort((a, b) => b.cantidad - a.cantidad);
+
+      const porcentajeOperativos = totalActivos > 0 ? Number(((totalOperativos / totalActivos) * 100).toFixed(1)) : 100;
+
+      // Mapear activos recientes
+      const recientes: DashboardActivoReciente[] = recientesRows.map((r) => ({
+        id: `legacy-${r.nroActivo}`,
+        codigo: r.codActivo,
+        descripcion: r.descripcion,
+        grupo: r.grupo?.desGrupo || 'General',
+        valor: Number(r.monto || 0),
+        estado: r.estado?.desEstado || 'ACTIVO',
+        fechaAlta: (r.fecAdqui || r.creadoEn || new Date()).toISOString(),
+      }));
+
+      const porcentajeAsignados =
+        totalActivos > 0 ? Number(((totalAsignados / totalActivos) * 100).toFixed(1)) : 0;
+
+      return {
+        kpis: {
+          totalActivos,
+          valorTotal: valorTotalInventario,
+          valorTotalInventario,
+          totalAsignados,
+          porcentajeAsignados,
+          totalOperativos,
+          porcentajeOperativos,
+          porcentajeOperatividad: porcentajeOperativos,
+          totalEtiquetasVigentes,
+        },
+        grupos,
+        estados,
+        recientes,
+      };
+    } catch (error) {
+      console.error('Error al calcular métricas de dashboard:', error);
+      return {
+        kpis: {
+          totalActivos: 0,
+          valorTotal: 0,
+          valorTotalInventario: 0,
+          totalAsignados: 0,
+          porcentajeAsignados: 0,
+          totalOperativos: 0,
+          porcentajeOperativos: 0,
+          porcentajeOperatividad: 0,
+          totalEtiquetasVigentes: 0,
+        },
+        grupos: [],
+        estados: [],
+        recientes: [],
+      };
+    }
   }
 }
