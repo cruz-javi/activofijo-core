@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-01T02:53:10.709Z",
+  "timestamp": "2026-10-01T03:12:53.752Z",
   "environment": {
     "coreUrl": "http://localhost:3000",
     "webUrl": "http://localhost:3001",
@@ -17,7 +17,7 @@
             "status": 201,
             "requiere2fa": true
           },
-          "durationMs": 378
+          "durationMs": 374
         },
         {
           "testId": "CP-CU01-02",
@@ -27,7 +27,7 @@
             "status": 201,
             "requiere2fa": true
           },
-          "durationMs": 376
+          "durationMs": 377
         },
         {
           "testId": "CP-CU01-03",
@@ -39,7 +39,7 @@
               "FUNCIONARIO"
             ]
           },
-          "durationMs": 681
+          "durationMs": 670
         },
         {
           "testId": "CP-CU01-04",
@@ -49,18 +49,18 @@
             "status": 401,
             "message": "Credenciales inválidas"
           },
-          "durationMs": 525
+          "durationMs": 531
         },
         {
           "testId": "CP-CU01-05",
           "description": "Inspección de sesión activa y permisos efectivos (/auth/me)",
           "passed": true,
           "details": {
-            "id": "4417b5ea-1fca-4407-a2fd-cda68acc2e3b",
+            "id": "9275df57-f918-4b8d-843c-26410d37d94c",
             "nombre": "Administrador de servicio (suite Sprint 1)",
             "permisosCount": 8
           },
-          "durationMs": 907
+          "durationMs": 908
         },
         {
           "testId": "CP-CU01-06",
@@ -70,7 +70,7 @@
             "validStatus": 201,
             "invalidStatus": 401
           },
-          "durationMs": 452
+          "durationMs": 448
         },
         {
           "testId": "CP-CU01-07",
@@ -79,7 +79,7 @@
           "details": {
             "testedPayloads": 3
           },
-          "durationMs": 923
+          "durationMs": 913
         }
       ],
       "passed": 7,
@@ -96,7 +96,7 @@
             "count": 10,
             "total": 37
           },
-          "durationMs": 1348
+          "durationMs": 1462
         },
         {
           "testId": "CP-CU02-02",
@@ -105,7 +105,7 @@
           "details": {
             "matches": 12
           },
-          "durationMs": 1996
+          "durationMs": 1976
         },
         {
           "testId": "CP-CU02-03",
@@ -116,7 +116,7 @@
             "unidades": 8,
             "grupos": 9
           },
-          "durationMs": 766
+          "durationMs": 775
         },
         {
           "testId": "CP-CU02-04",
@@ -174,17 +174,17 @@
               }
             ]
           },
-          "durationMs": 285
+          "durationMs": 158
         },
         {
           "testId": "CP-CU02-06",
           "description": "Rendimiento y latencia en consulta masiva (limit=5000 < 4.0s)",
           "passed": true,
           "details": {
-            "latencyMs": 1052,
+            "latencyMs": 1072,
             "itemsRetrieved": 25
           },
-          "durationMs": 1052
+          "durationMs": 1072
         }
       ],
       "passed": 6,
@@ -208,7 +208,7 @@
               "ACTIVOFIJO-PRUEBAS"
             ]
           },
-          "durationMs": 458
+          "durationMs": 492
         },
         {
           "testId": "CP-CU03-02",
@@ -222,16 +222,16 @@
               "PATRIMONIO"
             ]
           },
-          "durationMs": 155
+          "durationMs": 157
         },
         {
           "testId": "CP-CU03-03",
           "description": "Creación de nuevo rol dinámico con permisos asignados",
           "passed": true,
           "details": {
-            "roleId": "TEST_AUDITOR_1790823210072"
+            "roleId": "TEST_AUDITOR_1790824392862"
           },
-          "durationMs": 764
+          "durationMs": 1172
         },
         {
           "testId": "CP-CU03-04",
@@ -244,7 +244,7 @@
               "reportes:generar"
             ]
           },
-          "durationMs": 1080
+          "durationMs": 1107
         },
         {
           "testId": "CP-CU03-05",
@@ -253,7 +253,7 @@
           "details": {
             "status": 200
           },
-          "durationMs": 1022
+          "durationMs": 1170
         },
         {
           "testId": "CP-CU03-06",
@@ -285,10 +285,10 @@
           "description": "Consulta estructurada de bitácora forense (/auditoria)",
           "passed": true,
           "details": {
-            "totalEvents": 589,
+            "totalEvents": 607,
             "retrieved": 20
           },
-          "durationMs": 1056
+          "durationMs": 1097
         },
         {
           "testId": "CP-CU04-02",
@@ -297,7 +297,7 @@
           "details": {
             "matchingEvents": 5
           },
-          "durationMs": 154
+          "durationMs": 158
         },
         {
           "testId": "CP-CU04-03",
@@ -305,21 +305,21 @@
           "passed": true,
           "details": {
             "item": {
-              "id": "621",
+              "id": "639",
               "usuarioId": null,
-              "emailUsuario": "test.sprint1.1790823191833.admin@uagrm.edu.bo",
+              "emailUsuario": "test.sprint1.1790824374854.admin@uagrm.edu.bo",
               "accion": "ELIMINAR_ROL",
               "modulo": "IDENTIDAD_ACCESO",
-              "entidadId": "TEST_AUDITOR_1790823210072",
+              "entidadId": "TEST_AUDITOR_1790824392862",
               "resultado": "EXITOSO",
               "ipOrigen": "::1",
               "userAgent": "node",
-              "motivoRechazo": "Rol personalizado TEST_AUDITOR_1790823210072 eliminado del sistema",
+              "motivoRechazo": "Rol personalizado TEST_AUDITOR_1790824392862 eliminado del sistema",
               "payloadHash": null,
-              "creadoEn": "2026-10-01T02:53:32.796Z"
+              "creadoEn": "2026-10-01T03:13:16.017Z"
             }
           },
-          "durationMs": 154
+          "durationMs": 160
         },
         {
           "testId": "CP-CU04-04",
@@ -328,7 +328,7 @@
           "details": {
             "status": 403
           },
-          "durationMs": 5
+          "durationMs": 4
         },
         {
           "testId": "CP-CU04-05",
@@ -338,7 +338,7 @@
             "postStatus": 404,
             "deleteStatus": 404
           },
-          "durationMs": 3
+          "durationMs": 6
         }
       ],
       "passed": 5,
@@ -354,16 +354,16 @@
           "details": {
             "totalPlantillas": 6
           },
-          "durationMs": 156
+          "durationMs": 159
         },
         {
           "testId": "CP-CU05-02",
           "description": "Creación y registro de plantilla de etiqueta configurable",
           "passed": true,
           "details": {
-            "plantillaId": "e1bfaf60-f2ec-417a-bf0e-f0e1fce35455"
+            "plantillaId": "58d946e2-6afa-458f-a7b2-e08b36077976"
           },
-          "durationMs": 455
+          "durationMs": 470
         },
         {
           "testId": "CP-CU05-03",
@@ -372,7 +372,7 @@
           "details": {
             "status": 200
           },
-          "durationMs": 453
+          "durationMs": 465
         },
         {
           "testId": "CP-CU05-04",
@@ -382,7 +382,7 @@
             "generados": 1,
             "total": 1
           },
-          "durationMs": 1209
+          "durationMs": 1234
         },
         {
           "testId": "CP-CU05-05",
@@ -390,19 +390,19 @@
           "passed": true,
           "details": {
             "success": true,
-            "data": "1928DD7162"
+            "data": "6168EEEB14"
           },
-          "durationMs": 1201
+          "durationMs": 1216
         },
         {
           "testId": "CP-CU05-06",
           "description": "Auditoría e historial de reposiciones por activo (/etiquetas/historial/:cod)",
           "passed": true,
           "details": {
-            "totalEmisiones": 7,
-            "historialCount": 7
+            "totalEmisiones": 9,
+            "historialCount": 9
           },
-          "durationMs": 153
+          "durationMs": 163
         }
       ],
       "passed": 6,
@@ -419,17 +419,17 @@
             "totalExtraidos": 25,
             "totalDB": 37
           },
-          "durationMs": 1056
+          "durationMs": 1939
         },
         {
           "testId": "CP-CU06-02",
           "description": "Extracción masiva de bitácora para reporte parametrizado (limit=5000)",
           "passed": true,
           "details": {
-            "totalExtraidos": 593,
-            "totalDB": 593
+            "totalExtraidos": 611,
+            "totalDB": 611
           },
-          "durationMs": 660
+          "durationMs": 631
         },
         {
           "testId": "CP-CU06-03",
@@ -492,6 +492,6 @@
     "total": 36,
     "passed": 36,
     "failed": 0,
-    "durationMs": 29261
+    "durationMs": 30578
   }
 }
