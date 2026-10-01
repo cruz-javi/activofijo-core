@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { PrismaCoreService } from '../../../../shared/infrastructure/database/prisma-core.service.js';
 import { ConflictError, NotFoundError } from '../../../../shared/domain/domain-error.js';
 import { Result } from '../../../../shared/domain/result.js';
-import { EstadoUsuario } from '../../../../shared/infrastructure/database/generated/core/enums.js';
+import { EstadoUsuario, ResultadoAuditoria } from '../../../../shared/infrastructure/database/generated/core/enums.js';
 import argon2 from 'argon2';
 
 const PUBLIC_SELECT = {
@@ -55,6 +55,9 @@ export class GestionarUsuariosUseCase {
     rol?: string;
     cargoInstitucional?: string;
     codigoEmpleadoLegado?: number;
+    ejecutadoPor?: { id?: string; email?: string };
+    ipOrigen?: string;
+    userAgent?: string;
   }): Promise<Result<any, ConflictError>> {
     const existing = await this.prisma.authUsuario.findUnique({ where: { email: dto.email } });
     if (existing) {
@@ -88,6 +91,24 @@ export class GestionarUsuariosUseCase {
       },
     });
 
+    try {
+      await this.prisma.authAuditoriaForense.create({
+        data: {
+          usuarioId: dto.ejecutadoPor?.id || null,
+          emailUsuario: dto.ejecutadoPor?.email || 'admin@uagrm.edu.bo',
+          accion: 'CREAR_USUARIO',
+          modulo: 'IDENTIDAD_ACCESO',
+          entidadId: user.id,
+          resultado: ResultadoAuditoria.EXITOSO,
+          motivoRechazo: `Usuario ${user.email} creado con rol ${rolAsignar}`,
+          ipOrigen: dto.ipOrigen || '127.0.0.1',
+          userAgent: dto.userAgent || 'Sistema Patrimonial UAGRM',
+        },
+      });
+    } catch (e) {
+      console.warn(`Error al registrar bitácora CREAR_USUARIO: ${(e as Error).message}`);
+    }
+
     return Result.ok({
       id: user.id,
       email: user.email,
@@ -102,7 +123,15 @@ export class GestionarUsuariosUseCase {
 
   async update(
     id: string,
-    dto: { rol?: string; roles?: string[]; activo?: boolean; estado?: string },
+    dto: {
+      rol?: string;
+      roles?: string[];
+      activo?: boolean;
+      estado?: string;
+      ejecutadoPor?: { id?: string; email?: string };
+      ipOrigen?: string;
+      userAgent?: string;
+    },
   ): Promise<Result<any, NotFoundError>> {
     const existing = await this.prisma.authUsuario.findUnique({ where: { id } });
     if (!existing) {
@@ -141,6 +170,30 @@ export class GestionarUsuariosUseCase {
       },
       select: PUBLIC_SELECT,
     });
+
+    try {
+      const cambios: string[] = [];
+      if (dto.rol) cambios.push(`rol: ${dto.rol}`);
+      if (dto.roles) cambios.push(`roles: ${dto.roles.join(', ')}`);
+      if (dto.activo !== undefined) cambios.push(`activo: ${dto.activo}`);
+      if (dto.estado !== undefined) cambios.push(`estado: ${dto.estado}`);
+
+      await this.prisma.authAuditoriaForense.create({
+        data: {
+          usuarioId: dto.ejecutadoPor?.id || null,
+          emailUsuario: dto.ejecutadoPor?.email || 'admin@uagrm.edu.bo',
+          accion: 'ACTUALIZAR_USUARIO',
+          modulo: 'IDENTIDAD_ACCESO',
+          entidadId: id,
+          resultado: ResultadoAuditoria.EXITOSO,
+          motivoRechazo: `Usuario ${existing.email} actualizado (${cambios.join(', ') || 'sin cambios'})`,
+          ipOrigen: dto.ipOrigen || '127.0.0.1',
+          userAgent: dto.userAgent || 'Sistema Patrimonial UAGRM',
+        },
+      });
+    } catch (e) {
+      console.warn(`Error al registrar bitácora ACTUALIZAR_USUARIO: ${(e as Error).message}`);
+    }
 
     return Result.ok({
       ...updated,

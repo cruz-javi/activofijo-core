@@ -24,7 +24,11 @@ export class UsuariosController {
   }
 
   @Post()
-  async create(@Body(new ZodValidationPipe(CreateUsuarioSchema)) body: CreateUsuarioDto) {
+  async create(
+    @Body(new ZodValidationPipe(CreateUsuarioSchema)) body: CreateUsuarioDto,
+    @Req() req: SolicitudAutenticada,
+  ) {
+    const contexto = obtenerContextoSolicitud(req);
     const result = await this.gestionarUsuarios.create({
       email: body.email,
       nombre: body.nombre,
@@ -32,6 +36,9 @@ export class UsuariosController {
       rol: body.rol,
       cargoInstitucional: body.cargoInstitucional,
       codigoEmpleadoLegado: body.codigoEmpleadoLegado,
+      ejecutadoPor: req?.user ? { id: req.user.sub, email: req.user.email } : undefined,
+      ipOrigen: contexto.ipOrigen,
+      userAgent: contexto.userAgent,
     });
 
     if (result.isFailure) {
@@ -44,12 +51,17 @@ export class UsuariosController {
   async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateUsuarioSchema)) body: UpdateUsuarioDto,
+    @Req() req: SolicitudAutenticada,
   ) {
+    const contexto = obtenerContextoSolicitud(req);
     const result = await this.gestionarUsuarios.update(id, {
       rol: body.rol,
       roles: body.roles,
       activo: body.activo,
       estado: body.estado,
+      ejecutadoPor: req?.user ? { id: req.user.sub, email: req.user.email } : undefined,
+      ipOrigen: contexto.ipOrigen,
+      userAgent: contexto.userAgent,
     });
 
     if (result.isFailure) {

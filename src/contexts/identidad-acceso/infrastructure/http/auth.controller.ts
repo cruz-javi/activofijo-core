@@ -296,11 +296,30 @@ export class AuthController {
       throw new ForbiddenException('La verificación en dos pasos es obligatoria para su rol institucional y no puede omitirse');
     }
     const roles = await this.usuarioRepo.getRolesByUsuarioId(usuario.id);
+    const contexto = obtenerContextoSolicitud(req);
     const sesion = await this.emisorSesion.emitir(usuario, {
       deviceId: resuelta.deviceId ?? 'web',
-      ...obtenerContextoSolicitud(req),
+      ...contexto,
       roles,
     });
+
+    try {
+      await this.prisma.authAuditoriaForense.create({
+        data: {
+          usuarioId: usuario.id,
+          emailUsuario: usuario.email,
+          accion: 'OMITIR_2FA_INICIAL',
+          modulo: 'AUTENTICACION',
+          resultado: ResultadoAuditoria.EXITOSO,
+          motivoRechazo: 'Postergación voluntaria de 2FA para rol no forzado',
+          ipOrigen: contexto.ipOrigen || '127.0.0.1',
+          userAgent: contexto.userAgent,
+        },
+      });
+    } catch (e) {
+      console.warn(`Error al registrar bitácora OMITIR_2FA_INICIAL: ${(e as Error).message}`);
+    }
+
     return { sesion };
   }
 
@@ -331,6 +350,25 @@ export class AuthController {
       throw new UnauthorizedException('Código de verificación 2FA incorrecto o expirado');
     }
     const tokenInfo = generarStepUpToken(usuario.id, usuario.email, 300);
+
+    try {
+      const contexto = obtenerContextoSolicitud(req);
+      await this.prisma.authAuditoriaForense.create({
+        data: {
+          usuarioId: usuario.id,
+          emailUsuario: usuario.email,
+          accion: 'STEPUP_2FA',
+          modulo: 'AUTENTICACION',
+          resultado: ResultadoAuditoria.EXITOSO,
+          motivoRechazo: 'Autorización Step-Up 2FA concedida por 5 minutos',
+          ipOrigen: contexto.ipOrigen || '127.0.0.1',
+          userAgent: contexto.userAgent,
+        },
+      });
+    } catch (e) {
+      console.warn(`Error al registrar bitácora STEPUP_2FA: ${(e as Error).message}`);
+    }
+
     return {
       valid: true,
       valido: true,

@@ -50,8 +50,11 @@ export class EtiquetadoController {
   @Roles('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO')
   async crearPlantilla(
     @Body(new ZodValidationPipe(CrearPlantillaSchema)) dto: CrearPlantillaDto,
+    @Req() req: any,
   ) {
-    return this.etiquetadoService.crearPlantilla(dto);
+    const ipOrigen = req.headers?.['x-forwarded-for'] || req.socket?.remoteAddress || '127.0.0.1';
+    const userAgent = req.headers?.['user-agent'] || 'Sistema Patrimonial UAGRM';
+    return this.etiquetadoService.crearPlantilla(dto, req.user, ipOrigen, userAgent);
   }
 
   @Put('plantillas/:id')
@@ -59,14 +62,19 @@ export class EtiquetadoController {
   async actualizarPlantilla(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(ActualizarPlantillaSchema)) dto: ActualizarPlantillaDto,
+    @Req() req: any,
   ) {
-    return this.etiquetadoService.actualizarPlantilla(id, dto);
+    const ipOrigen = req.headers?.['x-forwarded-for'] || req.socket?.remoteAddress || '127.0.0.1';
+    const userAgent = req.headers?.['user-agent'] || 'Sistema Patrimonial UAGRM';
+    return this.etiquetadoService.actualizarPlantilla(id, dto, req.user, ipOrigen, userAgent);
   }
 
   @Delete('plantillas/:id')
   @Roles('ADMINISTRADOR', 'JEFE_ACTIVO_FIJO')
-  async eliminarPlantilla(@Param('id') id: string) {
-    return this.etiquetadoService.eliminarPlantilla(id);
+  async eliminarPlantilla(@Param('id') id: string, @Req() req: any) {
+    const ipOrigen = req.headers?.['x-forwarded-for'] || req.socket?.remoteAddress || '127.0.0.1';
+    const userAgent = req.headers?.['user-agent'] || 'Sistema Patrimonial UAGRM';
+    return this.etiquetadoService.eliminarPlantilla(id, req.user, ipOrigen, userAgent);
   }
 
   @Patch('plantillas/:id/predeterminada')

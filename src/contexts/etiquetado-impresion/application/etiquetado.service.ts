@@ -192,7 +192,7 @@ export class EtiquetadoService implements OnModuleInit {
     return plantilla;
   }
 
-  async crearPlantilla(dto: CrearPlantillaDto) {
+  async crearPlantilla(dto: CrearPlantillaDto, user?: any, ipOrigen?: string, userAgent?: string) {
     const existe = await this.prismaCore.plantillaEtiqueta.findUnique({
       where: { nombre: dto.nombre.trim() },
     });
@@ -207,7 +207,7 @@ export class EtiquetadoService implements OnModuleInit {
       });
     }
 
-    return this.prismaCore.plantillaEtiqueta.create({
+    const created = await this.prismaCore.plantillaEtiqueta.create({
       data: {
         nombre: dto.nombre.trim(),
         descripcion: dto.descripcion?.trim() || null,
@@ -222,9 +222,29 @@ export class EtiquetadoService implements OnModuleInit {
         esSistema: false,
       },
     });
+
+    try {
+      await this.prismaCore.authAuditoriaForense.create({
+        data: {
+          usuarioId: user?.sub || null,
+          emailUsuario: user?.email || 'operador@uagrm.edu.bo',
+          accion: 'CREAR_PLANTILLA_ETIQUETA',
+          modulo: 'ETIQUETAS',
+          entidadId: created.id,
+          resultado: ResultadoAuditoria.EXITOSO,
+          motivoRechazo: `Plantilla "${created.nombre}" creada (${created.anchoMm}x${created.altoMm}mm)`,
+          ipOrigen: ipOrigen || '127.0.0.1',
+          userAgent: userAgent || 'Sistema Patrimonial UAGRM',
+        },
+      });
+    } catch (e) {
+      console.warn(`Error al registrar bitácora CREAR_PLANTILLA_ETIQUETA: ${(e as Error).message}`);
+    }
+
+    return created;
   }
 
-  async actualizarPlantilla(id: string, dto: ActualizarPlantillaDto) {
+  async actualizarPlantilla(id: string, dto: ActualizarPlantillaDto, user?: any, ipOrigen?: string, userAgent?: string) {
     const plantilla = await this.obtenerPlantillaPorId(id);
 
     if (dto.nombre && dto.nombre.trim() !== plantilla.nombre) {
@@ -243,7 +263,7 @@ export class EtiquetadoService implements OnModuleInit {
       });
     }
 
-    return this.prismaCore.plantillaEtiqueta.update({
+    const updated = await this.prismaCore.plantillaEtiqueta.update({
       where: { id },
       data: {
         nombre: dto.nombre ? dto.nombre.trim() : undefined,
@@ -258,9 +278,29 @@ export class EtiquetadoService implements OnModuleInit {
         esPredeterminada: dto.esPredeterminada,
       },
     });
+
+    try {
+      await this.prismaCore.authAuditoriaForense.create({
+        data: {
+          usuarioId: user?.sub || null,
+          emailUsuario: user?.email || 'operador@uagrm.edu.bo',
+          accion: 'ACTUALIZAR_PLANTILLA_ETIQUETA',
+          modulo: 'ETIQUETAS',
+          entidadId: id,
+          resultado: ResultadoAuditoria.EXITOSO,
+          motivoRechazo: `Plantilla "${updated.nombre}" actualizada`,
+          ipOrigen: ipOrigen || '127.0.0.1',
+          userAgent: userAgent || 'Sistema Patrimonial UAGRM',
+        },
+      });
+    } catch (e) {
+      console.warn(`Error al registrar bitácora ACTUALIZAR_PLANTILLA_ETIQUETA: ${(e as Error).message}`);
+    }
+
+    return updated;
   }
 
-  async eliminarPlantilla(id: string) {
+  async eliminarPlantilla(id: string, user?: any, ipOrigen?: string, userAgent?: string) {
     const plantilla = await this.obtenerPlantillaPorId(id);
     if (plantilla.esSistema) {
       throw new ForbiddenException('Las plantillas oficiales de fábrica del sistema están protegidas contra eliminación');
@@ -269,6 +309,24 @@ export class EtiquetadoService implements OnModuleInit {
     await this.prismaCore.plantillaEtiqueta.delete({
       where: { id },
     });
+
+    try {
+      await this.prismaCore.authAuditoriaForense.create({
+        data: {
+          usuarioId: user?.sub || null,
+          emailUsuario: user?.email || 'operador@uagrm.edu.bo',
+          accion: 'ELIMINAR_PLANTILLA_ETIQUETA',
+          modulo: 'ETIQUETAS',
+          entidadId: id,
+          resultado: ResultadoAuditoria.EXITOSO,
+          motivoRechazo: `Plantilla "${plantilla.nombre}" eliminada`,
+          ipOrigen: ipOrigen || '127.0.0.1',
+          userAgent: userAgent || 'Sistema Patrimonial UAGRM',
+        },
+      });
+    } catch (e) {
+      console.warn(`Error al registrar bitácora ELIMINAR_PLANTILLA_ETIQUETA: ${(e as Error).message}`);
+    }
 
     return { success: true, message: `Plantilla "${plantilla.nombre}" eliminada exitosamente` };
   }
@@ -403,6 +461,32 @@ export class EtiquetadoService implements OnModuleInit {
         formato: registro.formato,
         fechaEmision: timestampActual.toISOString(),
       });
+    }
+
+    if (etiquetasProcesadas.length > 0) {
+      try {
+        const payloadHash = crypto
+          .createHash('sha256')
+          .update(JSON.stringify({ codigos: codigosUnicos, formato: dto.formato, total: etiquetasProcesadas.length }))
+          .digest('hex');
+
+        await this.prismaCore.authAuditoriaForense.create({
+          data: {
+            usuarioId: user?.sub || null,
+            emailUsuario: user?.email || 'operador@uagrm.edu.bo',
+            accion: 'GENERAR_ETIQUETAS_LOTE',
+            modulo: 'ETIQUETAS',
+            entidadId: `${etiquetasProcesadas.length} activos`,
+            resultado: ResultadoAuditoria.EXITOSO,
+            ipOrigen: ipOrigen || '127.0.0.1',
+            userAgent: userAgent || 'Sistema Patrimonial UAGRM',
+            motivoRechazo: `Generación e impresión de ${etiquetasProcesadas.length} etiquetas en lote`,
+            payloadHash,
+          },
+        });
+      } catch (e) {
+        console.warn(`Error al registrar bitácora GENERAR_ETIQUETAS_LOTE: ${(e as Error).message}`);
+      }
     }
 
     return {
