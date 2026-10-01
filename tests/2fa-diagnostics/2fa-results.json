@@ -1,0 +1,150 @@
+{
+  "timestamp": "2026-10-01T02:53:54.203Z",
+  "baseUrl": "http://localhost:3000",
+  "casos": [
+    {
+      "id": "CP-2FA-01",
+      "descripcion": "FUNCIONARIO sin 2FA entra directamente (contrato de login intacto)",
+      "aprobado": false,
+      "detalle": "HTTP 201, 1603 ms"
+    },
+    {
+      "id": "CP-2FA-02",
+      "descripcion": "JEFE_ACTIVO_FIJO sin 2FA recibe desafío de configuración y ninguna sesión",
+      "aprobado": true,
+      "detalle": "HTTP 201"
+    },
+    {
+      "id": "CP-2FA-03",
+      "descripcion": "El desafío no sirve como token de acceso a la API",
+      "aprobado": true,
+      "detalle": "HTTP 401"
+    },
+    {
+      "id": "CP-2FA-04",
+      "descripcion": "Configuración inicial devuelve secreto y URI otpauth sin caché",
+      "aprobado": true,
+      "detalle": "HTTP 201"
+    },
+    {
+      "id": "CP-2FA-05",
+      "descripcion": "Activar con código incorrecto responde 401",
+      "aprobado": true,
+      "detalle": "HTTP 401"
+    },
+    {
+      "id": "CP-2FA-06",
+      "descripcion": "Activar con formato inválido responde 400",
+      "aprobado": true,
+      "detalle": "HTTP 400"
+    },
+    {
+      "id": "CP-2FA-07",
+      "descripcion": "Activar con código válido emite sesión y 10 códigos de respaldo",
+      "aprobado": true,
+      "detalle": "HTTP 201, 2838 ms"
+    },
+    {
+      "id": "CP-2FA-08",
+      "descripcion": "El perfil refleja 2FA activo y obligatorio",
+      "aprobado": true,
+      "detalle": "HTTP 200"
+    },
+    {
+      "id": "CP-2FA-09",
+      "descripcion": "Con 2FA activo el login pide el segundo paso",
+      "aprobado": false,
+      "detalle": "HTTP 429"
+    },
+    {
+      "id": "CP-2FA-10",
+      "descripcion": "Código incorrecto responde 401 con mensaje genérico",
+      "aprobado": false,
+      "detalle": "HTTP 400"
+    },
+    {
+      "id": "CP-2FA-11",
+      "descripcion": "Código TOTP válido emite la sesión",
+      "aprobado": false,
+      "detalle": "HTTP 400, 3 ms"
+    },
+    {
+      "id": "CP-2FA-12",
+      "descripcion": "Un código ya usado no se puede reutilizar",
+      "aprobado": false,
+      "detalle": "HTTP 400"
+    },
+    {
+      "id": "CP-2FA-13",
+      "descripcion": "Payload SQL (' OR '1'='1) neutralizado sin error 500",
+      "aprobado": true,
+      "detalle": "HTTP 400"
+    },
+    {
+      "id": "CP-2FA-14",
+      "descripcion": "Verificar sin desafío responde 400",
+      "aprobado": true,
+      "detalle": "HTTP 400"
+    },
+    {
+      "id": "CP-2FA-15",
+      "descripcion": "Un código de respaldo válido permite entrar",
+      "aprobado": false,
+      "detalle": "HTTP 400"
+    },
+    {
+      "id": "CP-2FA-16",
+      "descripcion": "Un código de respaldo sirve una sola vez",
+      "aprobado": false,
+      "detalle": "HTTP 400"
+    },
+    {
+      "id": "CP-2FA-ERR",
+      "descripcion": "La suite terminó sin errores inesperados",
+      "aprobado": false,
+      "detalle": "SecretMissingError: Secret is required. Use generateSecret() to create one, or provide via { secret: 'YOUR_BASE32_SECRET' }\n    at Yr (file:///D:/universidad/s9/taller/proyecto%20activo%20fijo/code/activofijo-core/node_modules/.pnpm/@otplib+core@13.5.0/node_modules/@otplib/core/dist/index.js:1:8659)\n    at w (file:///D:/universidad/s9/taller/proyecto%20activo%20fijo/code/activofijo-core/node_modules/.pnpm/@otplib+totp@13.5.0/node_modules/@otplib/totp/dist/index.js:1:2033)\n    at b (file:///D:/universidad/s9/taller/proyecto%20activo%20fijo/code/activofijo-core/node_modules/.pnpm/@otplib+totp@13.5.0/node_modules/@otplib/totp/dist/index.js:1:2251)\n    at Object.totp (file:///D:/universidad/s9/taller/proyecto%20activo%20fijo/code/activofijo-core/node_modules/.pnpm/otplib@13.5.0/node_modules/otplib/dist/index.js:1:1727)\n    at l (file:///D:/universidad/s9/taller/proyecto%20activo%20fijo/code/activofijo-core/node_modules/.pnpm/otplib@13.5.0/node_modules/otplib/dist/index.js:1:934)\n    at T (file:///D:/universidad/s9/taller/proyecto%20activo%20fijo/code/activofijo-core/node_modules/.pnpm/otplib@13.5.0/node_modules/otplib/dist/index.js:1:1694)\n    at ejecutar (file:///D:/universidad/s9/taller/proyecto%20activo%20fijo/code/activofijo-core/tests/2fa-diagnostics/run-2fa-suite.mjs:186:121)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async file:///D:/universidad/s9/taller/proyecto%20activo%20fijo/code/activofijo-core/tests/2fa-diagnostics/run-2fa-suite.mjs:263:1"
+    }
+  ],
+  "latencias": [
+    {
+      "operacion": "login",
+      "ms": 1603
+    },
+    {
+      "operacion": "login",
+      "ms": 661
+    },
+    {
+      "operacion": "activar-2fa",
+      "ms": 2838
+    },
+    {
+      "operacion": "perfil",
+      "ms": 903
+    },
+    {
+      "operacion": "login",
+      "ms": 6
+    },
+    {
+      "operacion": "verificar-2fa",
+      "ms": 3
+    },
+    {
+      "operacion": "login",
+      "ms": 3
+    },
+    {
+      "operacion": "login",
+      "ms": 3
+    },
+    {
+      "operacion": "login",
+      "ms": 3
+    },
+    {
+      "operacion": "login",
+      "ms": 3
+    }
+  ]
+}

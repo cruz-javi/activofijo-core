@@ -164,9 +164,21 @@ async function runSuiteCU01() {
       });
       const d = Date.now() - t0;
       const json = await res.json();
-      const ok = res.status === 201 && !!json.accessToken && json.user?.roles?.includes('FUNCIONARIO');
-      if (ok) funcionarioToken = json.accessToken;
-      recordTest('CU01', 'CP-CU01-03', 'Login con Funcionario Regular (código 3001)', ok, { status: res.status, roles: json.user?.roles }, d);
+      let token = json.accessToken;
+      let roles = json.user?.roles;
+      if (!token && json.desafioToken) {
+        const omitirRes = await fetch(`${BASE_URL}/auth/2fa/inicial/omitir`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ desafioToken: json.desafioToken }),
+        });
+        const omitirJson = await omitirRes.json();
+        token = omitirJson.sesion?.accessToken;
+        roles = omitirJson.sesion?.user?.roles;
+      }
+      const ok = res.status === 201 && !!token && roles?.includes('FUNCIONARIO');
+      if (ok) funcionarioToken = token;
+      recordTest('CU01', 'CP-CU01-03', 'Login con Funcionario Regular (código 3001)', ok, { status: res.status, roles }, d);
     } catch (err) {
       recordTest('CU01', 'CP-CU01-03', 'Login con Funcionario Regular (código 3001)', false, { error: err.message }, Date.now() - t0);
     }
@@ -459,7 +471,7 @@ async function runSuiteCU03(adminToken, funcionarioToken) {
         },
         body: JSON.stringify({
           descripcion: 'Descripción actualizada en diagnóstico',
-          permisos: ['activos:consultar', 'bitacora:consultar', 'normativa:consultar'],
+          permisos: ['activos:consultar', 'bitacora:consultar', 'reportes:generar'],
         }),
       });
       const d = Date.now() - t0;

@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-09-29T00:19:45.272Z",
+  "timestamp": "2026-10-01T02:53:10.709Z",
   "environment": {
     "coreUrl": "http://localhost:3000",
     "webUrl": "http://localhost:3001",
-    "nodeVersion": "v22.13.1"
+    "nodeVersion": "v22.17.1"
   },
   "suites": {
     "CU01": {
@@ -17,7 +17,7 @@
             "status": 201,
             "requiere2fa": true
           },
-          "durationMs": 467
+          "durationMs": 378
         },
         {
           "testId": "CP-CU01-02",
@@ -27,7 +27,7 @@
             "status": 201,
             "requiere2fa": true
           },
-          "durationMs": 487
+          "durationMs": 376
         },
         {
           "testId": "CP-CU01-03",
@@ -39,7 +39,7 @@
               "FUNCIONARIO"
             ]
           },
-          "durationMs": 2075
+          "durationMs": 681
         },
         {
           "testId": "CP-CU01-04",
@@ -49,18 +49,18 @@
             "status": 401,
             "message": "Credenciales inválidas"
           },
-          "durationMs": 674
+          "durationMs": 525
         },
         {
           "testId": "CP-CU01-05",
           "description": "Inspección de sesión activa y permisos efectivos (/auth/me)",
           "passed": true,
           "details": {
-            "id": "08b2508e-d9d3-4d1d-a6b7-35f8d26a2ea8",
+            "id": "4417b5ea-1fca-4407-a2fd-cda68acc2e3b",
             "nombre": "Administrador de servicio (suite Sprint 1)",
-            "permisosCount": 12
+            "permisosCount": 8
           },
-          "durationMs": 717
+          "durationMs": 907
         },
         {
           "testId": "CP-CU01-06",
@@ -70,7 +70,7 @@
             "validStatus": 201,
             "invalidStatus": 401
           },
-          "durationMs": 581
+          "durationMs": 452
         },
         {
           "testId": "CP-CU01-07",
@@ -79,7 +79,7 @@
           "details": {
             "testedPayloads": 3
           },
-          "durationMs": 366
+          "durationMs": 923
         }
       ],
       "passed": 7,
@@ -94,18 +94,18 @@
           "passed": true,
           "details": {
             "count": 10,
-            "total": 33
+            "total": 37
           },
-          "durationMs": 1639
+          "durationMs": 1348
         },
         {
           "testId": "CP-CU02-02",
-          "description": "Filtro por código de activo parcial/exacto (\"UAGRM-2026-00023\")",
+          "description": "Filtro por código de activo parcial/exacto (\"UAGRM-2026-00025\")",
           "passed": true,
           "details": {
-            "matches": 10
+            "matches": 12
           },
-          "durationMs": 2438
+          "durationMs": 1996
         },
         {
           "testId": "CP-CU02-03",
@@ -114,20 +114,20 @@
           "details": {
             "estados": 4,
             "unidades": 8,
-            "grupos": 8
+            "grupos": 9
           },
-          "durationMs": 951
+          "durationMs": 766
         },
         {
           "testId": "CP-CU02-04",
-          "description": "Consulta de ficha técnica de activo por ID (UAGRM-2026-00023)",
+          "description": "Consulta de ficha técnica de activo por ID (UAGRM-2026-00025)",
           "passed": true,
           "details": {
-            "id": "dd87f3e8-218a-4ae1-8af2-051acda209a3",
-            "codigo": "UAGRM-2026-00023",
-            "descripcion": "Impresora de Est"
+            "id": "a608e399-e4d9-4a22-95f4-ceb7950026e7",
+            "codigo": "UAGRM-2026-00025",
+            "descripcion": "computer"
           },
-          "durationMs": 183
+          "durationMs": 157
         },
         {
           "testId": "CP-CU02-05",
@@ -137,50 +137,54 @@
             "isArray": true,
             "response": [
               {
-                "globalPosition": 123,
-                "streamId": "dd87f3e8-218a-4ae1-8af2-051acda209a3",
+                "globalPosition": 226,
+                "streamId": "a608e399-e4d9-4a22-95f4-ceb7950026e7",
                 "streamType": "ACTIVO",
                 "version": 1,
                 "eventType": "ActivoRegistrado",
                 "eventSchema": 1,
                 "payload": {
-                  "id": "dd87f3e8-218a-4ae1-8af2-051acda209a3",
-                  "monto": 0,
+                  "id": "a608e399-e4d9-4a22-95f4-ceb7950026e7",
+                  "nInt": "8989",
+                  "monto": 4500,
                   "recur": "RECURSOS PROPIOS (RP)",
-                  "codigo": "UAGRM-2026-00023",
+                  "codEmp": 1001,
+                  "codigo": "UAGRM-2026-00025",
                   "estado": "BUENO",
-                  "codOfic": 10,
+                  "codOfic": 60,
                   "tipoIng": "COMPRA DIRECTA",
-                  "fecAdqui": "2026-09-28T00:00:00.000Z",
-                  "nroActivo": 23,
-                  "ubicacion": "Rectorado y Vicerrectorado",
+                  "fecAdqui": "2026-10-01T00:00:00.000Z",
+                  "nroSerie": "NS-9203094",
+                  "actaRecep": "NA",
+                  "nroActivo": 25,
+                  "ubicacion": "Biblioteca Central Universitaria",
                   "esVehiculo": false,
-                  "descripcion": "Impresora de Est",
-                  "grupoContable": "Maquinaria y Equipo"
+                  "descripcion": "computer",
+                  "grupoContable": "Equipos de Computación y Comunicación"
                 },
                 "metadata": {
                   "ip": "::1",
-                  "email": "admin@uagrm.edu.bo",
-                  "timestamp": "2026-09-28T21:20:07.229Z",
-                  "usuarioId": "11111111-1111-1111-1111-111111111111"
+                  "email": "test2003@uagrm.edu.bo",
+                  "timestamp": "2026-10-01T01:15:08.517Z",
+                  "usuarioId": "7bba8353-33ae-432a-9b7d-fdc7cebac370"
                 },
                 "prevHash": null,
-                "hash": "54fc471736718875f3f5bd4484dbd5c2b3399533f9e046ac00d9996503b448cc",
-                "recordedAt": "2026-09-28T21:20:07.413Z"
+                "hash": "8d7a7d3bfad77e35bb6e15d81507eb966f74392a55b8206a4cf4ff5254eda743",
+                "recordedAt": "2026-10-01T01:15:08.660Z"
               }
             ]
           },
-          "durationMs": 183
+          "durationMs": 285
         },
         {
           "testId": "CP-CU02-06",
           "description": "Rendimiento y latencia en consulta masiva (limit=5000 < 4.0s)",
           "passed": true,
           "details": {
-            "latencyMs": 1298,
-            "itemsRetrieved": 23
+            "latencyMs": 1052,
+            "itemsRetrieved": 25
           },
-          "durationMs": 1298
+          "durationMs": 1052
         }
       ],
       "passed": 6,
@@ -194,40 +198,40 @@
           "description": "Consulta del catálogo de roles del sistema (/roles)",
           "passed": true,
           "details": {
-            "rolesCount": 5,
+            "rolesCount": 6,
             "roles": [
+              "FUNCIONARIO",
               "ADMINISTRADOR",
               "JEFE_ACTIVO_FIJO",
-              "FUNCIONARIO",
               "PRUEBA",
-              "TEST_AUDITOR_1790613379341"
+              "TEST_AUDITOR_1790613379341",
+              "ACTIVOFIJO-PRUEBAS"
             ]
           },
-          "durationMs": 553
+          "durationMs": 458
         },
         {
           "testId": "CP-CU03-02",
           "description": "Catálogo de permisos granulares del sistema (/permisos)",
           "passed": true,
           "details": {
-            "totalPermisos": 12,
+            "totalPermisos": 8,
             "modulos": [
+              "CODIFICACION",
               "IDENTIDAD_ACCESO",
-              "INSPECCION_CAMPO",
-              "NORMATIVA",
               "PATRIMONIO"
             ]
           },
-          "durationMs": 184
+          "durationMs": 155
         },
         {
           "testId": "CP-CU03-03",
           "description": "Creación de nuevo rol dinámico con permisos asignados",
           "passed": true,
           "details": {
-            "roleId": "TEST_AUDITOR_1790641204000"
+            "roleId": "TEST_AUDITOR_1790823210072"
           },
-          "durationMs": 901
+          "durationMs": 764
         },
         {
           "testId": "CP-CU03-04",
@@ -237,10 +241,10 @@
             "permisos": [
               "activos:consultar",
               "bitacora:consultar",
-              "normativa:consultar"
+              "reportes:generar"
             ]
           },
-          "durationMs": 1255
+          "durationMs": 1080
         },
         {
           "testId": "CP-CU03-05",
@@ -249,7 +253,7 @@
           "details": {
             "status": 200
           },
-          "durationMs": 894
+          "durationMs": 1022
         },
         {
           "testId": "CP-CU03-06",
@@ -258,7 +262,7 @@
           "details": {
             "status": 403
           },
-          "durationMs": 5
+          "durationMs": 6
         },
         {
           "testId": "CP-CU03-07",
@@ -281,10 +285,10 @@
           "description": "Consulta estructurada de bitácora forense (/auditoria)",
           "passed": true,
           "details": {
-            "totalEvents": 413,
+            "totalEvents": 589,
             "retrieved": 20
           },
-          "durationMs": 1287
+          "durationMs": 1056
         },
         {
           "testId": "CP-CU04-02",
@@ -293,7 +297,7 @@
           "details": {
             "matchingEvents": 5
           },
-          "durationMs": 189
+          "durationMs": 154
         },
         {
           "testId": "CP-CU04-03",
@@ -301,21 +305,21 @@
           "passed": true,
           "details": {
             "item": {
-              "id": "418",
+              "id": "621",
               "usuarioId": null,
-              "emailUsuario": "test.sprint1.1790641186512.admin@uagrm.edu.bo",
+              "emailUsuario": "test.sprint1.1790823191833.admin@uagrm.edu.bo",
               "accion": "ELIMINAR_ROL",
               "modulo": "IDENTIDAD_ACCESO",
-              "entidadId": "TEST_AUDITOR_1790641204000",
+              "entidadId": "TEST_AUDITOR_1790823210072",
               "resultado": "EXITOSO",
               "ipOrigen": "::1",
               "userAgent": "node",
-              "motivoRechazo": "Rol personalizado TEST_AUDITOR_1790641204000 eliminado del sistema",
+              "motivoRechazo": "Rol personalizado TEST_AUDITOR_1790823210072 eliminado del sistema",
               "payloadHash": null,
-              "creadoEn": "2026-09-29T00:20:06.875Z"
+              "creadoEn": "2026-10-01T02:53:32.796Z"
             }
           },
-          "durationMs": 184
+          "durationMs": 154
         },
         {
           "testId": "CP-CU04-04",
@@ -324,7 +328,7 @@
           "details": {
             "status": 403
           },
-          "durationMs": 4
+          "durationMs": 5
         },
         {
           "testId": "CP-CU04-05",
@@ -334,7 +338,7 @@
             "postStatus": 404,
             "deleteStatus": 404
           },
-          "durationMs": 6
+          "durationMs": 3
         }
       ],
       "passed": 5,
@@ -350,16 +354,16 @@
           "details": {
             "totalPlantillas": 6
           },
-          "durationMs": 186
+          "durationMs": 156
         },
         {
           "testId": "CP-CU05-02",
           "description": "Creación y registro de plantilla de etiqueta configurable",
           "passed": true,
           "details": {
-            "plantillaId": "c03064f0-ebe3-43d0-928d-149ce8014952"
+            "plantillaId": "e1bfaf60-f2ec-417a-bf0e-f0e1fce35455"
           },
-          "durationMs": 369
+          "durationMs": 455
         },
         {
           "testId": "CP-CU05-03",
@@ -368,7 +372,7 @@
           "details": {
             "status": 200
           },
-          "durationMs": 362
+          "durationMs": 453
         },
         {
           "testId": "CP-CU05-04",
@@ -378,27 +382,27 @@
             "generados": 1,
             "total": 1
           },
-          "durationMs": 1288
+          "durationMs": 1209
         },
         {
           "testId": "CP-CU05-05",
-          "description": "Reposición de etiqueta con re-autenticación Step-Up (UAGRM-2026-00023)",
+          "description": "Reposición de etiqueta con re-autenticación Step-Up (UAGRM-2026-00025)",
           "passed": true,
           "details": {
             "success": true,
-            "data": "ACFEF3F809"
+            "data": "1928DD7162"
           },
-          "durationMs": 1444
+          "durationMs": 1201
         },
         {
           "testId": "CP-CU05-06",
           "description": "Auditoría e historial de reposiciones por activo (/etiquetas/historial/:cod)",
           "passed": true,
           "details": {
-            "totalEmisiones": 6,
-            "historialCount": 6
+            "totalEmisiones": 7,
+            "historialCount": 7
           },
-          "durationMs": 197
+          "durationMs": 153
         }
       ],
       "passed": 6,
@@ -412,20 +416,20 @@
           "description": "Extracción masiva de activos para reporte parametrizado (limit=5000)",
           "passed": true,
           "details": {
-            "totalExtraidos": 23,
-            "totalDB": 33
+            "totalExtraidos": 25,
+            "totalDB": 37
           },
-          "durationMs": 2396
+          "durationMs": 1056
         },
         {
           "testId": "CP-CU06-02",
           "description": "Extracción masiva de bitácora para reporte parametrizado (limit=5000)",
           "passed": true,
           "details": {
-            "totalExtraidos": 414,
-            "totalDB": 414
+            "totalExtraidos": 593,
+            "totalDB": 593
           },
-          "durationMs": 569
+          "durationMs": 660
         },
         {
           "testId": "CP-CU06-03",
@@ -488,6 +492,6 @@
     "total": 36,
     "passed": 36,
     "failed": 0,
-    "durationMs": 30653
+    "durationMs": 29261
   }
 }

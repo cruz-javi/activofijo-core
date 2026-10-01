@@ -1942,6 +1942,7 @@ export const AuthRolScalarFieldEnum = {
   nombre: 'nombre',
   descripcion: 'descripcion',
   esSistema: 'esSistema',
+  requiereDosPasos: 'requiereDosPasos',
   activo: 'activo',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn',

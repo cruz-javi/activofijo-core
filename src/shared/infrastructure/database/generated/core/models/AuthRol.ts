@@ -29,6 +29,7 @@ export type AuthRolMinAggregateOutputType = {
   nombre: string | null
   descripcion: string | null
   esSistema: boolean | null
+  requiereDosPasos: boolean | null
   activo: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -41,6 +42,7 @@ export type AuthRolMaxAggregateOutputType = {
   nombre: string | null
   descripcion: string | null
   esSistema: boolean | null
+  requiereDosPasos: boolean | null
   activo: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -53,6 +55,7 @@ export type AuthRolCountAggregateOutputType = {
   nombre: number
   descripcion: number
   esSistema: number
+  requiereDosPasos: number
   activo: number
   creadoEn: number
   actualizadoEn: number
@@ -67,6 +70,7 @@ export type AuthRolMinAggregateInputType = {
   nombre?: true
   descripcion?: true
   esSistema?: true
+  requiereDosPasos?: true
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -79,6 +83,7 @@ export type AuthRolMaxAggregateInputType = {
   nombre?: true
   descripcion?: true
   esSistema?: true
+  requiereDosPasos?: true
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -91,6 +96,7 @@ export type AuthRolCountAggregateInputType = {
   nombre?: true
   descripcion?: true
   esSistema?: true
+  requiereDosPasos?: true
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -176,6 +182,7 @@ export type AuthRolGroupByOutputType = {
   nombre: string
   descripcion: string | null
   esSistema: boolean
+  requiereDosPasos: boolean
   activo: boolean
   creadoEn: Date
   actualizadoEn: Date
@@ -209,6 +216,7 @@ export type AuthRolWhereInput = {
   nombre?: Prisma.StringFilter<"AuthRol"> | string
   descripcion?: Prisma.StringNullableFilter<"AuthRol"> | string | null
   esSistema?: Prisma.BoolFilter<"AuthRol"> | boolean
+  requiereDosPasos?: Prisma.BoolFilter<"AuthRol"> | boolean
   activo?: Prisma.BoolFilter<"AuthRol"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"AuthRol"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"AuthRol"> | Date | string
@@ -223,6 +231,7 @@ export type AuthRolOrderByWithRelationInput = {
   nombre?: Prisma.SortOrder
   descripcion?: Prisma.SortOrderInput | Prisma.SortOrder
   esSistema?: Prisma.SortOrder
+  requiereDosPasos?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -240,6 +249,7 @@ export type AuthRolWhereUniqueInput = Prisma.AtLeast<{
   nombre?: Prisma.StringFilter<"AuthRol"> | string
   descripcion?: Prisma.StringNullableFilter<"AuthRol"> | string | null
   esSistema?: Prisma.BoolFilter<"AuthRol"> | boolean
+  requiereDosPasos?: Prisma.BoolFilter<"AuthRol"> | boolean
   activo?: Prisma.BoolFilter<"AuthRol"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"AuthRol"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"AuthRol"> | Date | string
@@ -254,6 +264,7 @@ export type AuthRolOrderByWithAggregationInput = {
   nombre?: Prisma.SortOrder
   descripcion?: Prisma.SortOrderInput | Prisma.SortOrder
   esSistema?: Prisma.SortOrder
+  requiereDosPasos?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -272,6 +283,7 @@ export type AuthRolScalarWhereWithAggregatesInput = {
   nombre?: Prisma.StringWithAggregatesFilter<"AuthRol"> | string
   descripcion?: Prisma.StringNullableWithAggregatesFilter<"AuthRol"> | string | null
   esSistema?: Prisma.BoolWithAggregatesFilter<"AuthRol"> | boolean
+  requiereDosPasos?: Prisma.BoolWithAggregatesFilter<"AuthRol"> | boolean
   activo?: Prisma.BoolWithAggregatesFilter<"AuthRol"> | boolean
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"AuthRol"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"AuthRol"> | Date | string
@@ -284,6 +296,7 @@ export type AuthRolCreateInput = {
   nombre: string
   descripcion?: string | null
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -298,6 +311,7 @@ export type AuthRolUncheckedCreateInput = {
   nombre: string
   descripcion?: string | null
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -312,6 +326,7 @@ export type AuthRolUpdateInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   descripcion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   esSistema?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiereDosPasos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -326,6 +341,7 @@ export type AuthRolUncheckedUpdateInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   descripcion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   esSistema?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiereDosPasos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -340,6 +356,7 @@ export type AuthRolCreateManyInput = {
   nombre: string
   descripcion?: string | null
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -352,6 +369,7 @@ export type AuthRolUpdateManyMutationInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   descripcion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   esSistema?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiereDosPasos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -364,6 +382,7 @@ export type AuthRolUncheckedUpdateManyInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   descripcion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   esSistema?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiereDosPasos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -376,6 +395,7 @@ export type AuthRolCountOrderByAggregateInput = {
   nombre?: Prisma.SortOrder
   descripcion?: Prisma.SortOrder
   esSistema?: Prisma.SortOrder
+  requiereDosPasos?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -388,6 +408,7 @@ export type AuthRolMaxOrderByAggregateInput = {
   nombre?: Prisma.SortOrder
   descripcion?: Prisma.SortOrder
   esSistema?: Prisma.SortOrder
+  requiereDosPasos?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -400,6 +421,7 @@ export type AuthRolMinOrderByAggregateInput = {
   nombre?: Prisma.SortOrder
   descripcion?: Prisma.SortOrder
   esSistema?: Prisma.SortOrder
+  requiereDosPasos?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -445,6 +467,7 @@ export type AuthRolCreateWithoutPermisosInput = {
   nombre: string
   descripcion?: string | null
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -458,6 +481,7 @@ export type AuthRolUncheckedCreateWithoutPermisosInput = {
   nombre: string
   descripcion?: string | null
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -487,6 +511,7 @@ export type AuthRolUpdateWithoutPermisosInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   descripcion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   esSistema?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiereDosPasos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -500,6 +525,7 @@ export type AuthRolUncheckedUpdateWithoutPermisosInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   descripcion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   esSistema?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiereDosPasos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -513,6 +539,7 @@ export type AuthRolCreateWithoutUsuariosInput = {
   nombre: string
   descripcion?: string | null
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -526,6 +553,7 @@ export type AuthRolUncheckedCreateWithoutUsuariosInput = {
   nombre: string
   descripcion?: string | null
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -555,6 +583,7 @@ export type AuthRolUpdateWithoutUsuariosInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   descripcion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   esSistema?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiereDosPasos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -568,6 +597,7 @@ export type AuthRolUncheckedUpdateWithoutUsuariosInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   descripcion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   esSistema?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiereDosPasos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -621,6 +651,7 @@ export type AuthRolSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   nombre?: boolean
   descripcion?: boolean
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -636,6 +667,7 @@ export type AuthRolSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   nombre?: boolean
   descripcion?: boolean
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -648,6 +680,7 @@ export type AuthRolSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   nombre?: boolean
   descripcion?: boolean
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -660,6 +693,7 @@ export type AuthRolSelectScalar = {
   nombre?: boolean
   descripcion?: boolean
   esSistema?: boolean
+  requiereDosPasos?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -667,7 +701,7 @@ export type AuthRolSelectScalar = {
   eliminadoPor?: boolean
 }
 
-export type AuthRolOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "descripcion" | "esSistema" | "activo" | "creadoEn" | "actualizadoEn" | "eliminadoEn" | "eliminadoPor", ExtArgs["result"]["authRol"]>
+export type AuthRolOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "descripcion" | "esSistema" | "requiereDosPasos" | "activo" | "creadoEn" | "actualizadoEn" | "eliminadoEn" | "eliminadoPor", ExtArgs["result"]["authRol"]>
 export type AuthRolInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   permisos?: boolean | Prisma.AuthRol$permisosArgs<ExtArgs>
   usuarios?: boolean | Prisma.AuthRol$usuariosArgs<ExtArgs>
@@ -687,6 +721,7 @@ export type $AuthRolPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     nombre: string
     descripcion: string | null
     esSistema: boolean
+    requiereDosPasos: boolean
     activo: boolean
     creadoEn: Date
     actualizadoEn: Date
@@ -1121,6 +1156,7 @@ export interface AuthRolFieldRefs {
   readonly nombre: Prisma.FieldRef<"AuthRol", 'String'>
   readonly descripcion: Prisma.FieldRef<"AuthRol", 'String'>
   readonly esSistema: Prisma.FieldRef<"AuthRol", 'Boolean'>
+  readonly requiereDosPasos: Prisma.FieldRef<"AuthRol", 'Boolean'>
   readonly activo: Prisma.FieldRef<"AuthRol", 'Boolean'>
   readonly creadoEn: Prisma.FieldRef<"AuthRol", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"AuthRol", 'DateTime'>
