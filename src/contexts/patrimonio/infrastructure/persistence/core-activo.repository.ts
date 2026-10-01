@@ -12,6 +12,8 @@ export class CoreActivoRepository implements ActivoRepository {
   ) {}
 
   async findById(id: string): Promise<Activo | null> {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+    if (!isUuid) return null;
     const row = await this.prisma.activoProyeccion.findUnique({ where: { id } });
     if (!row) return null;
     return new Activo({
